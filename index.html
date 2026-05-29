@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>建物管理システム - 階層メニュー</title>
+    <title>2026 UI/UX デザイン：建物管理システム</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     
@@ -26,7 +26,7 @@
             background-color: #e9ecef;
             border-radius: 4px;
         }
-        /* 子階層のインデント設定 */
+        /* 子階層 of インデント設定 */
         .level-1 { padding-left: 1rem; }
         .level-2 { padding-left: 2rem; }
         .level-3 { padding-left: 3rem; }
@@ -55,6 +55,57 @@
             border-radius: 4px;
             color: #000;
         }
+
+        /* 照明ステータス用のカスタムスタイル */
+        .light-card-on {
+            border-left: 5px solid #ffc107 !important; /* 点灯：黄色の左線 */
+            background-color: #fffdf5;
+            transition: all 0.2s ease;
+        }
+        .light-card-off {
+            border-left: 5px solid #6c757d !important; /* 消灯：グレーの左線 */
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        .icon-box-on {
+            background-color: #fff3cd;
+            color: #ffb100;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+        .icon-box-off {
+            background-color: #f1f2f4;
+            color: #6c757d;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        /* 【新規追加】現在の状況（環境・セキュリティ・空調）用のスタイル */
+        .status-indicator-card {
+            border: 1px solid #e3e6f0;
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.05);
+        }
+        .icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -75,10 +126,10 @@
 
             <ul class="list-unstyled ps-0">
                 <li class="mb-1 level-1">
-                    <button class="btn-toggle fw-bold" data-bs-toggle="collapse" data-bs-target="#room-manage-collapse" aria-expanded="true">
+                    <button class="btn-toggle fw-bold" data-bs-toggle="collapse" data-bs-target="#room-manage-collapse" aria-expanded="false">
                         部屋の追加・削除
                     </button>
-                    <div class="collapse show" id="room-manage-collapse">
+                    <div class="collapse" id="room-manage-collapse">
                         <ul class="list-unstyled fw-normal pb-1 small">
                             <li class="level-2">
                                 <button class="btn-toggle text-secondary" data-bs-toggle="collapse" data-bs-target="#current-rooms-collapse" aria-expanded="false">
@@ -123,13 +174,13 @@
                                     <ul class="list-unstyled fw-normal">
                                         
                                         <li class="level-3">
-                                            <button class="btn-toggle text-dark" data-bs-toggle="collapse" data-bs-target="#roomA-status" aria-expanded="false">
+                                            <button class="btn-toggle text-dark fw-bold text-primary" data-bs-toggle="collapse" data-bs-target="#roomA-status" aria-expanded="true" id="menu-roomA">
                                                 A部屋
                                             </button>
-                                            <div class="collapse" id="roomA-status">
+                                            <div class="collapse show" id="roomA-status">
                                                 <ul class="list-unstyled level-4">
-                                                    <li><a href="#" class="tree-link text-success">ついている電気</a></li>
-                                                    <li><a href="#" class="tree-link text-muted">消えている電気</a></li>
+                                                    <li><a href="#" class="tree-link text-success fw-bold" id="menu-lights-on">● ついている電気</a></li>
+                                                    <li><a href="#" class="tree-link text-muted" id="menu-lights-off">○ 消えている電気</a></li>
                                                 </ul>
                                             </div>
                                         </li>
@@ -168,21 +219,267 @@
         </nav>
 
         <main class="col-md-8 ms-sm-auto col-lg-9 px-md-4 py-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">建物管理ダッシュボード</h1>
-            </div>
             
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">設計図のシステム化</h5>
-                    <p class="card-text">左側のサイドバーメニューは、提示された階層ツリー図（Information Architecture）を忠実にトレースして作成されています。</p>
-                    <p class="text-muted small">※Bootstrapの <code>collapse</code> プラグインを使用しているため、各メニューをクリックすると、配下の項目群をアコーディオン展開・格納できます。</p>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+                <div>
+                    <h1 class="h2 fw-bold text-dark" id="main-title">A部屋 — 総合現在の状況</h1>
+                    <p class="text-muted small mb-0" id="main-breadcrumbs">ルート ＞ 現在の状況 ＞ 部屋 ＞ A部屋</p>
+                </div>
+                <div class="btn-group shadow-sm">
+                    <button class="btn btn-sm btn-outline-warning"><i class="bi bi-lightbulb-fill"></i> 全てつける</button>
+                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-lightbulb"></i> 全て消す</button>
                 </div>
             </div>
+
+            <div class="row g-3 mb-4" id="summary-row">
+                <div class="col-6 col-md-3">
+                    <div class="p-3 bg-white border rounded shadow-sm">
+                        <div class="text-muted small fw-bold">合計照明数</div>
+                        <div class="h3 fw-bold mb-0">3 箇所</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3 bg-warning bg-opacity-10 border border-warning-subtle rounded shadow-sm" style="cursor:pointer;" id="summary-on-trigger">
+                        <div class="text-warning-emphasis small fw-bold">ついている電気</div>
+                        <div class="h3 fw-bold text-warning-emphasis mb-0">2 <span class="fs-6 fw-normal text-muted">箇所</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3 bg-secondary bg-opacity-10 border border-secondary-subtle rounded shadow-sm" style="cursor:pointer;" id="summary-off-trigger">
+                        <div class="text-secondary small fw-bold">消えている電気</div>
+                        <div class="h3 fw-bold text-secondary mb-0">1 <span class="fs-6 fw-normal text-muted">箇所</span></div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-3 bg-white border rounded shadow-sm">
+                        <div class="text-muted small fw-bold">システム状態</div>
+                        <div class="small fw-bold text-success mt-2"><i class="bi bi-check-circle-fill"></i> 正常に稼働中</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4" id="section-room-status">
+                <div class="col-12">
+                    <h5 class="fw-bold text-secondary mb-3"><i class="bi bi-info-circle-fill me-2"></i>部屋のリアルタイム環境ステータス</h5>
+                </div>
+                
+                <div class="col-12 col-md-4">
+                    <div class="p-3 status-indicator-card border-start border-primary border-5 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small fw-bold">空調設備</span>
+                            <span class="badge bg-primary rounded-pill">冷房運転中</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-circle bg-primary bg-opacity-10 text-primary">
+                                <i class="bi bi-wind"></i>
+                            </div>
+                            <div>
+                                <div class="fs-4 fw-bold text-dark">25.0°C</div>
+                                <div class="text-muted small">設定風量: 自動</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="p-3 status-indicator-card border-start border-success border-5 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small fw-bold">環境センサー</span>
+                            <span class="badge bg-success rounded-pill">快適環境</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-circle bg-success bg-opacity-10 text-success">
+                                <i class="bi bi-thermometer-half"></i>
+                            </div>
+                            <div class="w-100">
+                                <div class="row g-0 text-dark fw-bold">
+                                    <div class="col-6 small">室温: <span class="text-success">24.2°C</span></div>
+                                    <div class="col-6 small">湿度: <span class="text-success">48%</span></div>
+                                </div>
+                                <div class="text-muted small mt-1">CO2濃度: 620 ppm (良好)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="p-3 status-indicator-card border-start border-danger border-5 h-100">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small fw-bold">防犯・セキュリティ</span>
+                            <span class="badge bg-danger rounded-pill">施錠完了</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="icon-circle bg-danger bg-opacity-10 text-danger">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <div>
+                                <div class="fs-6 fw-bold text-dark">入室状況: 在室あり</div>
+                                <div class="text-muted small">扉: 施錠 / 窓センサー: すべて閉</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4" id="section-lights">
+                
+                <div class="col-12 col-xl-6" id="wrapper-lights-on">
+                    <div class="p-3 bg-white rounded shadow-sm border h-100">
+                        <h5 class="fw-bold mb-3 text-warning">
+                            <i class="bi bi-lightbulb-fill me-1"></i> ついている電気 <span class="badge bg-warning text-dark rounded-pill ms-1">2</span>
+                        </h5>
+                        <div class="vstack gap-2">
+                            
+                            <div class="card p-3 light-card-on border-0 shadow-sm">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="icon-box-on"><i class="bi bi-lightbulb-fill"></i></div>
+                                        <div>
+                                            <div class="fw-bold text-dark">メイン天井照明 (A-1)</div>
+                                            <span class="text-success small fw-medium"><i class="bi bi-circle-fill fs-6 me-1" style="font-size: 0.6rem !important;"></i>点灯中</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch fs-4 mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch" checked>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card p-3 light-card-on border-0 shadow-sm">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="icon-box-on"><i class="bi bi-lightbulb-fill"></i></div>
+                                        <div>
+                                            <div class="fw-bold text-dark">窓側スポットライト (A-2)</div>
+                                            <span class="text-success small fw-medium"><i class="bi bi-circle-fill fs-6 me-1" style="font-size: 0.6rem !important;"></i>点灯中</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch fs-4 mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch" checked>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-6" id="wrapper-lights-off">
+                    <div class="p-3 bg-white rounded shadow-sm border h-100">
+                        <h5 class="fw-bold mb-3 text-secondary">
+                            <i class="bi bi-lightbulb me-1"></i> 消えている電気 <span class="badge bg-secondary rounded-pill ms-1">1</span>
+                        </h5>
+                        <div class="vstack gap-2">
+                            
+                            <div class="card p-3 light-card-off border-0 shadow-sm">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="icon-box-off"><i class="bi bi-lightbulb"></i></div>
+                                        <div>
+                                            <div class="fw-bold text-muted">入口側補助灯 (A-3)</div>
+                                            <span class="text-secondary small fw-medium">消灯</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-check form-switch fs-4 mb-0">
+                                        <input class="form-check-input" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </main>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 操作用DOM要素の取得
+    const mainTitle = document.getElementById('main-title');
+    const mainBreadcrumbs = document.getElementById('main-breadcrumbs');
+    
+    const sectionRoomStatus = document.getElementById('section-room-status');
+    const wrapperLightsOn = document.getElementById('wrapper-lights-on');
+    const wrapperLightsOff = document.getElementById('wrapper-lights-off');
+
+    // 左側サイドバーのメニューボタン
+    const menuRoomA = document.getElementById('menu-roomA');
+    const menuLightsOn = document.getElementById('menu-lights-on');
+    const menuLightsOff = document.getElementById('menu-lights-off');
+    
+    // サマリータイルのトリガーボタン
+    const triggerOn = document.getElementById('summary-on-trigger');
+    const triggerOff = document.getElementById('summary-off-trigger');
+
+    // 全ての選択状態デザインをクリアする関数
+    function clearActiveStyles() {
+        [menuRoomA, menuLightsOn, menuLightsOff].forEach(el => {
+            el.classList.remove('text-primary', 'text-success', 'text-muted', 'fw-bold');
+        });
+        menuRoomA.classList.add('text-dark');
+        menuLightsOn.classList.add('text-success');
+        menuLightsOff.classList.add('text-muted');
+    }
+
+    // 1. 「A部屋（総合）」の表示切り替え
+    function showAllStatus() {
+        clearActiveStyles();
+        menuRoomA.classList.remove('text-dark');
+        menuRoomA.classList.add('text-primary', 'fw-bold');
+        
+        mainTitle.innerText = "A部屋 — 総合現在の状況";
+        mainBreadcrumbs.innerText = "ルート ＞ 現在の状況 ＞ 部屋 ＞ A部屋";
+        
+        sectionRoomStatus.classList.remove('d-none');
+        wrapperLightsOn.className = "col-12 col-xl-6"; // 通常の2カラムに
+        wrapperLightsOff.className = "col-12 col-xl-6";
+        wrapperLightsOn.classList.remove('d-none');
+        wrapperLightsOff.classList.remove('d-none');
+    }
+
+    // 2. 「ついている電気」のみ表示切り替え
+    function showLightsOnOnly(e) {
+        if(e) e.preventDefault();
+        clearActiveStyles();
+        menuLightsOn.classList.add('fw-bold');
+        
+        mainTitle.innerText = "A部屋 — ついている電気（点灯状況）";
+        mainBreadcrumbs.innerText = "ルート ＞ 現在の状況 ＞ 部屋 ＞ A部屋 ＞ ついている電気";
+        
+        sectionRoomStatus.classList.add('d-none'); // 環境情報は隠す
+        wrapperLightsOn.classList.remove('d-none');
+        wrapperLightsOn.className = "col-12"; // フルサイズ1カラム化
+        wrapperLightsOff.classList.add('d-none');
+    }
+
+    // 3. 「消えている電気」のみ表示切り替え
+    function showLightsOffOnly(e) {
+        if(e) e.preventDefault();
+        clearActiveStyles();
+        menuLightsOff.classList.add('fw-bold');
+        
+        mainTitle.innerText = "A部屋 — 消えている電気（消灯状況）";
+        mainBreadcrumbs.innerText = "ルート ＞ 現在の状況 ＞ 部屋 ＞ A部屋 ＞ 消えている電気";
+        
+        sectionRoomStatus.classList.add('d-none'); // 環境情報は隠す
+        wrapperLightsOn.classList.add('d-none');
+        wrapperLightsOff.classList.remove('d-none');
+        wrapperLightsOff.className = "col-12"; // フルサイズ1カラム化
+    }
+
+    // イベントリスナーの登録
+    menuRoomA.addEventListener('click', showAllStatus);
+    menuLightsOn.addEventListener('click', showLightsOnOnly);
+    menuLightsOff.addEventListener('click', showLightsOffOnly);
+    triggerOn.addEventListener('click', showLightsOnOnly);
+    triggerOff.addEventListener('click', showLightsOffOnly);
+});
+</script>
 </body>
 </html>
