@@ -1,1 +1,896 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>単語帳</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f7f7f9; /* ── 柔らかな極薄グレー ── */
+            margin: 0;
+            padding: 0;
+            color: #1a1a1a;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
 
+        /* ──── 左側サイドバー ──── */
+        .sidebar {
+            width: 33.3vw;
+            min-width: 280px;
+            max-width: 400px;
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e1e1e5;
+            transition: all 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 0px !important;
+            min-width: 0px !important;
+            max-width: 0px !important;
+            overflow: hidden;
+            border-right: none;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            font-size: 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #eeeef2;
+            text-align: center;
+            cursor: pointer;
+            letter-spacing: 1px;
+            color: #666666;
+        }
+        .sidebar-header:hover { background: #f7f7f9; color: #000000; }
+        
+        .sidebar-open-btn {
+            position: fixed;
+            left: 0;
+            top: 20px;
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #e1e1e5;
+            border-left: none;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            z-index: 999;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-scroll-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 1px solid #1a1a1a;
+            letter-spacing: 0.5px;
+        }
+        .section-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 5px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #555555;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .menu-item:hover { color: #000000; background-color: #f2f2f5; }
+        .menu-item.active { color: #000000; font-weight: bold; background-color: #e4e4e9; }
+        .menu-count { font-size: 12px; font-weight: normal; color: #888888; }
+        
+        .create-group-box {
+            padding: 15px;
+            border-top: 1px solid #eeeef2;
+            display: flex;
+            gap: 5px;
+            background: #ffffff;
+        }
+        .create-group-box input {
+            flex: 1;
+            background: #f2f2f5;
+            border: 1px solid #e1e1e5;
+            color: #000000;
+            padding: 10px;
+            font-size: 13px;
+            outline: none;
+            border-radius: 4px;
+        }
+        .create-group-box button {
+            background: #1a1a1a;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 4px;
+        }
+        .create-group-box button:hover { background: #000000; }
+
+        .lang-switch-box {
+            display: flex;
+            border-top: 1px solid #eeeef2;
+            background: #ffffff;
+        }
+        .lang-switch-box button {
+            flex: 1;
+            background: #ffffff;
+            border: none;
+            color: #888888;
+            padding: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .lang-switch-box button.active {
+            color: #000000;
+            background: #f2f2f5;
+        }
+
+        /* ──── 右側メインコンテンツ ──── */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+        .content-container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+        .group-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #1a1a1a;
+            padding-bottom: 10px;
+        }
+        .group-title { font-size: 22px; font-weight: bold; color: #1a1a1a; margin: 0; }
+        .delete-group-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; padding: 0; }
+        .delete-group-btn:hover { color: #cc0000; }
+
+        /* 入力フォーム枠 */
+        .form-area {
+            background-color: #ffffff;
+            border: 1px solid #e1e1e5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .input-row input { flex: 1; min-width: 120px; padding: 12px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; transition: border 0.2s; }
+        .input-row input:focus { border-color: #1a1a1a; background: #ffffff; }
+        .form-area button { padding: 12px 24px; background-color: #1a1a1a; color: #ffffff; border: none; font-weight: bold; cursor: pointer; font-size: 14px; border-radius: 6px; }
+        .form-area button:hover { background-color: #000000; }
+        
+        #recommendBtn { background-color: #f2f2f5; color: #1a1a1a; border: 1px solid #e1e1e5; font-size: 13px; padding: 10px; width: 100%; border-radius: 6px; }
+        #recommendBtn:hover { background-color: #e4e4e9; }
+
+        .ocr-area { border: 1px dashed #cccccc; background: #fafafa; padding: 15px; text-align: center; font-size: 12px; border-radius: 6px; color: #555555; }
+        .ocr-btn { display: inline-block; background-color: #555555; color: #ffffff; padding: 6px 14px; cursor: pointer; font-weight: bold; margin-top: 6px; border-radius: 4px; }
+        .ocr-btn:hover { background-color: #1a1a1a; }
+        #imageInput { display: none; }
+        #ocrStatus { margin-top: 8px; font-weight: bold; color: #1a1a1a; }
+        
+        /* 🌐 翻訳ステータス表示用 */
+        #translateStatus { font-size: 11px; color: #888888; margin-top: -5px; padding-left: 2px; height: 14px; }
+
+        /* モード切り替え */
+        .mode-switch { display: flex; background: #e4e4e9; border-radius: 6px; padding: 3px; margin-bottom: 15px; gap: 2px; }
+        .mode-switch button { flex: 1; background: transparent; border: none; color: #555555; padding: 10px 5px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 4px; transition: all 0.2s; white-space: nowrap; }
+        .mode-switch button.active { background: #ffffff; color: #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* ボタンと検索窓 */
+        .shuffle-btn {
+            width: 100%;
+            background-color: #ffffff;
+            color: #1a1a1a;
+            border: 1px solid #e1e1e5;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            letter-spacing: 0.5px;
+            transition: background 0.2s;
+        }
+        .shuffle-btn:hover { background-color: #f2f2f5; border-color: #cccccc; }
+
+        .search-box {
+            width: 100%;
+            box-sizing: border-box;
+            background: #ffffff;
+            border: 1px solid #e1e1e5;
+            color: #000000;
+            padding: 12px;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 25px;
+            border-radius: 6px;
+        }
+        .search-box:focus { border-color: #1a1a1a; }
+        .search-box::placeholder { color: #b5b5be; }
+
+        /* 単語リスト */
+        .word-list { display: flex; flex-direction: column; background: #ffffff; border-radius: 8px; border: 1px solid #e1e1e5; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .word-row { display: grid; grid-template-columns: 1fr 1fr auto; border-bottom: 1px solid #eeeef2; padding: 16px 15px; align-items: center; }
+        /* 📂 アーカイブ表示時の4カラム用スタイル */
+        .word-list.archive-mode .word-row { grid-template-columns: 1fr 1fr auto auto; gap: 8px; }
+        .word-row:last-child { border-bottom: none; }
+        .word-cell { font-size: 15px; }
+        .english { font-weight: bold; color: #1a1a1a; }
+        .japanese { border-left: 1px solid #eeeef2; padding-left: 20px; color: #333333; }
+        
+        /* 目隠しマスク */
+        .word-cell.masked { 
+            color: #ffffff !important; 
+            background-color: #333333; 
+            border-radius: 4px; 
+            text-align: center; 
+            font-size: 11px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border-left-color: transparent; 
+            padding: 6px 0; 
+            max-width: 120px; 
+        }
+        .word-cell.masked:hover { background-color: #1a1a1a; color: #ffffff !important; }
+
+        /* タイピングテスト判定エリア */
+        .test-input-container { display: flex; flex-direction: column; gap: 5px; }
+        .test-input { padding: 8px 12px; border: 1px solid #e1e1e5; background: #f7f7f9; border-radius: 4px; font-size: 14px; outline: none; width: 85%; }
+        .test-input:focus { border-color: #1a1a1a; background: #ffffff; }
+        .test-feedback { font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 4px; width: fit-content; display: none; }
+        .test-feedback.correct { display: inline-block; background-color: #e2f0d9; color: #385723; }
+        .test-feedback.wrong { display: inline-block; background-color: #fce4d6; color: #c65911; }
+
+        .check-btn { background: #ffffff; border: 1px solid #e1e1e5; color: #888888; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-left: 15px; border-radius: 6px; transition: all 0.2s; }
+        .check-btn:hover { background: #1a1a1a; color: #ffffff; border-color: #1a1a1a; }
+
+        .archive-sort-row { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; font-size: 13px; color: #555555; }
+        .archive-sort-row select { padding: 6px 12px; border: 1px solid #e1e1e5; background: #ffffff; outline: none; border-radius: 4px; color: #1a1a1a; }
+        .restore-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
+        .restore-btn:hover { color: #1a1a1a; }
+        
+        /* 消去ボタン用スタイル */
+        .delete-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
+        .delete-btn:hover { color: #cc0000; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<button class="sidebar-open-btn hidden" id="openSidebarBtn">OPEN 📁</button>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header" id="closeSidebarBtn">CLOSE ◀</div>
+    
+    <div class="sidebar-scroll-area">
+        <div>
+            <div class="section-toggle" id="toggleGroupSection">
+                <span id="labelGroups">GROUPS</span>
+                <span id="groupArrow">▼</span>
+            </div>
+            <div class="section-content" id="groupSectionContent"></div>
+        </div>
+
+        <div>
+            <div class="section-toggle" id="toggleArchiveSection">
+                <span id="labelArchive">ARCHIVE</span>
+                <span id="archiveArrow">▼</span>
+            </div>
+            <div class="section-content" id="archiveSectionContent"></div>
+        </div>
+    </div>
+
+    <div class="create-group-box">
+        <input type="text" id="newGroupName" placeholder="新しいグループ名..." maxlength="10">
+        <button id="createGroupBtn">作成</button>
+    </div>
+
+    <div class="lang-switch-box">
+        <button id="langJaBtn" class="active">日本語</button>
+        <button id="langEnBtn">English</button>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="content-container">
+        
+        <div class="group-title-row">
+            <h2 class="group-title" id="currentGroupTitle">グループを作成してください</h2>
+            <button id="deleteGroupBtn" class="delete-group-btn hidden">削除する</button>
+        </div>
+
+        <div id="mainAppBody" class="hidden">
+            <div class="form-area" id="inputFormArea">
+                <div class="input-row">
+                    <input type="text" id="enInput" placeholder="英単語">
+                    <input type="text" id="jaInput" placeholder="日本語訳">
+                    <button id="addBtn">追加</button>
+                </div>
+                <div id="translateStatus"></div>
+                
+                <div class="ocr-area" id="ocrAreaText">
+                    📷 画像から自動入力
+                    <br>
+                    <label class="ocr-btn" id="ocrBtnText">
+                        ファイルを選択
+                        <input type="file" id="imageInput" accept="image/*">
+                    </label>
+                    <div id="ocrStatus"></div>
+                </div>
+
+                <button id="recommendBtn">おすすめの単語をランダム追加</button>
+            </div>
+
+            <div class="archive-sort-row hidden" id="archiveSortArea">
+                <label for="sortSelect" id="labelSort">並び替え:</label>
+                <select id="sortSelect">
+                    <option value="dateDesc" id="optNew">新しい順</option>
+                    <option value="dateAsc" id="optOld">古い順</option>
+                    <option value="alphabet" id="optAlpha">アルファベット順</option>
+                </select>
+            </div>
+
+            <div class="mode-switch" id="modeSwitchArea">
+                <button id="maskJaBtn" class="active">日本語を隠す</button>
+                <button id="maskEnBtn">英語を隠す</button>
+                <button id="modeTestBtn">テスト（入力）</button>
+            </div>
+
+            <button class="shuffle-btn" id="shuffleBtn">🔀 単語をシャッフルする</button>
+
+            <input type="text" id="searchBox" class="search-box" placeholder="🔍 単語を検索...">
+        </div>
+        
+        <div class="word-list" id="wordList"></div>
+
+    </div>
+</div>
+
+<script>
+    const KEY_DATA = "my_wordbook_monochrome_gray_v17";
+
+    const i18n = {
+        ja: {
+            closeSidebar: "CLOSE ◀", openSidebar: "OPEN 📁",
+            groups: "GROUPS", archive: "ARCHIVE", archiveView: "📂 一覧を表示する",
+            noGroup: "グループなし", createGroupPlace: "新しいグループ名...", createGroupBtn: "作成",
+            noActiveGroup: "グループを作成してください", deleteGroupBtn: "削除する",
+            enPlace: "英単語 (スペース2つで自動翻訳)", jaPlace: "日本語訳 (スペース2つで自動翻訳)", addBtn: "追加",
+            ocrArea: '📷 画像から自動入力<br><label class="ocr-btn">ファイルを選択<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
+            recommendBtn: "おすすめの単語をランダム追加",
+            sortLabel: "並び替え:", optNew: "新しい順", optOld: "古い順", optAlpha: "アルファベット順",
+            maskJa: "日本語を隠す", maskEn: "英語を隠す", modeTest: "テスト（入力）", shuffleBtn: "🔀 単語をシャッフルする",
+            searchPlace: "🔍 単語を検索...", noWords: "該当する単語がありません。",
+            noWordsInGroup: "単語が登録されていません。", noWordsInArchive: "単語がありません。",
+            restoreBtn: "戻す", deleteBtn: "消去", origGroup: "元", confirmDelete: "「{name}」を削除しますか？",
+            confirmPermanentDelete: "この単語をアーカイブから完全に消去しますか？",
+            dupGroup: "同じ名前があります", ocrAnalyzing: "解析中...", ocrNotFound: "検出なし", ocrError: "エラー", ocrDetected: "検出:",
+            correct: "◯ 正解！", wrong: "✖ 不正解", typePlaceholder: "英単語を入力...",
+            translating: "🔄 翻訳中..."
+        },
+        en: {
+            closeSidebar: "CLOSE ◀", openSidebar: "OPEN 📁",
+            groups: "GROUPS", archive: "ARCHIVE", archiveView: "📂 View All Items",
+            noGroup: "No Groups", createGroupPlace: "New group name...", createGroupBtn: "Create",
+            noActiveGroup: "Please create a group", deleteGroupBtn: "Delete Group",
+            enPlace: "English (Double Space to Translate)", jaPlace: "Japanese (Double Space to Translate)", addBtn: "Add",
+            ocrArea: '📷 Auto Input from Image<br><label class="ocr-btn">Choose File<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
+            recommendBtn: "Add Recommended Words",
+            sortLabel: "Sort By:", optNew: "Newest", optOld: "Oldest", optAlpha: "Alphabetical",
+            maskJa: "Hide Meaning", maskEn: "Hide Word", modeTest: "Typing Test", shuffleBtn: "🔀 Shuffle Words",
+            searchPlace: "🔍 Search words...", noWords: "No matching words found.",
+            noWordsInGroup: "No words registered.", noWordsInArchive: "Archive is empty.",
+            restoreBtn: "Restore", deleteBtn: "Delete", origGroup: "From", confirmDelete: "Delete \"{name}\"?",
+            confirmPermanentDelete: "Permanently delete this word from archive?",
+            dupGroup: "Group name already exists", ocrAnalyzing: "ANALYZING...", ocrNotFound: "NOT FOUND", ocrError: "ERROR", ocrDetected: "DETECTED:",
+            correct: "◯ Correct!", wrong: "✖ Wrong", typePlaceholder: "Type english word...",
+            translating: "🔄 Translating..."
+        }
+    };
+
+    const recommendedBank = [
+        { en: "alternative", ja: "代わりの、選択肢" }, { en: "analyze", ja: "分析する" },
+        { en: "annual", ja: "年に一度の、毎年の" }, { en: "approach", ja: "近づく、取り組み" },
+        { en: "assume", ja: "仮定する、思い込む" }, { en: "benefit", ja: "利益、恩恵" }
+    ];
+
+    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || {
+        groups: {},
+        archive: [],
+        lang: "ja"
+    };
+
+    let currentTab = Object.keys(appData.groups)[0] || null; 
+    let currentMaskMode = "ja"; 
+    let isGroupSectionOpen = true;
+    let isArchiveSectionOpen = true;
+    let testInputsState = {};
+
+    const sidebar = document.getElementById('sidebar');
+    const groupSectionContent = document.getElementById('groupSectionContent');
+    const archiveSectionContent = document.getElementById('archiveSectionContent');
+    const wordListContainer = document.getElementById('wordList');
+    const currentGroupTitle = document.getElementById('currentGroupTitle');
+    const deleteGroupBtn = document.getElementById('deleteGroupBtn');
+    const mainAppBody = document.getElementById('mainAppBody');
+    const inputFormArea = document.getElementById('inputFormArea');
+    const modeSwitchArea = document.getElementById('modeSwitchArea');
+    const archiveSortArea = document.getElementById('archiveSortArea');
+    const sortSelect = document.getElementById('sortSelect');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const searchBox = document.getElementById('searchBox');
+    
+    const enInput = document.getElementById('enInput');
+    const jaInput = document.getElementById('jaInput');
+    const addBtn = document.getElementById('addBtn');
+    const recommendBtn = document.getElementById('recommendBtn');
+    const newGroupNameInput = document.getElementById('newGroupName');
+    const createGroupBtn = document.getElementById('createGroupBtn');
+    const langJaBtn = document.getElementById('langJaBtn');
+    const langEnBtn = document.getElementById('langEnBtn');
+    const translateStatus = document.getElementById('translateStatus');
+
+    function saveData() { localStorage.setItem(KEY_DATA, JSON.stringify(appData)); }
+
+    function updateUITexts() {
+        const t = i18n[appData.lang];
+        document.getElementById('closeSidebarBtn').textContent = t.closeSidebar;
+        document.getElementById('openSidebarBtn').textContent = t.openSidebar;
+        document.getElementById('labelGroups').textContent = t.groups;
+        document.getElementById('labelArchive').textContent = t.archive;
+        newGroupNameInput.placeholder = t.createGroupPlace;
+        createGroupBtn.textContent = t.createGroupBtn;
+        deleteGroupBtn.textContent = t.deleteGroupBtn;
+        enInput.placeholder = t.enPlace;
+        jaInput.placeholder = t.jaPlace;
+        addBtn.textContent = t.addBtn;
+        recommendBtn.textContent = t.recommendBtn;
+        document.getElementById('labelSort').textContent = t.sortLabel;
+        document.getElementById('optNew').textContent = t.optNew;
+        document.getElementById('optOld').textContent = t.optOld;
+        document.getElementById('optAlpha').textContent = t.optAlpha;
+        document.getElementById('maskJaBtn').textContent = t.maskJa;
+        document.getElementById('maskEnBtn').textContent = t.maskEn;
+        document.getElementById('modeTestBtn').textContent = t.modeTest;
+        shuffleBtn.textContent = t.shuffleBtn;
+        searchBox.placeholder = t.searchPlace;
+        
+        langJaBtn.classList.toggle('active', appData.lang === 'ja');
+        langEnBtn.classList.toggle('active', appData.lang === 'en');
+    }
+
+    langJaBtn.addEventListener('click', () => { appData.lang = "ja"; saveData(); updateUITexts(); renderAll(); });
+    langEnBtn.addEventListener('click', () => { appData.lang = "en"; saveData(); updateUITexts(); renderAll(); });
+
+    document.getElementById('toggleGroupSection').addEventListener('click', () => {
+        isGroupSectionOpen = !isGroupSectionOpen;
+        document.getElementById('groupArrow').textContent = isGroupSectionOpen ? "▼" : "▶";
+        groupSectionContent.classList.toggle('hidden', !isGroupSectionOpen);
+    });
+
+    document.getElementById('toggleArchiveSection').addEventListener('click', () => {
+        isArchiveSectionOpen = !isArchiveSectionOpen;
+        document.getElementById('archiveArrow').textContent = isArchiveSectionOpen ? "▼" : "▶";
+        archiveSectionContent.classList.toggle('hidden', !isArchiveSectionOpen);
+    });
+
+    document.getElementById('closeSidebarBtn').addEventListener('click', () => {
+        sidebar.classList.add('collapsed');
+        document.getElementById('openSidebarBtn').classList.remove('hidden');
+    });
+    document.getElementById('openSidebarBtn').addEventListener('click', () => {
+        sidebar.classList.remove('collapsed');
+        document.getElementById('openSidebarBtn').classList.add('hidden');
+    });
+
+    function renderSidebar() {
+        groupSectionContent.innerHTML = "";
+        archiveSectionContent.innerHTML = "";
+        const groupNames = Object.keys(appData.groups);
+        const t = i18n[appData.lang];
+
+        if (groupNames.length === 0) {
+            groupSectionContent.innerHTML = `<div style='padding:8px 12px; color:#999; font-size:13px;'>${t.noGroup}</div>`;
+        } else {
+            groupNames.forEach(groupName => {
+                const item = document.createElement('div');
+                item.className = `menu-item ${currentTab === groupName ? 'active' : ''}`;
+                item.innerHTML = `<span>📁 ${groupName}</span><span class="menu-count">(${appData.groups[groupName].length})</span>`;
+                item.addEventListener('click', () => { currentTab = groupName; searchBox.value = ""; testInputsState = {}; renderAll(); });
+                groupSectionContent.appendChild(item);
+            });
+        }
+
+        const archiveItem = document.createElement('div');
+        archiveItem.className = `menu-item ${currentTab === '__archive__' ? 'active' : ''}`;
+        archiveItem.innerHTML = `<span>${t.archiveView}</span><span class="menu-count">(${appData.archive.length})</span>`;
+        archiveItem.addEventListener('click', () => { currentTab = "__archive__"; searchBox.value = ""; renderAll(); });
+        archiveSectionContent.appendChild(archiveItem);
+    }
+
+    function renderMainList() {
+        wordListContainer.innerHTML = "";
+        const t = i18n[appData.lang];
+
+        if (!currentTab) {
+            currentGroupTitle.textContent = t.noActiveGroup;
+            mainAppBody.classList.add('hidden');
+            deleteGroupBtn.classList.add('hidden');
+            wordListContainer.style.display = "none";
+            return;
+        }
+
+        mainAppBody.classList.remove('hidden');
+        wordListContainer.style.display = "flex";
+        const query = searchBox.value.toLowerCase().trim();
+
+        if (currentTab === "__archive__") {
+            wordListContainer.classList.add('archive-mode'); // 専用のグリッドレイアウトに変更
+            currentGroupTitle.textContent = t.archive;
+            deleteGroupBtn.classList.add('hidden');
+            inputFormArea.classList.add('hidden');
+            modeSwitchArea.classList.add('hidden');
+            shuffleBtn.classList.add('hidden');
+            archiveSortArea.classList.remove('hidden');
+
+            let displayArchive = [...appData.archive];
+            if (sortSelect.value === "alphabet") {
+                displayArchive.sort((a, b) => a.en.toLowerCase().localeCompare(b.en.toLowerCase()));
+            } else if (sortSelect.value === "dateAsc") {
+                displayArchive.sort((a, b) => (a.archivedAt || 0) - (b.archivedAt || 0));
+            } else {
+                displayArchive.sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
+            }
+
+            if (query) {
+                displayArchive = displayArchive.filter(item => 
+                    item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)
+                );
+            }
+
+            if (displayArchive.length === 0) {
+                const msg = query ? t.noWords : t.noWordsInArchive;
+                wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
+                return;
+            }
+
+            displayArchive.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'word-row';
+                row.innerHTML = `
+                    <div class="word-cell english" style="color:#999; text-decoration:line-through;">${item.en}</div>
+                    <div class="word-cell japanese" style="color:#999;">${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup})</small></div>
+                    <button class="restore-btn">${t.restoreBtn}</button>
+                    <button class="delete-btn">${t.deleteBtn}</button>
+                `;
+                
+                // 元に戻す処理
+                row.querySelector('.restore-btn').addEventListener('click', () => {
+                    const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
+                    if (idx !== -1) {
+                        const restored = appData.archive.splice(idx, 1)[0];
+                        const targetGroup = appData.groups[restored.fromGroup] ? restored.fromGroup : Object.keys(appData.groups)[0];
+                        delete restored.archivedAt; delete restored.fromGroup;
+                        if (targetGroup) appData.groups[targetGroup].push(restored);
+                        saveData(); renderAll();
+                    }
+                });
+
+                // ❌ 完全に消去する処理
+                row.querySelector('.delete-btn').addEventListener('click', () => {
+                    if (confirm(t.confirmPermanentDelete)) {
+                        const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
+                        if (idx !== -1) {
+                            appData.archive.splice(idx, 1);
+                            saveData(); renderAll();
+                        }
+                    }
+                });
+
+                wordListContainer.appendChild(row);
+            });
+
+        } else {
+            wordListContainer.classList.remove('archive-mode');
+            currentGroupTitle.textContent = currentTab;
+            deleteGroupBtn.classList.remove('hidden');
+            inputFormArea.classList.remove('hidden');
+            modeSwitchArea.classList.remove('hidden');
+            shuffleBtn.classList.remove('hidden');
+            archiveSortArea.classList.add('hidden');
+
+            let list = appData.groups[currentTab] || [];
+            
+            if (query) {
+                list = list.filter(item => 
+                    item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)
+                );
+            }
+
+            if (list.length === 0) {
+                const msg = query ? t.noWords : t.noWordsInGroup;
+                wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
+                return;
+            }
+
+            list.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'word-row';
+
+                const enDiv = document.createElement('div');
+                const jaDiv = document.createElement('div');
+
+                enDiv.className = `word-cell english`;
+                jaDiv.className = `word-cell japanese`;
+
+                if (currentMaskMode === 'en') {
+                    enDiv.className += ' masked';
+                    enDiv.textContent = "？？？";
+                    jaDiv.textContent = item.ja;
+                } else if (currentMaskMode === 'ja') {
+                    jaDiv.className += ' masked';
+                    enDiv.textContent = item.en;
+                    jaDiv.textContent = "？？？";
+                } else if (currentMaskMode === 'test') {
+                    jaDiv.textContent = item.ja;
+
+                    const container = document.createElement('div');
+                    container.className = 'test-input-container';
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'test-input';
+                    input.placeholder = t.typePlaceholder;
+                    const itemKey = `${item.en}_${item.ja}`;
+                    input.value = testInputsState[itemKey] || "";
+
+                    const feedback = document.createElement('div');
+                    feedback.className = 'test-feedback';
+
+                    const checkAnswer = () => {
+                        const userVal = input.value.trim().toLowerCase();
+                        const correctVal = item.en.trim().toLowerCase();
+                        testInputsState[itemKey] = input.value;
+
+                        if (userVal === "") {
+                            feedback.className = 'test-feedback';
+                            feedback.textContent = "";
+                        } else if (userVal === correctVal) {
+                            feedback.className = 'test-feedback correct';
+                            feedback.textContent = t.correct;
+                        } else {
+                            feedback.className = 'test-feedback wrong';
+                            feedback.textContent = t.wrong;
+                        }
+                    };
+
+                    input.addEventListener('input', checkAnswer);
+                    input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAnswer(); });
+                    
+                    if (input.value) { checkAnswer(); }
+
+                    container.appendChild(input);
+                    container.appendChild(feedback);
+                    enDiv.appendChild(container);
+                }
+
+                enDiv.addEventListener('click', () => {
+                    if (currentMaskMode === "en") enDiv.textContent = enDiv.textContent === "？？？" ? item.en : "？？？";
+                });
+                jaDiv.addEventListener('click', () => {
+                    if (currentMaskMode === "ja") jaDiv.textContent = jaDiv.textContent === "？？？" ? item.ja : "？？？";
+                });
+
+                const chkBtn = document.createElement('button');
+                chkBtn.className = 'check-btn';
+                chkBtn.textContent = "✓";
+                chkBtn.addEventListener('click', () => {
+                    const originalList = appData.groups[currentTab];
+                    const origIdx = originalList.findIndex(w => w.en === item.en && w.ja === item.ja);
+                    if (origIdx !== -1) {
+                        const moved = originalList.splice(origIdx, 1)[0];
+                        moved.archivedAt = Date.now(); moved.fromGroup = currentTab; 
+                        appData.archive.push(moved);
+                        saveData(); renderAll();
+                    }
+                });
+
+                row.appendChild(enDiv); row.appendChild(jaDiv); row.appendChild(chkBtn);
+                wordListContainer.appendChild(row);
+            });
+        }
+    }
+
+    function renderAll() { renderSidebar(); renderMainList(); }
+
+    searchBox.addEventListener('input', renderMainList);
+
+    shuffleBtn.addEventListener('click', () => {
+        if (currentTab && currentTab !== "__archive__") {
+            const list = appData.groups[currentTab];
+            if (!list || list.length <= 1) return;
+            
+            for (let i = list.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [list[i], list[j]] = [list[j], list[i]];
+            }
+            saveData();
+            renderMainList();
+        }
+    });
+
+    createGroupBtn.addEventListener('click', () => {
+        const name = newGroupNameInput.value.trim();
+        if (!name) return;
+        if (appData.groups[name]) { alert(i18n[appData.lang].dupGroup); return; }
+        appData.groups[name] = []; currentTab = name; newGroupNameInput.value = ""; searchBox.value = "";
+        saveData(); renderAll();
+    });
+
+    deleteGroupBtn.addEventListener('click', () => {
+        const confirmMsg = i18n[appData.lang].confirmDelete.replace("{name}", currentTab);
+        if (confirm(confirmMsg)) {
+            delete appData.groups[currentTab];
+            currentTab = Object.keys(appData.groups)[0] || null;
+            searchBox.value = "";
+            saveData(); renderAll();
+        }
+    });
+
+    addBtn.addEventListener('click', () => {
+        const en = enInput.value.trim(); const ja = jaInput.value.trim();
+        if (!en || !ja) return;
+        appData.groups[currentTab].push({ en, ja });
+        saveData(); renderAll();
+        enInput.value = ""; jaInput.value = ""; enInput.focus(); 
+        document.getElementById('ocrStatus').textContent = "";
+        translateStatus.textContent = "";
+    });
+
+    recommendBtn.addEventListener('click', () => {
+        const allExisting = [...appData.archive.map(w => w.en.toLowerCase()), ...Object.values(appData.groups).flatMap(g => g.map(w => w.en.toLowerCase()))];
+        const available = recommendedBank.filter(w => !allExisting.includes(w.en.toLowerCase()));
+        if (available.length === 0) return;
+        const randomWord = available[Math.floor(Math.random() * available.length)];
+        appData.groups[currentTab].push({ en: randomWord.en, ja: randomWord.ja });
+        saveData(); renderAll();
+    });
+
+    document.getElementById('inputFormArea').addEventListener('change', (e) => {
+        if (e.target && e.target.id === 'imageInput') {
+            const file = e.target.files[0]; if (!file) return;
+            const statusDiv = document.getElementById('ocrStatus');
+            const t = i18n[appData.lang];
+            statusDiv.textContent = t.ocrAnalyzing;
+            Tesseract.recognize(file, 'eng')
+                .then(({ data: { text } }) => {
+                    const words = text.replace(/[^a-zA-Z\s]/g, "").split(/\s+/).filter(w => w.length > 1);
+                    if (words.length > 0) {
+                        enInput.value = words[0].toLowerCase();
+                        statusDiv.textContent = `${t.ocrDetected} "${words[0]}"`; 
+                        executeTranslation('en', words[0].toLowerCase());
+                    } else { statusDiv.textContent = t.ocrNotFound; }
+                }).catch(() => statusDiv.textContent = t.ocrError);
+        }
+    });
+
+    async function executeTranslation(sourceLang, text) {
+        if (!text) return;
+        translateStatus.textContent = i18n[appData.lang].translating;
+        try {
+            if (sourceLang === 'en') {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(text)}`);
+                const data = await res.json();
+                if (data && data[0] && data[0][0]) {
+                    jaInput.value = data[0][0][0];
+                }
+            } else if (sourceLang === 'ja') {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=en&dt=t&q=${encodeURIComponent(text)}`);
+                const data = await res.json();
+                if (data && data[0] && data[0][0]) {
+                    enInput.value = data[0][0][0].toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+                }
+            }
+            translateStatus.textContent = "";
+        } catch (err) {
+            console.error("Translation Error: ", err);
+            translateStatus.textContent = "";
+        }
+    }
+
+    // スペース2回入力をフックするテキスト監視用共通ロジック
+    function monitorInputSpaces(inputElement, sourceLang) {
+        function checkTextAndTrigger() {
+            let val = inputElement.value;
+            // 末尾に半角スペースが2回連続（"  "）されたかを判定
+            if (/([ ]{2})$/.test(val)) {
+                inputElement.blur(); // IME確定用ハック
+                setTimeout(() => {
+                    inputElement.focus();
+                    let cleanText = inputElement.value.replace(/[ ]+$/, "").trim();
+                    inputElement.value = cleanText;
+
+                    if (cleanText) {
+                        if (sourceLang === 'en' && jaInput.value.trim() === "") {
+                            executeTranslation('en', cleanText);
+                        } else if (sourceLang === 'ja' && enInput.value.trim() === "") {
+                            executeTranslation('ja', cleanText);
+                        }
+                    }
+                }, 20);
+            }
+        }
+        inputElement.addEventListener('input', checkTextAndTrigger);
+        inputElement.addEventListener('compositionend', checkTextAndTrigger);
+    }
+
+    // 英語と日本語の入力欄の両方にスペース監視を設定
+    monitorInputSpaces(enInput, 'en');
+    monitorInputSpaces(jaInput, 'ja');
+
+    document.getElementById('maskJaBtn').addEventListener('click', () => {
+        currentMaskMode = "ja"; setActiveModeBtn('maskJaBtn'); renderMainList();
+    });
+    document.getElementById('maskEnBtn').addEventListener('click', () => {
+        currentMaskMode = "en"; setActiveModeBtn('maskEnBtn'); renderMainList();
+    });
+    document.getElementById('modeTestBtn').addEventListener('click', () => {
+        currentMaskMode = "test"; setActiveModeBtn('modeTestBtn'); renderMainList();
+    });
+
+    function setActiveModeBtn(activeId) {
+        ['maskJaBtn', 'maskEnBtn', 'modeTestBtn'].forEach(id => {
+            document.getElementById(id).classList.toggle('active', id === activeId);
+        });
+    }
+
+    sortSelect.addEventListener('change', renderMainList);
+    jaInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
+
+    updateUITexts();
+    renderAll();
+</script>
+
+</body>
+</html>
