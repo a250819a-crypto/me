@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -8,7 +9,7 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f7f7f9; /* ── 柔らかな極薄グレー ── */
+            background-color: #f7f7f9;
             margin: 0;
             padding: 0;
             color: #1a1a1a;
@@ -107,12 +108,17 @@
         .menu-item.active { color: #000000; font-weight: bold; background-color: #e4e4e9; }
         .menu-count { font-size: 12px; font-weight: normal; color: #888888; }
         
-        .create-group-box {
-            padding: 15px;
+        .sidebar-footer {
             border-top: 1px solid #eeeef2;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .create-group-box {
+            padding: 15px 15px 10px 15px;
             display: flex;
             gap: 5px;
-            background: #ffffff;
         }
         .create-group-box input {
             flex: 1;
@@ -136,144 +142,94 @@
         }
         .create-group-box button:hover { background: #000000; }
 
-        .lang-switch-box {
-            display: flex;
-            border-top: 1px solid #eeeef2;
-            background: #ffffff;
+        .sidebar-action-box { padding: 0 15px 10px 15px; }
+        .sidebar-action-box:last-of-type { padding-bottom: 15px; }
+        .sidebar-btn {
+            width: 100%; background-color: #ffffff; color: #1a1a1a;
+            border: 1px solid #e1e1e5; padding: 10px; font-size: 13px; font-weight: bold;
+            cursor: pointer; border-radius: 6px; letter-spacing: 0.5px; transition: all 0.2s;
         }
-        .lang-switch-box button {
-            flex: 1;
-            background: #ffffff;
-            border: none;
-            color: #888888;
-            padding: 10px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .lang-switch-box button.active {
-            color: #000000;
-            background: #f2f2f5;
-        }
+        .sidebar-btn:hover:not(:disabled) { background-color: #f2f2f5; border-color: #cccccc; }
+        .sidebar-btn:disabled { background-color: #fafafa; color: #cccccc; cursor: not-allowed; border-color: #eeeef2; }
+        .recommend-btn-sidebar { background-color: #f2f2f5; }
+        .recommend-btn-sidebar:hover:not(:disabled) { background-color: #e4e4e9; }
+
+        .lang-switch-box { display: flex; border-top: 1px solid #eeeef2; }
+        .lang-switch-box button { flex: 1; background: #ffffff; border: none; color: #888888; padding: 10px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .lang-switch-box button.active { color: #000000; background: #f2f2f5; }
 
         /* ──── 右側メインコンテンツ ──── */
         .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            padding: 40px 20px;
+            flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 40px 20px;
         }
         .content-container {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
+            max-width: 600px; width: 100%; margin: 0 auto;
         }
         .group-title-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 2px solid #1a1a1a;
-            padding-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px; border-bottom: 2px solid #1a1a1a; padding-bottom: 10px;
         }
         .group-title { font-size: 22px; font-weight: bold; color: #1a1a1a; margin: 0; }
         .delete-group-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; padding: 0; }
         .delete-group-btn:hover { color: #cc0000; }
 
-        /* 入力フォーム枠 */
         .form-area {
-            background-color: #ffffff;
-            border: 1px solid #e1e1e5;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+            background-color: #ffffff; border: 1px solid #e1e1e5; border-radius: 8px;
+            padding: 20px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
         .input-row input { flex: 1; min-width: 120px; padding: 12px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; transition: border 0.2s; }
         .input-row input:focus { border-color: #1a1a1a; background: #ffffff; }
-        .form-area button { padding: 12px 24px; background-color: #1a1a1a; color: #ffffff; border: none; font-weight: bold; cursor: pointer; font-size: 14px; border-radius: 6px; }
-        .form-area button:hover { background-color: #000000; }
-        
-        #recommendBtn { background-color: #f2f2f5; color: #1a1a1a; border: 1px solid #e1e1e5; font-size: 13px; padding: 10px; width: 100%; border-radius: 6px; }
-        #recommendBtn:hover { background-color: #e4e4e9; }
+        .form-area button.add-submit-btn { padding: 12px 24px; background-color: #1a1a1a; color: #ffffff; border: none; font-weight: bold; cursor: pointer; font-size: 14px; border-radius: 6px; }
+        .form-area button.add-submit-btn:hover { background-color: #000000; }
 
         .ocr-area { border: 1px dashed #cccccc; background: #fafafa; padding: 15px; text-align: center; font-size: 12px; border-radius: 6px; color: #555555; }
         .ocr-btn { display: inline-block; background-color: #555555; color: #ffffff; padding: 6px 14px; cursor: pointer; font-weight: bold; margin-top: 6px; border-radius: 4px; }
         .ocr-btn:hover { background-color: #1a1a1a; }
         #imageInput { display: none; }
         #ocrStatus { margin-top: 8px; font-weight: bold; color: #1a1a1a; }
-        
-        /* 🌐 翻訳ステータス表示用 */
         #translateStatus { font-size: 11px; color: #888888; margin-top: -5px; padding-left: 2px; height: 14px; }
 
-        /* モード切り替え */
+        /* ✅ アーカイブ内の一括操作メニュー */
+        .archive-bulk-actions {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px; padding: 10px 15px; background: #ffffff;
+            border: 1px solid #e1e1e5; border-radius: 6px; font-size: 13px;
+        }
+        .archive-bulk-actions label { cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;}
+        .bulk-btn {
+            padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 4px;
+            cursor: pointer; border: 1px solid #e1e1e5; background: #ffffff; color: #555; margin-left: 10px;
+        }
+        .bulk-btn:hover { background: #f2f2f5; color: #1a1a1a; }
+        .restore-bulk:hover { border-color: #1a1a1a; }
+        .delete-bulk:hover { color: #cc0000; border-color: #cc0000; }
+
         .mode-switch { display: flex; background: #e4e4e9; border-radius: 6px; padding: 3px; margin-bottom: 15px; gap: 2px; }
         .mode-switch button { flex: 1; background: transparent; border: none; color: #555555; padding: 10px 5px; font-size: 13px; font-weight: bold; cursor: pointer; border-radius: 4px; transition: all 0.2s; white-space: nowrap; }
         .mode-switch button.active { background: #ffffff; color: #000000; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        /* ボタンと検索窓 */
-        .shuffle-btn {
-            width: 100%;
-            background-color: #ffffff;
-            color: #1a1a1a;
-            border: 1px solid #e1e1e5;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            letter-spacing: 0.5px;
-            transition: background 0.2s;
-        }
-        .shuffle-btn:hover { background-color: #f2f2f5; border-color: #cccccc; }
-
-        .search-box {
-            width: 100%;
-            box-sizing: border-box;
-            background: #ffffff;
-            border: 1px solid #e1e1e5;
-            color: #000000;
-            padding: 12px;
-            font-size: 14px;
-            outline: none;
-            margin-bottom: 25px;
-            border-radius: 6px;
-        }
+        .search-box { width: 100%; box-sizing: border-box; background: #ffffff; border: 1px solid #e1e1e5; color: #000000; padding: 12px; font-size: 14px; outline: none; margin-bottom: 25px; border-radius: 6px; }
         .search-box:focus { border-color: #1a1a1a; }
         .search-box::placeholder { color: #b5b5be; }
 
         /* 単語リスト */
         .word-list { display: flex; flex-direction: column; background: #ffffff; border-radius: 8px; border: 1px solid #e1e1e5; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .word-row { display: grid; grid-template-columns: 1fr 1fr auto; border-bottom: 1px solid #eeeef2; padding: 16px 15px; align-items: center; }
-        /* 📂 アーカイブ表示時の4カラム用スタイル */
-        .word-list.archive-mode .word-row { grid-template-columns: 1fr 1fr auto auto; gap: 8px; }
+        /* 📂 アーカイブ表示時：チェックボックス追加によりカラム追加 */
+        .word-list.archive-mode .word-row { grid-template-columns: auto 1fr 1fr auto auto; gap: 10px; }
         .word-row:last-child { border-bottom: none; }
         .word-cell { font-size: 15px; }
         .english { font-weight: bold; color: #1a1a1a; }
         .japanese { border-left: 1px solid #eeeef2; padding-left: 20px; color: #333333; }
         
-        /* 目隠しマスク */
-        .word-cell.masked { 
-            color: #ffffff !important; 
-            background-color: #333333; 
-            border-radius: 4px; 
-            text-align: center; 
-            font-size: 11px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-left-color: transparent; 
-            padding: 6px 0; 
-            max-width: 120px; 
-        }
+        /* アーカイブ用チェックボックス */
+        .archive-checkbox { cursor: pointer; width: 16px; height: 16px; accent-color: #1a1a1a; margin-right: 5px; }
+
+        .word-cell.masked { color: #ffffff !important; background-color: #333333; border-radius: 4px; text-align: center; font-size: 11px; font-weight: bold; cursor: pointer; border-left-color: transparent; padding: 6px 0; max-width: 120px; }
         .word-cell.masked:hover { background-color: #1a1a1a; color: #ffffff !important; }
 
-        /* タイピングテスト判定エリア */
         .test-input-container { display: flex; flex-direction: column; gap: 5px; }
         .test-input { padding: 8px 12px; border: 1px solid #e1e1e5; background: #f7f7f9; border-radius: 4px; font-size: 14px; outline: none; width: 85%; }
         .test-input:focus { border-color: #1a1a1a; background: #ffffff; }
@@ -288,11 +244,23 @@
         .archive-sort-row select { padding: 6px 12px; border: 1px solid #e1e1e5; background: #ffffff; outline: none; border-radius: 4px; color: #1a1a1a; }
         .restore-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
         .restore-btn:hover { color: #1a1a1a; }
-        
-        /* 消去ボタン用スタイル */
         .delete-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
         .delete-btn:hover { color: #cc0000; }
         
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: #ffffff; border-radius: 8px; width: 90%; max-width: 450px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; }
+        .modal-title { font-size: 16px; font-weight: bold; margin: 0; color: #1a1a1a; }
+        .modal-inputs { display: flex; flex-direction: column; gap: 10px; }
+        .modal-inputs label { font-size: 12px; font-weight: bold; color: #666666; }
+        .modal-inputs input { padding: 12px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; }
+        .modal-inputs input:focus { border-color: #1a1a1a; background: #ffffff; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+        .modal-actions button { padding: 10px 20px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; border: none; }
+        .modal-actions .cancel-btn { background: #f2f2f5; color: #555555; border: 1px solid #e1e1e5; }
+        .modal-actions .cancel-btn:hover { background: #e4e4e9; }
+        .modal-actions .confirm-btn { background: #1a1a1a; color: #ffffff; }
+        .modal-actions .confirm-btn:hover { background: #000000; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -311,7 +279,6 @@
             </div>
             <div class="section-content" id="groupSectionContent"></div>
         </div>
-
         <div>
             <div class="section-toggle" id="toggleArchiveSection">
                 <span id="labelArchive">ARCHIVE</span>
@@ -321,14 +288,21 @@
         </div>
     </div>
 
-    <div class="create-group-box">
-        <input type="text" id="newGroupName" placeholder="新しいグループ名..." maxlength="10">
-        <button id="createGroupBtn">作成</button>
-    </div>
-
-    <div class="lang-switch-box">
-        <button id="langJaBtn" class="active">日本語</button>
-        <button id="langEnBtn">English</button>
+    <div class="sidebar-footer">
+        <div class="create-group-box">
+            <input type="text" id="newGroupName" placeholder="新しいグループ名..." maxlength="10">
+            <button id="createGroupBtn">作成</button>
+        </div>
+        <div class="sidebar-action-box" id="recommendBoxArea">
+            <button class="sidebar-btn recommend-btn-sidebar" id="recommendBtn">🎲 ランダムな単語を追加</button>
+        </div>
+        <div class="sidebar-action-box" id="shuffleBoxArea">
+            <button class="sidebar-btn" id="shuffleBtn">🔀 単語をシャッフルする</button>
+        </div>
+        <div class="lang-switch-box">
+            <button id="langJaBtn" class="active">日本語</button>
+            <button id="langEnBtn">English</button>
+        </div>
     </div>
 </div>
 
@@ -345,7 +319,7 @@
                 <div class="input-row">
                     <input type="text" id="enInput" placeholder="英単語">
                     <input type="text" id="jaInput" placeholder="日本語訳">
-                    <button id="addBtn">追加</button>
+                    <button id="addBtn" class="add-submit-btn">追加</button>
                 </div>
                 <div id="translateStatus"></div>
                 
@@ -358,8 +332,6 @@
                     </label>
                     <div id="ocrStatus"></div>
                 </div>
-
-                <button id="recommendBtn">おすすめの単語をランダム追加</button>
             </div>
 
             <div class="archive-sort-row hidden" id="archiveSortArea">
@@ -371,13 +343,19 @@
                 </select>
             </div>
 
+            <div class="archive-bulk-actions hidden" id="archiveBulkArea">
+                <label><input type="checkbox" id="selectAllArchive"> <span id="labelSelectAll">すべて選択</span></label>
+                <div>
+                    <button id="restoreSelectedBtn" class="bulk-btn restore-bulk">選択項目を戻す</button>
+                    <button id="deleteSelectedBtn" class="bulk-btn delete-bulk">選択項目を消去</button>
+                </div>
+            </div>
+
             <div class="mode-switch" id="modeSwitchArea">
                 <button id="maskJaBtn" class="active">日本語を隠す</button>
                 <button id="maskEnBtn">英語を隠す</button>
                 <button id="modeTestBtn">テスト（入力）</button>
             </div>
-
-            <button class="shuffle-btn" id="shuffleBtn">🔀 単語をシャッフルする</button>
 
             <input type="text" id="searchBox" class="search-box" placeholder="🔍 単語を検索...">
         </div>
@@ -387,8 +365,24 @@
     </div>
 </div>
 
+<div class="modal-overlay hidden" id="ocrModal">
+    <div class="modal-content">
+        <div class="modal-title" id="modalTitleText">読み取り結果の確認</div>
+        <div class="modal-inputs">
+            <label for="modalEnInput" id="modalLabelEn">英単語</label>
+            <input type="text" id="modalEnInput">
+            <label for="modalJaInput" id="modalLabelJa">日本語訳</label>
+            <input type="text" id="modalJaInput">
+        </div>
+        <div class="modal-actions">
+            <button class="cancel-btn" id="modalCancelBtn">キャンセル</button>
+            <button class="confirm-btn" id="modalConfirmBtn">追加する</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    const KEY_DATA = "my_wordbook_monochrome_gray_v17";
+    const KEY_DATA = "my_wordbook_monochrome_gray_v18"; // バージョン更新
 
     const i18n = {
         ja: {
@@ -398,16 +392,19 @@
             noActiveGroup: "グループを作成してください", deleteGroupBtn: "削除する",
             enPlace: "英単語 (スペース2つで自動翻訳)", jaPlace: "日本語訳 (スペース2つで自動翻訳)", addBtn: "追加",
             ocrArea: '📷 画像から自動入力<br><label class="ocr-btn">ファイルを選択<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
-            recommendBtn: "おすすめの単語をランダム追加",
+            recommendBtn: "🎲 ランダムな単語を追加",
             sortLabel: "並び替え:", optNew: "新しい順", optOld: "古い順", optAlpha: "アルファベット順",
+            selectAll: "すべて選択", restoreSelected: "選択項目を戻す", deleteSelected: "選択項目を消去",
             maskJa: "日本語を隠す", maskEn: "英語を隠す", modeTest: "テスト（入力）", shuffleBtn: "🔀 単語をシャッフルする",
             searchPlace: "🔍 単語を検索...", noWords: "該当する単語がありません。",
             noWordsInGroup: "単語が登録されていません。", noWordsInArchive: "単語がありません。",
             restoreBtn: "戻す", deleteBtn: "消去", origGroup: "元", confirmDelete: "「{name}」を削除しますか？",
             confirmPermanentDelete: "この単語をアーカイブから完全に消去しますか？",
-            dupGroup: "同じ名前があります", ocrAnalyzing: "解析中...", ocrNotFound: "検出なし", ocrError: "エラー", ocrDetected: "検出:",
+            confirmDeleteSelected: "選択した{count}件の単語をアーカイブから完全に消去しますか？",
+            dupGroup: "同じ名前があります", ocrAnalyzing: "解析中...", ocrNotFound: "検出なし", ocrError: "エラー", ocrDetected: "検出完了",
             correct: "◯ 正解！", wrong: "✖ 不正解", typePlaceholder: "英単語を入力...",
-            translating: "🔄 翻訳中..."
+            translating: "🔄 翻訳中...",
+            modalTitle: "読み取り結果の確認", modalCancel: "キャンセル", modalConfirm: "追加する", modalLabelEn: "英単語", modalLabelJa: "日本語訳"
         },
         en: {
             closeSidebar: "CLOSE ◀", openSidebar: "OPEN 📁",
@@ -416,31 +413,31 @@
             noActiveGroup: "Please create a group", deleteGroupBtn: "Delete Group",
             enPlace: "English (Double Space to Translate)", jaPlace: "Japanese (Double Space to Translate)", addBtn: "Add",
             ocrArea: '📷 Auto Input from Image<br><label class="ocr-btn">Choose File<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
-            recommendBtn: "Add Recommended Words",
+            recommendBtn: "🎲 Add Recommended Word",
             sortLabel: "Sort By:", optNew: "Newest", optOld: "Oldest", optAlpha: "Alphabetical",
+            selectAll: "Select All", restoreSelected: "Restore Selected", deleteSelected: "Delete Selected",
             maskJa: "Hide Meaning", maskEn: "Hide Word", modeTest: "Typing Test", shuffleBtn: "🔀 Shuffle Words",
             searchPlace: "🔍 Search words...", noWords: "No matching words found.",
             noWordsInGroup: "No words registered.", noWordsInArchive: "Archive is empty.",
             restoreBtn: "Restore", deleteBtn: "Delete", origGroup: "From", confirmDelete: "Delete \"{name}\"?",
             confirmPermanentDelete: "Permanently delete this word from archive?",
-            dupGroup: "Group name already exists", ocrAnalyzing: "ANALYZING...", ocrNotFound: "NOT FOUND", ocrError: "ERROR", ocrDetected: "DETECTED:",
+            confirmDeleteSelected: "Permanently delete {count} selected words?",
+            dupGroup: "Group name already exists", ocrAnalyzing: "ANALYZING...", ocrNotFound: "NOT FOUND", ocrError: "ERROR", ocrDetected: "DETECTED",
             correct: "◯ Correct!", wrong: "✖ Wrong", typePlaceholder: "Type english word...",
-            translating: "🔄 Translating..."
+            translating: "🔄 Translating...",
+            modalTitle: "Confirm Scanned Word", modalCancel: "Cancel", modalConfirm: "Add to List", modalLabelEn: "English", modalLabelJa: "Japanese"
         }
     };
 
     const recommendedBank = [
         { en: "alternative", ja: "代わりの、選択肢" }, { en: "analyze", ja: "分析する" },
         { en: "annual", ja: "年に一度の、毎年の" }, { en: "approach", ja: "近づく、取り組み" },
-        { en: "assume", ja: "仮定する、思い込む" }, { en: "benefit", ja: "利益、恩恵" }
+        { en: "assume", ja: "仮定する、思い込む" }, { en: "benefit", ja: "利益、恩恵" },
+        { en: "consequence", ja: "結果、影響" }, { en: "contribute", ja: "貢献する、寄付する" },
+        { en: "evaluate", ja: "評価する、見極める" }, { en: "significant", ja: "重要な、かなりの" }
     ];
 
-    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || {
-        groups: {},
-        archive: [],
-        lang: "ja"
-    };
-
+    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || { groups: {}, archive: [], lang: "ja" };
     let currentTab = Object.keys(appData.groups)[0] || null; 
     let currentMaskMode = "ja"; 
     let isGroupSectionOpen = true;
@@ -457,19 +454,27 @@
     const inputFormArea = document.getElementById('inputFormArea');
     const modeSwitchArea = document.getElementById('modeSwitchArea');
     const archiveSortArea = document.getElementById('archiveSortArea');
+    const archiveBulkArea = document.getElementById('archiveBulkArea');
     const sortSelect = document.getElementById('sortSelect');
+    const selectAllArchive = document.getElementById('selectAllArchive');
     const shuffleBtn = document.getElementById('shuffleBtn');
+    const recommendBtn = document.getElementById('recommendBtn');
     const searchBox = document.getElementById('searchBox');
     
     const enInput = document.getElementById('enInput');
     const jaInput = document.getElementById('jaInput');
     const addBtn = document.getElementById('addBtn');
-    const recommendBtn = document.getElementById('recommendBtn');
     const newGroupNameInput = document.getElementById('newGroupName');
     const createGroupBtn = document.getElementById('createGroupBtn');
     const langJaBtn = document.getElementById('langJaBtn');
     const langEnBtn = document.getElementById('langEnBtn');
     const translateStatus = document.getElementById('translateStatus');
+
+    const ocrModal = document.getElementById('ocrModal');
+    const modalEnInput = document.getElementById('modalEnInput');
+    const modalJaInput = document.getElementById('modalJaInput');
+    const modalCancelBtn = document.getElementById('modalCancelBtn');
+    const modalConfirmBtn = document.getElementById('modalConfirmBtn');
 
     function saveData() { localStorage.setItem(KEY_DATA, JSON.stringify(appData)); }
 
@@ -482,20 +487,31 @@
         newGroupNameInput.placeholder = t.createGroupPlace;
         createGroupBtn.textContent = t.createGroupBtn;
         deleteGroupBtn.textContent = t.deleteGroupBtn;
-        enInput.placeholder = t.enPlace;
-        jaInput.placeholder = t.jaPlace;
+        enInput.placeholder = t.enPlace; jaInput.placeholder = t.jaPlace;
         addBtn.textContent = t.addBtn;
         recommendBtn.textContent = t.recommendBtn;
         document.getElementById('labelSort').textContent = t.sortLabel;
         document.getElementById('optNew').textContent = t.optNew;
         document.getElementById('optOld').textContent = t.optOld;
         document.getElementById('optAlpha').textContent = t.optAlpha;
+        
+        // 追加: 一括操作用テキスト
+        document.getElementById('labelSelectAll').textContent = t.selectAll;
+        document.getElementById('restoreSelectedBtn').textContent = t.restoreSelected;
+        document.getElementById('deleteSelectedBtn').textContent = t.deleteSelected;
+
         document.getElementById('maskJaBtn').textContent = t.maskJa;
         document.getElementById('maskEnBtn').textContent = t.maskEn;
         document.getElementById('modeTestBtn').textContent = t.modeTest;
         shuffleBtn.textContent = t.shuffleBtn;
         searchBox.placeholder = t.searchPlace;
         
+        document.getElementById('modalTitleText').textContent = t.modalTitle;
+        document.getElementById('modalLabelEn').textContent = t.modalLabelEn;
+        document.getElementById('modalLabelJa').textContent = t.modalLabelJa;
+        modalCancelBtn.textContent = t.modalCancel;
+        modalConfirmBtn.textContent = t.modalConfirm;
+
         langJaBtn.classList.toggle('active', appData.lang === 'ja');
         langEnBtn.classList.toggle('active', appData.lang === 'en');
     }
@@ -515,18 +531,11 @@
         archiveSectionContent.classList.toggle('hidden', !isArchiveSectionOpen);
     });
 
-    document.getElementById('closeSidebarBtn').addEventListener('click', () => {
-        sidebar.classList.add('collapsed');
-        document.getElementById('openSidebarBtn').classList.remove('hidden');
-    });
-    document.getElementById('openSidebarBtn').addEventListener('click', () => {
-        sidebar.classList.remove('collapsed');
-        document.getElementById('openSidebarBtn').classList.add('hidden');
-    });
+    document.getElementById('closeSidebarBtn').addEventListener('click', () => { sidebar.classList.add('collapsed'); document.getElementById('openSidebarBtn').classList.remove('hidden'); });
+    document.getElementById('openSidebarBtn').addEventListener('click', () => { sidebar.classList.remove('collapsed'); document.getElementById('openSidebarBtn').classList.add('hidden'); });
 
     function renderSidebar() {
-        groupSectionContent.innerHTML = "";
-        archiveSectionContent.innerHTML = "";
+        groupSectionContent.innerHTML = ""; archiveSectionContent.innerHTML = "";
         const groupNames = Object.keys(appData.groups);
         const t = i18n[appData.lang];
 
@@ -547,6 +556,9 @@
         archiveItem.innerHTML = `<span>${t.archiveView}</span><span class="menu-count">(${appData.archive.length})</span>`;
         archiveItem.addEventListener('click', () => { currentTab = "__archive__"; searchBox.value = ""; renderAll(); });
         archiveSectionContent.appendChild(archiveItem);
+
+        if (!currentTab || currentTab === "__archive__") { shuffleBtn.disabled = true; } 
+        else { shuffleBtn.disabled = (appData.groups[currentTab] && appData.groups[currentTab].length <= 1); }
     }
 
     function renderMainList() {
@@ -554,10 +566,7 @@
         const t = i18n[appData.lang];
 
         if (!currentTab) {
-            currentGroupTitle.textContent = t.noActiveGroup;
-            mainAppBody.classList.add('hidden');
-            deleteGroupBtn.classList.add('hidden');
-            wordListContainer.style.display = "none";
+            currentGroupTitle.textContent = t.noActiveGroup; mainAppBody.classList.add('hidden'); deleteGroupBtn.classList.add('hidden'); wordListContainer.style.display = "none";
             return;
         }
 
@@ -566,47 +575,63 @@
         const query = searchBox.value.toLowerCase().trim();
 
         if (currentTab === "__archive__") {
-            wordListContainer.classList.add('archive-mode'); // 専用のグリッドレイアウトに変更
+            wordListContainer.classList.add('archive-mode'); 
             currentGroupTitle.textContent = t.archive;
             deleteGroupBtn.classList.add('hidden');
             inputFormArea.classList.add('hidden');
             modeSwitchArea.classList.add('hidden');
-            shuffleBtn.classList.add('hidden');
             archiveSortArea.classList.remove('hidden');
+            archiveBulkArea.classList.remove('hidden'); // 一括操作エリア表示
+            selectAllArchive.checked = false; // 全選択チェックをリセット
 
             let displayArchive = [...appData.archive];
-            if (sortSelect.value === "alphabet") {
-                displayArchive.sort((a, b) => a.en.toLowerCase().localeCompare(b.en.toLowerCase()));
-            } else if (sortSelect.value === "dateAsc") {
-                displayArchive.sort((a, b) => (a.archivedAt || 0) - (b.archivedAt || 0));
-            } else {
-                displayArchive.sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0));
-            }
+            if (sortSelect.value === "alphabet") { displayArchive.sort((a, b) => a.en.toLowerCase().localeCompare(b.en.toLowerCase())); } 
+            else if (sortSelect.value === "dateAsc") { displayArchive.sort((a, b) => (a.archivedAt || 0) - (b.archivedAt || 0)); } 
+            else { displayArchive.sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0)); }
 
-            if (query) {
-                displayArchive = displayArchive.filter(item => 
-                    item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)
-                );
-            }
+            if (query) { displayArchive = displayArchive.filter(item => item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)); }
 
             if (displayArchive.length === 0) {
                 const msg = query ? t.noWords : t.noWordsInArchive;
                 wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
+                archiveBulkArea.classList.add('hidden'); // 要素がなければ非表示
                 return;
             }
 
+            // DOMを使って安全に行を構築（チェックボックス追加）
             displayArchive.forEach(item => {
                 const row = document.createElement('div');
                 row.className = 'word-row';
-                row.innerHTML = `
-                    <div class="word-cell english" style="color:#999; text-decoration:line-through;">${item.en}</div>
-                    <div class="word-cell japanese" style="color:#999;">${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup})</small></div>
-                    <button class="restore-btn">${t.restoreBtn}</button>
-                    <button class="delete-btn">${t.deleteBtn}</button>
-                `;
-                
-                // 元に戻す処理
-                row.querySelector('.restore-btn').addEventListener('click', () => {
+
+                // チェックボックス
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.className = 'archive-checkbox';
+                chk.dataset.en = item.en;
+                chk.dataset.ja = item.ja;
+                chk.addEventListener('change', () => {
+                    const allBoxes = document.querySelectorAll('.archive-checkbox');
+                    const checkedBoxes = document.querySelectorAll('.archive-checkbox:checked');
+                    selectAllArchive.checked = (allBoxes.length > 0 && allBoxes.length === checkedBoxes.length);
+                });
+
+                // 英語部分
+                const enDiv = document.createElement('div');
+                enDiv.className = 'word-cell english';
+                enDiv.style.cssText = 'color:#999; text-decoration:line-through;';
+                enDiv.textContent = item.en;
+
+                // 日本語部分
+                const jaDiv = document.createElement('div');
+                jaDiv.className = 'word-cell japanese';
+                jaDiv.style.cssText = 'color:#999;';
+                jaDiv.innerHTML = `${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup})</small>`;
+
+                // 戻すボタン（個別）
+                const restoreBtn = document.createElement('button');
+                restoreBtn.className = 'restore-btn';
+                restoreBtn.textContent = t.restoreBtn;
+                restoreBtn.addEventListener('click', () => {
                     const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
                     if (idx !== -1) {
                         const restored = appData.archive.splice(idx, 1)[0];
@@ -617,8 +642,11 @@
                     }
                 });
 
-                // ❌ 完全に消去する処理
-                row.querySelector('.delete-btn').addEventListener('click', () => {
+                // 消去ボタン（個別）
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.textContent = t.deleteBtn;
+                deleteBtn.addEventListener('click', () => {
                     if (confirm(t.confirmPermanentDelete)) {
                         const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
                         if (idx !== -1) {
@@ -628,6 +656,11 @@
                     }
                 });
 
+                row.appendChild(chk);
+                row.appendChild(enDiv);
+                row.appendChild(jaDiv);
+                row.appendChild(restoreBtn);
+                row.appendChild(deleteBtn);
                 wordListContainer.appendChild(row);
             });
 
@@ -637,102 +670,52 @@
             deleteGroupBtn.classList.remove('hidden');
             inputFormArea.classList.remove('hidden');
             modeSwitchArea.classList.remove('hidden');
-            shuffleBtn.classList.remove('hidden');
             archiveSortArea.classList.add('hidden');
+            archiveBulkArea.classList.add('hidden');
 
             let list = appData.groups[currentTab] || [];
             
-            if (query) {
-                list = list.filter(item => 
-                    item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)
-                );
-            }
+            if (query) { list = list.filter(item => item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)); }
+            if (list.length === 0) { const msg = query ? t.noWords : t.noWordsInGroup; wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`; return; }
 
-            if (list.length === 0) {
-                const msg = query ? t.noWords : t.noWordsInGroup;
-                wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
-                return;
-            }
+            list.forEach((item) => {
+                const row = document.createElement('div'); row.className = 'word-row';
+                const enDiv = document.createElement('div'); const jaDiv = document.createElement('div');
+                enDiv.className = `word-cell english`; jaDiv.className = `word-cell japanese`;
 
-            list.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.className = 'word-row';
-
-                const enDiv = document.createElement('div');
-                const jaDiv = document.createElement('div');
-
-                enDiv.className = `word-cell english`;
-                jaDiv.className = `word-cell japanese`;
-
-                if (currentMaskMode === 'en') {
-                    enDiv.className += ' masked';
-                    enDiv.textContent = "？？？";
+                if (currentMaskMode === 'en') { enDiv.className += ' masked'; enDiv.textContent = "？？？"; jaDiv.textContent = item.ja; } 
+                else if (currentMaskMode === 'ja') { jaDiv.className += ' masked'; enDiv.textContent = item.en; jaDiv.textContent = "？？？"; } 
+                else if (currentMaskMode === 'test') {
                     jaDiv.textContent = item.ja;
-                } else if (currentMaskMode === 'ja') {
-                    jaDiv.className += ' masked';
-                    enDiv.textContent = item.en;
-                    jaDiv.textContent = "？？？";
-                } else if (currentMaskMode === 'test') {
-                    jaDiv.textContent = item.ja;
-
-                    const container = document.createElement('div');
-                    container.className = 'test-input-container';
-
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.className = 'test-input';
-                    input.placeholder = t.typePlaceholder;
-                    const itemKey = `${item.en}_${item.ja}`;
-                    input.value = testInputsState[itemKey] || "";
-
-                    const feedback = document.createElement('div');
-                    feedback.className = 'test-feedback';
+                    const container = document.createElement('div'); container.className = 'test-input-container';
+                    const input = document.createElement('input'); input.type = 'text'; input.className = 'test-input'; input.placeholder = t.typePlaceholder;
+                    const itemKey = `${item.en}_${item.ja}`; input.value = testInputsState[itemKey] || "";
+                    const feedback = document.createElement('div'); feedback.className = 'test-feedback';
 
                     const checkAnswer = () => {
-                        const userVal = input.value.trim().toLowerCase();
-                        const correctVal = item.en.trim().toLowerCase();
+                        const userVal = input.value.trim().toLowerCase(); const correctVal = item.en.trim().toLowerCase();
                         testInputsState[itemKey] = input.value;
-
-                        if (userVal === "") {
-                            feedback.className = 'test-feedback';
-                            feedback.textContent = "";
-                        } else if (userVal === correctVal) {
-                            feedback.className = 'test-feedback correct';
-                            feedback.textContent = t.correct;
-                        } else {
-                            feedback.className = 'test-feedback wrong';
-                            feedback.textContent = t.wrong;
-                        }
+                        if (userVal === "") { feedback.className = 'test-feedback'; feedback.textContent = ""; } 
+                        else if (userVal === correctVal) { feedback.className = 'test-feedback correct'; feedback.textContent = t.correct; } 
+                        else { feedback.className = 'test-feedback wrong'; feedback.textContent = t.wrong; }
                     };
 
-                    input.addEventListener('input', checkAnswer);
-                    input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAnswer(); });
-                    
+                    input.addEventListener('input', checkAnswer); input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAnswer(); });
                     if (input.value) { checkAnswer(); }
-
-                    container.appendChild(input);
-                    container.appendChild(feedback);
-                    enDiv.appendChild(container);
+                    container.appendChild(input); container.appendChild(feedback); enDiv.appendChild(container);
                 }
 
-                enDiv.addEventListener('click', () => {
-                    if (currentMaskMode === "en") enDiv.textContent = enDiv.textContent === "？？？" ? item.en : "？？？";
-                });
-                jaDiv.addEventListener('click', () => {
-                    if (currentMaskMode === "ja") jaDiv.textContent = jaDiv.textContent === "？？？" ? item.ja : "？？？";
-                });
+                enDiv.addEventListener('click', () => { if (currentMaskMode === "en") enDiv.textContent = enDiv.textContent === "？？？" ? item.en : "？？？"; });
+                jaDiv.addEventListener('click', () => { if (currentMaskMode === "ja") jaDiv.textContent = jaDiv.textContent === "？？？" ? item.ja : "？？？"; });
 
-                const chkBtn = document.createElement('button');
-                chkBtn.className = 'check-btn';
-                chkBtn.textContent = "✓";
+                const chkBtn = document.createElement('button'); chkBtn.className = 'check-btn'; chkBtn.textContent = "✓";
                 chkBtn.addEventListener('click', () => {
                     const originalList = appData.groups[currentTab];
                     const origIdx = originalList.findIndex(w => w.en === item.en && w.ja === item.ja);
                     if (origIdx !== -1) {
                         const moved = originalList.splice(origIdx, 1)[0];
                         moved.archivedAt = Date.now(); moved.fromGroup = currentTab; 
-                        appData.archive.push(moved);
-                        saveData(); renderAll();
+                        appData.archive.push(moved); saveData(); renderAll();
                     }
                 });
 
@@ -743,52 +726,81 @@
     }
 
     function renderAll() { renderSidebar(); renderMainList(); }
-
     searchBox.addEventListener('input', renderMainList);
 
+    // ✅ アーカイブの一括操作イベント
+    selectAllArchive.addEventListener('change', (e) => {
+        const isChecked = e.target.checked;
+        document.querySelectorAll('.archive-checkbox').forEach(cb => cb.checked = isChecked);
+    });
+
+    document.getElementById('restoreSelectedBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.archive-checkbox:checked');
+        if (checkboxes.length === 0) return;
+        
+        const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+        const itemsToRestore = appData.archive.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        
+        // 選択されたものをアーカイブから除外
+        appData.archive = appData.archive.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        
+        // 元のグループへ戻す
+        itemsToRestore.forEach(restored => {
+            const targetGroup = appData.groups[restored.fromGroup] ? restored.fromGroup : Object.keys(appData.groups)[0];
+            delete restored.archivedAt; delete restored.fromGroup;
+            if (targetGroup) appData.groups[targetGroup].push(restored);
+        });
+        saveData(); renderAll();
+    });
+
+    document.getElementById('deleteSelectedBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.archive-checkbox:checked');
+        if (checkboxes.length === 0) return;
+
+        const msg = i18n[appData.lang].confirmDeleteSelected.replace("{count}", checkboxes.length);
+        if (confirm(msg)) {
+            const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+            // 選択されたもの以外をアーカイブに残す（フィルター削除）
+            appData.archive = appData.archive.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+            saveData(); renderAll();
+        }
+    });
+
+    // その他イベントリスナー
     shuffleBtn.addEventListener('click', () => {
         if (currentTab && currentTab !== "__archive__") {
-            const list = appData.groups[currentTab];
-            if (!list || list.length <= 1) return;
-            
-            for (let i = list.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [list[i], list[j]] = [list[j], list[i]];
-            }
-            saveData();
-            renderMainList();
+            const list = appData.groups[currentTab]; if (!list || list.length <= 1) return;
+            for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+            saveData(); renderMainList();
         }
     });
 
     createGroupBtn.addEventListener('click', () => {
-        const name = newGroupNameInput.value.trim();
-        if (!name) return;
+        const name = newGroupNameInput.value.trim(); if (!name) return;
         if (appData.groups[name]) { alert(i18n[appData.lang].dupGroup); return; }
         appData.groups[name] = []; currentTab = name; newGroupNameInput.value = ""; searchBox.value = "";
         saveData(); renderAll();
     });
 
     deleteGroupBtn.addEventListener('click', () => {
-        const confirmMsg = i18n[appData.lang].confirmDelete.replace("{name}", currentTab);
-        if (confirm(confirmMsg)) {
-            delete appData.groups[currentTab];
-            currentTab = Object.keys(appData.groups)[0] || null;
-            searchBox.value = "";
+        if (confirm(i18n[appData.lang].confirmDelete.replace("{name}", currentTab))) {
+            delete appData.groups[currentTab]; currentTab = Object.keys(appData.groups)[0] || null; searchBox.value = "";
             saveData(); renderAll();
         }
     });
 
     addBtn.addEventListener('click', () => {
-        const en = enInput.value.trim(); const ja = jaInput.value.trim();
-        if (!en || !ja) return;
-        appData.groups[currentTab].push({ en, ja });
-        saveData(); renderAll();
+        const en = enInput.value.trim(); const ja = jaInput.value.trim(); if (!en || !ja) return;
+        appData.groups[currentTab].push({ en, ja }); saveData(); renderAll();
         enInput.value = ""; jaInput.value = ""; enInput.focus(); 
-        document.getElementById('ocrStatus').textContent = "";
-        translateStatus.textContent = "";
+        document.getElementById('ocrStatus').textContent = ""; translateStatus.textContent = "";
     });
 
     recommendBtn.addEventListener('click', () => {
+        if (!currentTab || currentTab === "__archive__") {
+            if (!appData.groups["RandomBank"]) { appData.groups["RandomBank"] = []; }
+            currentTab = "RandomBank";
+        }
         const allExisting = [...appData.archive.map(w => w.en.toLowerCase()), ...Object.values(appData.groups).flatMap(g => g.map(w => w.en.toLowerCase()))];
         const available = recommendedBank.filter(w => !allExisting.includes(w.en.toLowerCase()));
         if (available.length === 0) return;
@@ -800,96 +812,72 @@
     document.getElementById('inputFormArea').addEventListener('change', (e) => {
         if (e.target && e.target.id === 'imageInput') {
             const file = e.target.files[0]; if (!file) return;
-            const statusDiv = document.getElementById('ocrStatus');
-            const t = i18n[appData.lang];
+            const statusDiv = document.getElementById('ocrStatus'); const t = i18n[appData.lang];
             statusDiv.textContent = t.ocrAnalyzing;
-            Tesseract.recognize(file, 'eng')
-                .then(({ data: { text } }) => {
+            Tesseract.recognize(file, 'eng').then(async ({ data: { text } }) => {
                     const words = text.replace(/[^a-zA-Z\s]/g, "").split(/\s+/).filter(w => w.length > 1);
                     if (words.length > 0) {
-                        enInput.value = words[0].toLowerCase();
-                        statusDiv.textContent = `${t.ocrDetected} "${words[0]}"`; 
-                        executeTranslation('en', words[0].toLowerCase());
-                    } else { statusDiv.textContent = t.ocrNotFound; }
-                }).catch(() => statusDiv.textContent = t.ocrError);
+                        const detectedEn = words[0].toLowerCase(); statusDiv.textContent = t.ocrDetected;
+                        let detectedJa = "";
+                        try {
+                            const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(detectedEn)}`);
+                            const data = await res.json(); if (data && data[0] && data[0][0]) detectedJa = data[0][0][0];
+                        } catch(err) { console.error(err); }
+                        modalEnInput.value = detectedEn; modalJaInput.value = detectedJa; ocrModal.classList.remove('hidden');
+                    } else { statusDiv.textContent = t.ocrNotFound; } e.target.value = ""; 
+                }).catch(() => { statusDiv.textContent = t.ocrError; e.target.value = ""; });
         }
     });
 
+    modalCancelBtn.addEventListener('click', () => { ocrModal.classList.add('hidden'); document.getElementById('ocrStatus').textContent = ""; });
+    modalConfirmBtn.addEventListener('click', () => {
+        const en = modalEnInput.value.trim(); const ja = modalJaInput.value.trim();
+        if (en && ja && currentTab) { appData.groups[currentTab].push({ en, ja }); saveData(); renderAll(); }
+        ocrModal.classList.add('hidden'); document.getElementById('ocrStatus').textContent = "";
+    });
+
     async function executeTranslation(sourceLang, text) {
-        if (!text) return;
-        translateStatus.textContent = i18n[appData.lang].translating;
+        if (!text) return; translateStatus.textContent = i18n[appData.lang].translating;
         try {
             if (sourceLang === 'en') {
                 const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(text)}`);
-                const data = await res.json();
-                if (data && data[0] && data[0][0]) {
-                    jaInput.value = data[0][0][0];
-                }
+                const data = await res.json(); if (data && data[0] && data[0][0]) jaInput.value = data[0][0][0];
             } else if (sourceLang === 'ja') {
                 const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=ja&tl=en&dt=t&q=${encodeURIComponent(text)}`);
-                const data = await res.json();
-                if (data && data[0] && data[0][0]) {
-                    enInput.value = data[0][0][0].toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
-                }
+                const data = await res.json(); if (data && data[0] && data[0][0]) enInput.value = data[0][0][0].toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
             }
             translateStatus.textContent = "";
-        } catch (err) {
-            console.error("Translation Error: ", err);
-            translateStatus.textContent = "";
-        }
+        } catch (err) { translateStatus.textContent = ""; }
     }
 
-    // スペース2回入力をフックするテキスト監視用共通ロジック
     function monitorInputSpaces(inputElement, sourceLang) {
         function checkTextAndTrigger() {
             let val = inputElement.value;
-            // 末尾に半角スペースが2回連続（"  "）されたかを判定
             if (/([ ]{2})$/.test(val)) {
-                inputElement.blur(); // IME確定用ハック
+                inputElement.blur(); 
                 setTimeout(() => {
-                    inputElement.focus();
-                    let cleanText = inputElement.value.replace(/[ ]+$/, "").trim();
-                    inputElement.value = cleanText;
-
+                    inputElement.focus(); let cleanText = inputElement.value.replace(/[ ]+$/, "").trim(); inputElement.value = cleanText;
                     if (cleanText) {
-                        if (sourceLang === 'en' && jaInput.value.trim() === "") {
-                            executeTranslation('en', cleanText);
-                        } else if (sourceLang === 'ja' && enInput.value.trim() === "") {
-                            executeTranslation('ja', cleanText);
-                        }
+                        if (sourceLang === 'en' && jaInput.value.trim() === "") executeTranslation('en', cleanText);
+                        else if (sourceLang === 'ja' && enInput.value.trim() === "") executeTranslation('ja', cleanText);
                     }
                 }, 20);
             }
         }
-        inputElement.addEventListener('input', checkTextAndTrigger);
-        inputElement.addEventListener('compositionend', checkTextAndTrigger);
+        inputElement.addEventListener('input', checkTextAndTrigger); inputElement.addEventListener('compositionend', checkTextAndTrigger);
     }
+    monitorInputSpaces(enInput, 'en'); monitorInputSpaces(jaInput, 'ja');
 
-    // 英語と日本語の入力欄の両方にスペース監視を設定
-    monitorInputSpaces(enInput, 'en');
-    monitorInputSpaces(jaInput, 'ja');
+    document.getElementById('maskJaBtn').addEventListener('click', () => { currentMaskMode = "ja"; setActiveModeBtn('maskJaBtn'); renderMainList(); });
+    document.getElementById('maskEnBtn').addEventListener('click', () => { currentMaskMode = "en"; setActiveModeBtn('maskEnBtn'); renderMainList(); });
+    document.getElementById('modeTestBtn').addEventListener('click', () => { currentMaskMode = "test"; setActiveModeBtn('modeTestBtn'); renderMainList(); });
 
-    document.getElementById('maskJaBtn').addEventListener('click', () => {
-        currentMaskMode = "ja"; setActiveModeBtn('maskJaBtn'); renderMainList();
-    });
-    document.getElementById('maskEnBtn').addEventListener('click', () => {
-        currentMaskMode = "en"; setActiveModeBtn('maskEnBtn'); renderMainList();
-    });
-    document.getElementById('modeTestBtn').addEventListener('click', () => {
-        currentMaskMode = "test"; setActiveModeBtn('modeTestBtn'); renderMainList();
-    });
-
-    function setActiveModeBtn(activeId) {
-        ['maskJaBtn', 'maskEnBtn', 'modeTestBtn'].forEach(id => {
-            document.getElementById(id).classList.toggle('active', id === activeId);
-        });
-    }
+    function setActiveModeBtn(activeId) { ['maskJaBtn', 'maskEnBtn', 'modeTestBtn'].forEach(id => { document.getElementById(id).classList.toggle('active', id === activeId); }); }
 
     sortSelect.addEventListener('change', renderMainList);
     jaInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
 
-    updateUITexts();
-    renderAll();
+    updateUITexts(); renderAll();
 </script>
 
 </body>
