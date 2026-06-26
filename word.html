@@ -423,7 +423,7 @@
 </div>
 
 <script>
-    // データ保存キー
+    // 拡張機能用のデータ保存キー
     const KEY_DATA = "my_wordbook_monochrome_gray_v27"; 
 
     const i18n = {
@@ -507,10 +507,8 @@
         { en: "evaluate", ja: "評価する、見極める" }, { en: "significant", ja: "重要な、かなりの" }
     ];
 
-    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || { groups: {}, archive: [], trash: [], lang: "ja" };
-    if (!appData.trash) appData.trash = [];
-
-    let currentTab = Object.keys(appData.groups)[0] || null; 
+    let appData = { groups: {}, archive: [], trash: [], lang: "ja" };
+    let currentTab = null; 
     let currentMaskMode = "ja"; 
     let isGroupSectionOpen = true;
     let isArchiveSectionOpen = true;
@@ -544,7 +542,7 @@
     const enInput = document.getElementById('enInput');
     const jaInput = document.getElementById('jaInput');
     const memoInput = document.getElementById('memoInput');
-    const fetchExampleBtn = document.getElementById('fetchExampleBtn'); // 例文ボタン
+    const fetchExampleBtn = document.getElementById('fetchExampleBtn');
     const addBtn = document.getElementById('addBtn');
     const newGroupNameInput = document.getElementById('newGroupName');
     const createGroupBtn = document.getElementById('createGroupBtn');
@@ -569,9 +567,13 @@
             saveData();
         }
     }
-    cleanUpTrash();
 
-    function saveData() { localStorage.setItem(KEY_DATA, JSON.stringify(appData)); }
+    // Chrome拡張機能用の非同期保存システム
+    async function saveData() { 
+        const saveObj = {};
+        saveObj[KEY_DATA] = appData;
+        await chrome.storage.local.set(saveObj);
+    }
 
     function updateUITexts() {
         const t = i18n[appData.lang];
@@ -699,7 +701,6 @@
         wordListContainer.style.display = "flex";
         const query = searchBox.value.toLowerCase().trim();
 
-        // 共通のリセット
         wordListContainer.className = 'word-list';
         archiveSortArea.classList.add('hidden');
         inputFormArea.classList.add('hidden');
@@ -736,7 +737,6 @@
             displayTrash.forEach(item => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'word-item-wrapper';
-
                 const row = document.createElement('div'); row.className = 'word-row';
 
                 const chk = document.createElement('input');
@@ -841,7 +841,6 @@
             displayArchive.forEach(item => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'word-item-wrapper';
-
                 const row = document.createElement('div'); row.className = 'word-row';
 
                 const chk = document.createElement('input');
@@ -921,7 +920,6 @@
             list.forEach((item) => {
                 const wrapper = document.createElement('div');
                 wrapper.className = 'word-item-wrapper';
-
                 const row = document.createElement('div'); row.className = 'word-row';
                 
                 const chk = document.createElement('input');
@@ -1099,13 +1097,11 @@
         fetchExampleBtn.disabled = true;
         
         try {
-            // Free Dictionary APIからデータを取得
             const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
             if (!res.ok) throw new Error("Not found");
             const data = await res.json();
             
             let exampleSentence = "";
-            // データの中から最初の例文を探す
             for (const meaning of data[0].meanings) {
                 for (const def of meaning.definitions) {
                     if (def.example) {
@@ -1117,18 +1113,14 @@
             }
             
             if (exampleSentence) {
-                // 例文が見つかったら、Google翻訳APIで日本語訳も取得する
                 memoInput.value = "翻訳中...";
                 const trRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(exampleSentence)}`);
                 const trData = await trRes.json();
                 
                 let jaExample = "";
                 if (trData && trData[0]) {
-                    // 長い文章が分割された場合の結合処理
                     jaExample = trData[0].map(item => item[0]).join('');
                 }
-                
-                // メモ欄に「英語の例文」と「日本語訳」をセット
                 memoInput.value = `${exampleSentence}\n${jaExample}`;
             } else {
                 memoInput.placeholder = appData.lang === 'ja' ? "例文が見つかりませんでした" : "Example not found";
@@ -1303,11 +1295,23 @@
     sortSelect.addEventListener('change', renderMainList);
     archiveTimeFilter.addEventListener('change', renderMainList);
     
-    // 入力欄でEnterを押したときの動作
     jaInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
     memoInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
 
-    updateUITexts(); renderAll();
+    // アプリ初期化
+    async function initApp() {
+        const res = await chrome.storage.local.get(KEY_DATA);
+        if (res[KEY_DATA]) {
+            appData = res[KEY_DATA];
+        }
+        if (!appData.trash) appData.trash = [];
+
+        cleanUpTrash();
+        currentTab = Object.keys(appData.groups)[0] || null; 
+        updateUITexts(); 
+        renderAll();
+    }
+    initApp();
 </script>
 </body>
 </html>
