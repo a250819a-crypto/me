@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -175,35 +174,38 @@
 
         .form-area {
             background-color: #ffffff; border: 1px solid #e1e1e5; border-radius: 8px;
-            padding: 20px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 15px;
+            padding: 20px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         .input-row { display: flex; gap: 10px; flex-wrap: wrap; }
         .input-row input { flex: 1; min-width: 120px; padding: 12px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; transition: border 0.2s; }
         .input-row input:focus { border-color: #1a1a1a; background: #ffffff; }
-        .form-area button.add-submit-btn { padding: 12px 24px; background-color: #1a1a1a; color: #ffffff; border: none; font-weight: bold; cursor: pointer; font-size: 14px; border-radius: 6px; }
+        
+        .form-area button.action-btn { padding: 12px; background-color: #ffffff; color: #555555; border: 1px solid #e1e1e5; font-weight: bold; cursor: pointer; font-size: 13px; border-radius: 6px; flex: 0 0 auto; transition: all 0.2s;}
+        .form-area button.action-btn:hover { background-color: #f2f2f5; color: #1a1a1a; border-color: #cccccc;}
+        .form-area button.add-submit-btn { padding: 12px 24px; background-color: #1a1a1a; color: #ffffff; border: none; font-weight: bold; cursor: pointer; font-size: 14px; border-radius: 6px; flex: 0 0 auto; }
         .form-area button.add-submit-btn:hover { background-color: #000000; }
 
-        .ocr-area { border: 1px dashed #cccccc; background: #fafafa; padding: 15px; text-align: center; font-size: 12px; border-radius: 6px; color: #555555; }
+        .ocr-area { border: 1px dashed #cccccc; background: #fafafa; padding: 15px; text-align: center; font-size: 12px; border-radius: 6px; color: #555555; margin-top: 5px;}
         .ocr-btn { display: inline-block; background-color: #555555; color: #ffffff; padding: 6px 14px; cursor: pointer; font-weight: bold; margin-top: 6px; border-radius: 4px; }
         .ocr-btn:hover { background-color: #1a1a1a; }
         #imageInput { display: none; }
         #ocrStatus { margin-top: 8px; font-weight: bold; color: #1a1a1a; }
-        #translateStatus { font-size: 11px; color: #888888; margin-top: -5px; padding-left: 2px; height: 14px; }
+        #translateStatus { font-size: 11px; color: #888888; padding-left: 2px; height: 14px; }
 
-        /* ✅ アーカイブ内の一括操作メニュー */
-        .archive-bulk-actions {
+        .archive-sort-row { margin-bottom: 20px; display: flex; gap: 20px; align-items: center; font-size: 13px; color: #555555; flex-wrap: wrap; }
+        .sort-group { display: flex; gap: 8px; align-items: center; }
+        .archive-sort-row select { padding: 6px 12px; border: 1px solid #e1e1e5; background: #ffffff; outline: none; border-radius: 4px; color: #1a1a1a; cursor: pointer; }
+
+        .bulk-actions {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 15px; padding: 10px 15px; background: #ffffff;
             border: 1px solid #e1e1e5; border-radius: 6px; font-size: 13px;
         }
-        .archive-bulk-actions label { cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;}
-        .bulk-btn {
-            padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 4px;
-            cursor: pointer; border: 1px solid #e1e1e5; background: #ffffff; color: #555; margin-left: 10px;
-        }
+        .bulk-actions label { cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;}
+        .bulk-actions label input[type="checkbox"] { width: 20px; height: 20px; accent-color: #1a1a1a; cursor: pointer; }
+        .bulk-btn { padding: 6px 12px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; border: 1px solid #e1e1e5; background: #ffffff; color: #555; margin-left: 10px; }
         .bulk-btn:hover { background: #f2f2f5; color: #1a1a1a; }
-        .restore-bulk:hover { border-color: #1a1a1a; }
         .delete-bulk:hover { color: #cc0000; border-color: #cc0000; }
 
         .mode-switch { display: flex; background: #e4e4e9; border-radius: 6px; padding: 3px; margin-bottom: 15px; gap: 2px; }
@@ -216,51 +218,57 @@
 
         /* 単語リスト */
         .word-list { display: flex; flex-direction: column; background: #ffffff; border-radius: 8px; border: 1px solid #e1e1e5; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .word-row { display: grid; grid-template-columns: 1fr 1fr auto; border-bottom: 1px solid #eeeef2; padding: 16px 15px; align-items: center; }
-        /* 📂 アーカイブ表示時：チェックボックス追加によりカラム追加 */
-        .word-list.archive-mode .word-row { grid-template-columns: auto 1fr 1fr auto auto; gap: 10px; }
-        .word-row:last-child { border-bottom: none; }
+        .word-item-wrapper { display: flex; flex-direction: column; border-bottom: 1px solid #eeeef2; padding-bottom: 4px; }
+        .word-item-wrapper:last-child { border-bottom: none; }
+        .word-row { display: grid; grid-template-columns: auto 1fr 1fr auto; padding: 14px 15px 8px 15px; align-items: center; gap: 10px;}
+        .word-list.archive-mode .word-row { grid-template-columns: auto 1fr 1fr auto auto; }
+        .word-list.trash-mode .word-row { grid-template-columns: auto 1fr 1fr auto; }
+        
+        .item-checkbox { cursor: pointer; width: 16px; height: 16px; accent-color: #1a1a1a; margin-right: 5px; }
+
         .word-cell { font-size: 15px; }
         .english { font-weight: bold; color: #1a1a1a; }
         .japanese { border-left: 1px solid #eeeef2; padding-left: 20px; color: #333333; }
         
-        /* アーカイブ用チェックボックス */
-        .archive-checkbox { cursor: pointer; width: 16px; height: 16px; accent-color: #1a1a1a; margin-right: 5px; }
-
         .word-cell.masked { color: #ffffff !important; background-color: #333333; border-radius: 4px; text-align: center; font-size: 11px; font-weight: bold; cursor: pointer; border-left-color: transparent; padding: 6px 0; max-width: 120px; }
         .word-cell.masked:hover { background-color: #1a1a1a; color: #ffffff !important; }
 
-        .test-input-container { display: flex; flex-direction: column; gap: 5px; }
-        .test-input { padding: 8px 12px; border: 1px solid #e1e1e5; background: #f7f7f9; border-radius: 4px; font-size: 14px; outline: none; width: 85%; }
-        .test-input:focus { border-color: #1a1a1a; background: #ffffff; }
-        .test-feedback { font-size: 12px; font-weight: bold; padding: 3px 8px; border-radius: 4px; width: fit-content; display: none; }
-        .test-feedback.correct { display: inline-block; background-color: #e2f0d9; color: #385723; }
-        .test-feedback.wrong { display: inline-block; background-color: #fce4d6; color: #c65911; }
+        /* 例文・メモ */
+        .word-memo {
+            font-size: 13px;
+            color: #777777;
+            padding: 0 15px 10px 45px;
+            margin-top: -2px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
 
-        .check-btn { background: #ffffff; border: 1px solid #e1e1e5; color: #888888; width: 26px; height: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-left: 15px; border-radius: 6px; transition: all 0.2s; }
-        .check-btn:hover { background: #1a1a1a; color: #ffffff; border-color: #1a1a1a; }
+        .word-action-btns { display: flex; gap: 8px; margin-left: 15px; }
+        .word-icon-btn { background: #ffffff; border: 1px solid #e1e1e5; color: #888888; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; border-radius: 6px; transition: all 0.2s; padding: 0; }
+        .word-icon-btn:hover { background: #1a1a1a; color: #ffffff; border-color: #1a1a1a; }
+        .word-icon-btn.btn-delete:hover { background: #cc0000; color: #ffffff; border-color: #cc0000; }
 
-        .archive-sort-row { margin-bottom: 20px; display: flex; gap: 10px; align-items: center; font-size: 13px; color: #555555; }
-        .archive-sort-row select { padding: 6px 12px; border: 1px solid #e1e1e5; background: #ffffff; outline: none; border-radius: 4px; color: #1a1a1a; }
+        /* アーカイブ用のボタン */
         .restore-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
         .restore-btn:hover { color: #1a1a1a; }
         .delete-btn { background: none; border: none; color: #888888; cursor: pointer; font-size: 12px; text-decoration: underline; }
         .delete-btn:hover { color: #cc0000; }
         
+        /* ──── モーダル ──── */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .modal-content { background: #ffffff; border-radius: 8px; width: 90%; max-width: 450px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; }
+        .modal-content { background: #ffffff; border-radius: 8px; width: 90%; max-width: 500px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; max-height: 85vh; }
         .modal-title { font-size: 16px; font-weight: bold; margin: 0; color: #1a1a1a; }
-        .modal-inputs { display: flex; flex-direction: column; gap: 10px; }
-        .modal-inputs label { font-size: 12px; font-weight: bold; color: #666666; }
-        .modal-inputs input { padding: 12px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; }
-        .modal-inputs input:focus { border-color: #1a1a1a; background: #ffffff; }
+        #modalWordsContainer { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 50vh; padding-right: 5px; }
+        .modal-word-row { display: flex; gap: 10px; align-items: center; }
+        .modal-word-checkbox { cursor: pointer; width: 16px; height: 16px; accent-color: #1a1a1a; flex-shrink: 0; }
+        .modal-word-row input[type="text"] { flex: 1; padding: 10px; border: 1px solid #e1e1e5; background: #f7f7f9; font-size: 14px; outline: none; border-radius: 6px; width: 100%; box-sizing: border-box; }
+        .modal-word-row input[type="text"]:focus { border-color: #1a1a1a; background: #ffffff; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
         .modal-actions button { padding: 10px 20px; font-size: 13px; font-weight: bold; border-radius: 6px; cursor: pointer; border: none; }
         .modal-actions .cancel-btn { background: #f2f2f5; color: #555555; border: 1px solid #e1e1e5; }
         .modal-actions .cancel-btn:hover { background: #e4e4e9; }
         .modal-actions .confirm-btn { background: #1a1a1a; color: #ffffff; }
         .modal-actions .confirm-btn:hover { background: #000000; }
-
         .hidden { display: none !important; }
     </style>
 </head>
@@ -285,6 +293,13 @@
                 <span id="archiveArrow">▼</span>
             </div>
             <div class="section-content" id="archiveSectionContent"></div>
+        </div>
+        <div>
+            <div class="section-toggle" id="toggleTrashSection">
+                <span id="labelTrash">TRASH</span>
+                <span id="trashArrow">▼</span>
+            </div>
+            <div class="section-content" id="trashSectionContent"></div>
         </div>
     </div>
 
@@ -319,6 +334,10 @@
                 <div class="input-row">
                     <input type="text" id="enInput" placeholder="英単語">
                     <input type="text" id="jaInput" placeholder="日本語訳">
+                </div>
+                <div class="input-row">
+                    <input type="text" id="memoInput" placeholder="例文やメモ (任意)">
+                    <button id="fetchExampleBtn" class="action-btn" title="入力した英単語の例文を自動取得します">🪄 例文</button>
                     <button id="addBtn" class="add-submit-btn">追加</button>
                 </div>
                 <div id="translateStatus"></div>
@@ -335,29 +354,56 @@
             </div>
 
             <div class="archive-sort-row hidden" id="archiveSortArea">
-                <label for="sortSelect" id="labelSort">並び替え:</label>
-                <select id="sortSelect">
-                    <option value="dateDesc" id="optNew">新しい順</option>
-                    <option value="dateAsc" id="optOld">古い順</option>
-                    <option value="alphabet" id="optAlpha">アルファベット順</option>
-                </select>
-            </div>
-
-            <div class="archive-bulk-actions hidden" id="archiveBulkArea">
-                <label><input type="checkbox" id="selectAllArchive"> <span id="labelSelectAll">すべて選択</span></label>
-                <div>
-                    <button id="restoreSelectedBtn" class="bulk-btn restore-bulk">選択項目を戻す</button>
-                    <button id="deleteSelectedBtn" class="bulk-btn delete-bulk">選択項目を消去</button>
+                <div class="sort-group">
+                    <label for="archiveTimeFilter" id="labelTimeFilter">期間:</label>
+                    <select id="archiveTimeFilter">
+                        <option value="all" id="optAllTime">すべて</option>
+                        <option value="past1week" id="opt1Week">1週間以上前</option>
+                        <option value="past1month" id="opt1Month">1ヶ月以上前</option>
+                        <option value="past1year" id="opt1Year">1年以上前</option>
+                    </select>
+                </div>
+                <div class="sort-group">
+                    <label for="sortSelect" id="labelSort">並び替え:</label>
+                    <select id="sortSelect">
+                        <option value="dateDesc" id="optNew">新しい順</option>
+                        <option value="dateAsc" id="optOld">古い順</option>
+                        <option value="alphabet" id="optAlpha">アルファベット順</option>
+                    </select>
                 </div>
             </div>
 
             <div class="mode-switch" id="modeSwitchArea">
                 <button id="maskJaBtn" class="active">日本語を隠す</button>
                 <button id="maskEnBtn">英語を隠す</button>
-                <button id="modeTestBtn">テスト（入力）</button>
             </div>
 
             <input type="text" id="searchBox" class="search-box" placeholder="🔍 単語を検索...">
+
+            <div class="bulk-actions hidden" id="groupBulkArea">
+                <label><input type="checkbox" id="selectAllGroup"> <span id="labelSelectAllGroup">すべて選択</span></label>
+                <div>
+                    <button id="archiveSelectedBtn" class="bulk-btn">選択項目をアーカイブ</button>
+                    <button id="deleteSelectedGroupBtn" class="bulk-btn delete-bulk">選択項目を削除</button>
+                </div>
+            </div>
+
+            <div class="bulk-actions hidden" id="archiveBulkArea">
+                <label><input type="checkbox" id="selectAllArchive"> <span id="labelSelectAllArchive">すべて選択</span></label>
+                <div>
+                    <button id="restoreSelectedArchiveBtn" class="bulk-btn">選択項目を戻す</button>
+                    <button id="deleteSelectedArchiveBtn" class="bulk-btn delete-bulk">選択項目を削除</button>
+                </div>
+            </div>
+
+            <div class="bulk-actions hidden" id="trashBulkArea">
+                <label><input type="checkbox" id="selectAllTrash"> <span id="labelSelectAllTrash">すべて選択</span></label>
+                <div>
+                    <button id="restoreSelectedTrashGroupBtn" class="bulk-btn">グループに戻す</button>
+                    <button id="restoreSelectedTrashArchiveBtn" class="bulk-btn">アーカイブへ</button>
+                    <button id="deleteSelectedTrashBtn" class="bulk-btn delete-bulk">完全に削除</button>
+                </div>
+            </div>
         </div>
         
         <div class="word-list" id="wordList"></div>
@@ -368,12 +414,7 @@
 <div class="modal-overlay hidden" id="ocrModal">
     <div class="modal-content">
         <div class="modal-title" id="modalTitleText">読み取り結果の確認</div>
-        <div class="modal-inputs">
-            <label for="modalEnInput" id="modalLabelEn">英単語</label>
-            <input type="text" id="modalEnInput">
-            <label for="modalJaInput" id="modalLabelJa">日本語訳</label>
-            <input type="text" id="modalJaInput">
-        </div>
+        <div id="modalWordsContainer"></div>
         <div class="modal-actions">
             <button class="cancel-btn" id="modalCancelBtn">キャンセル</button>
             <button class="confirm-btn" id="modalConfirmBtn">追加する</button>
@@ -382,50 +423,79 @@
 </div>
 
 <script>
-    const KEY_DATA = "my_wordbook_monochrome_gray_v18"; // バージョン更新
+    // データ保存キー
+    const KEY_DATA = "my_wordbook_monochrome_gray_v27"; 
 
     const i18n = {
         ja: {
             closeSidebar: "CLOSE ◀", openSidebar: "OPEN 📁",
-            groups: "GROUPS", archive: "ARCHIVE", archiveView: "📂 一覧を表示する",
+            groups: "GROUPS", archive: "ARCHIVE", trash: "TRASH",
+            archiveView: "📂 一覧を表示する", trashView: "🗑️ ごみ箱を表示する",
             noGroup: "グループなし", createGroupPlace: "新しいグループ名...", createGroupBtn: "作成",
             noActiveGroup: "グループを作成してください", deleteGroupBtn: "削除する",
-            enPlace: "英単語 (スペース2つで自動翻訳)", jaPlace: "日本語訳 (スペース2つで自動翻訳)", addBtn: "追加",
+            enPlace: "英単語 (スペース2つで自動翻訳)", jaPlace: "日本語訳 (スペース2つで自動翻訳)", memoPlace: "例文やメモ (任意)", addBtn: "追加",
             ocrArea: '📷 画像から自動入力<br><label class="ocr-btn">ファイルを選択<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
             recommendBtn: "🎲 ランダムな単語を追加",
             sortLabel: "並び替え:", optNew: "新しい順", optOld: "古い順", optAlpha: "アルファベット順",
-            selectAll: "すべて選択", restoreSelected: "選択項目を戻す", deleteSelected: "選択項目を消去",
-            maskJa: "日本語を隠す", maskEn: "英語を隠す", modeTest: "テスト（入力）", shuffleBtn: "🔀 単語をシャッフルする",
+            timeFilterLabel: "期間:", optAllTime: "すべて", opt1Week: "1週間以上前", opt1Month: "1ヶ月以上前", opt1Year: "1年以上前",
+            selectAll: "すべて選択", 
+            restoreSelected: "選択項目を戻す", 
+            deleteSelected: "選択項目を削除",
+            archiveSelected: "選択項目をアーカイブ", 
+            restoreSelectedTrashGroup: "グループに戻す",
+            restoreSelectedTrashArchive: "アーカイブへ",
+            deleteSelectedTrash: "完全に削除",
+            maskJa: "日本語を隠す", maskEn: "英語を隠す", shuffleBtn: "🔀 単語をシャッフルする",
             searchPlace: "🔍 単語を検索...", noWords: "該当する単語がありません。",
-            noWordsInGroup: "単語が登録されていません。", noWordsInArchive: "単語がありません。",
+            noWordsInGroup: "単語が登録されていません。", noWordsInArchive: "単語がありません。", noWordsInTrash: "ごみ箱は空です。",
             restoreBtn: "戻す", deleteBtn: "消去", origGroup: "元", confirmDelete: "「{name}」を削除しますか？",
-            confirmPermanentDelete: "この単語をアーカイブから完全に消去しますか？",
-            confirmDeleteSelected: "選択した{count}件の単語をアーカイブから完全に消去しますか？",
+            confirmTrashMoveArchive: "この単語をごみ箱に移動しますか？（30日後に完全削除されます）",
+            confirmTrashMoveGroup: "この単語をごみ箱に移動しますか？（30日後に完全削除されます）",
+            confirmPermanentDelete: "この単語を完全に削除しますか？",
+            confirmDeleteSelectedArchive: "選択した{count}件の単語をごみ箱に移動しますか？",
+            confirmDeleteSelectedGroup: "選択した{count}件の単語をごみ箱に移動しますか？",
+            confirmDeleteSelectedTrash: "選択した{count}件の単語を完全に削除しますか？（元に戻せません）",
             dupGroup: "同じ名前があります", ocrAnalyzing: "解析中...", ocrNotFound: "検出なし", ocrError: "エラー", ocrDetected: "検出完了",
-            correct: "◯ 正解！", wrong: "✖ 不正解", typePlaceholder: "英単語を入力...",
             translating: "🔄 翻訳中...",
-            modalTitle: "読み取り結果の確認", modalCancel: "キャンセル", modalConfirm: "追加する", modalLabelEn: "英単語", modalLabelJa: "日本語訳"
+            modalTitle: "読み取り結果の確認", modalCancel: "キャンセル", modalConfirm: "追加する",
+            btnArchiveTitle: "アーカイブへ移動", btnDeleteTitle: "ごみ箱へ移動",
+            btnRestoreGroupTitle: "元のグループに戻す", btnRestoreArchiveTitle: "アーカイブに移動する", btnPermanentDeleteTitle: "完全に削除する",
+            trashNote: "※ごみ箱内の単語は、削除から30日経過すると自動的に完全に削除されます。"
         },
         en: {
             closeSidebar: "CLOSE ◀", openSidebar: "OPEN 📁",
-            groups: "GROUPS", archive: "ARCHIVE", archiveView: "📂 View All Items",
+            groups: "GROUPS", archive: "ARCHIVE", trash: "TRASH",
+            archiveView: "📂 View Archive", trashView: "🗑️ View Trash",
             noGroup: "No Groups", createGroupPlace: "New group name...", createGroupBtn: "Create",
             noActiveGroup: "Please create a group", deleteGroupBtn: "Delete Group",
-            enPlace: "English (Double Space to Translate)", jaPlace: "Japanese (Double Space to Translate)", addBtn: "Add",
+            enPlace: "English (Double Space to Translate)", jaPlace: "Japanese (Double Space to Translate)", memoPlace: "Example / Memo (Optional)", addBtn: "Add",
             ocrArea: '📷 Auto Input from Image<br><label class="ocr-btn">Choose File<input type="file" id="imageInput" accept="image/*"></label><div id="ocrStatus"></div>',
             recommendBtn: "🎲 Add Recommended Word",
             sortLabel: "Sort By:", optNew: "Newest", optOld: "Oldest", optAlpha: "Alphabetical",
-            selectAll: "Select All", restoreSelected: "Restore Selected", deleteSelected: "Delete Selected",
-            maskJa: "Hide Meaning", maskEn: "Hide Word", modeTest: "Typing Test", shuffleBtn: "🔀 Shuffle Words",
+            timeFilterLabel: "Period:", optAllTime: "All", opt1Week: "Over 1 week ago", opt1Month: "Over 1 month ago", opt1Year: "Over 1 year ago",
+            selectAll: "Select All", 
+            restoreSelected: "Restore Selected", 
+            deleteSelected: "Delete Selected",
+            archiveSelected: "Archive Selected", 
+            restoreSelectedTrashGroup: "Restore to Group",
+            restoreSelectedTrashArchive: "Move to Archive",
+            deleteSelectedTrash: "Delete Permanently",
+            maskJa: "Hide Meaning", maskEn: "Hide Word", shuffleBtn: "🔀 Shuffle Words",
             searchPlace: "🔍 Search words...", noWords: "No matching words found.",
-            noWordsInGroup: "No words registered.", noWordsInArchive: "Archive is empty.",
+            noWordsInGroup: "No words registered.", noWordsInArchive: "Archive is empty.", noWordsInTrash: "Trash is empty.",
             restoreBtn: "Restore", deleteBtn: "Delete", origGroup: "From", confirmDelete: "Delete \"{name}\"?",
-            confirmPermanentDelete: "Permanently delete this word from archive?",
-            confirmDeleteSelected: "Permanently delete {count} selected words?",
+            confirmTrashMoveArchive: "Move this word to Trash? (Deleted after 30 days)",
+            confirmTrashMoveGroup: "Move this word to Trash? (Deleted after 30 days)",
+            confirmPermanentDelete: "Permanently delete this word?",
+            confirmDeleteSelectedArchive: "Move {count} selected words to Trash?",
+            confirmDeleteSelectedGroup: "Move {count} selected words to Trash?",
+            confirmDeleteSelectedTrash: "Permanently delete {count} selected words? (Cannot be undone)",
             dupGroup: "Group name already exists", ocrAnalyzing: "ANALYZING...", ocrNotFound: "NOT FOUND", ocrError: "ERROR", ocrDetected: "DETECTED",
-            correct: "◯ Correct!", wrong: "✖ Wrong", typePlaceholder: "Type english word...",
             translating: "🔄 Translating...",
-            modalTitle: "Confirm Scanned Word", modalCancel: "Cancel", modalConfirm: "Add to List", modalLabelEn: "English", modalLabelJa: "Japanese"
+            modalTitle: "Confirm Scanned Word", modalCancel: "Cancel", modalConfirm: "Add to List",
+            btnArchiveTitle: "Move to Archive", btnDeleteTitle: "Move to Trash",
+            btnRestoreGroupTitle: "Restore to Group", btnRestoreArchiveTitle: "Move to Archive", btnPermanentDeleteTitle: "Delete Permanently",
+            trashNote: "*Items in Trash will be automatically permanently deleted after 30 days."
         }
     };
 
@@ -437,16 +507,19 @@
         { en: "evaluate", ja: "評価する、見極める" }, { en: "significant", ja: "重要な、かなりの" }
     ];
 
-    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || { groups: {}, archive: [], lang: "ja" };
+    let appData = JSON.parse(localStorage.getItem(KEY_DATA)) || { groups: {}, archive: [], trash: [], lang: "ja" };
+    if (!appData.trash) appData.trash = [];
+
     let currentTab = Object.keys(appData.groups)[0] || null; 
     let currentMaskMode = "ja"; 
     let isGroupSectionOpen = true;
     let isArchiveSectionOpen = true;
-    let testInputsState = {};
+    let isTrashSectionOpen = true;
 
     const sidebar = document.getElementById('sidebar');
     const groupSectionContent = document.getElementById('groupSectionContent');
     const archiveSectionContent = document.getElementById('archiveSectionContent');
+    const trashSectionContent = document.getElementById('trashSectionContent');
     const wordListContainer = document.getElementById('wordList');
     const currentGroupTitle = document.getElementById('currentGroupTitle');
     const deleteGroupBtn = document.getElementById('deleteGroupBtn');
@@ -454,15 +527,24 @@
     const inputFormArea = document.getElementById('inputFormArea');
     const modeSwitchArea = document.getElementById('modeSwitchArea');
     const archiveSortArea = document.getElementById('archiveSortArea');
+    
     const archiveBulkArea = document.getElementById('archiveBulkArea');
-    const sortSelect = document.getElementById('sortSelect');
+    const groupBulkArea = document.getElementById('groupBulkArea');
+    const trashBulkArea = document.getElementById('trashBulkArea');
     const selectAllArchive = document.getElementById('selectAllArchive');
+    const selectAllGroup = document.getElementById('selectAllGroup');
+    const selectAllTrash = document.getElementById('selectAllTrash');
+
+    const sortSelect = document.getElementById('sortSelect');
+    const archiveTimeFilter = document.getElementById('archiveTimeFilter');
     const shuffleBtn = document.getElementById('shuffleBtn');
     const recommendBtn = document.getElementById('recommendBtn');
     const searchBox = document.getElementById('searchBox');
     
     const enInput = document.getElementById('enInput');
     const jaInput = document.getElementById('jaInput');
+    const memoInput = document.getElementById('memoInput');
+    const fetchExampleBtn = document.getElementById('fetchExampleBtn'); // 例文ボタン
     const addBtn = document.getElementById('addBtn');
     const newGroupNameInput = document.getElementById('newGroupName');
     const createGroupBtn = document.getElementById('createGroupBtn');
@@ -471,10 +553,23 @@
     const translateStatus = document.getElementById('translateStatus');
 
     const ocrModal = document.getElementById('ocrModal');
-    const modalEnInput = document.getElementById('modalEnInput');
-    const modalJaInput = document.getElementById('modalJaInput');
+    const modalWordsContainer = document.getElementById('modalWordsContainer');
     const modalCancelBtn = document.getElementById('modalCancelBtn');
     const modalConfirmBtn = document.getElementById('modalConfirmBtn');
+
+    function cleanUpTrash() {
+        const now = Date.now();
+        const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+        const originalLength = appData.trash.length;
+        appData.trash = appData.trash.filter(item => {
+            const delTime = item.deletedAt || now; 
+            return (now - delTime) < thirtyDaysMs;
+        });
+        if (appData.trash.length !== originalLength) {
+            saveData();
+        }
+    }
+    cleanUpTrash();
 
     function saveData() { localStorage.setItem(KEY_DATA, JSON.stringify(appData)); }
 
@@ -484,31 +579,46 @@
         document.getElementById('openSidebarBtn').textContent = t.openSidebar;
         document.getElementById('labelGroups').textContent = t.groups;
         document.getElementById('labelArchive').textContent = t.archive;
+        document.getElementById('labelTrash').textContent = t.trash;
         newGroupNameInput.placeholder = t.createGroupPlace;
         createGroupBtn.textContent = t.createGroupBtn;
         deleteGroupBtn.textContent = t.deleteGroupBtn;
-        enInput.placeholder = t.enPlace; jaInput.placeholder = t.jaPlace;
+        enInput.placeholder = t.enPlace; 
+        jaInput.placeholder = t.jaPlace;
+        memoInput.placeholder = t.memoPlace;
         addBtn.textContent = t.addBtn;
+        document.getElementById('ocrAreaText').innerHTML = t.ocrArea;
         recommendBtn.textContent = t.recommendBtn;
         document.getElementById('labelSort').textContent = t.sortLabel;
         document.getElementById('optNew').textContent = t.optNew;
         document.getElementById('optOld').textContent = t.optOld;
         document.getElementById('optAlpha').textContent = t.optAlpha;
+        document.getElementById('labelTimeFilter').textContent = t.timeFilterLabel;
+        document.getElementById('optAllTime').textContent = t.optAllTime;
+        document.getElementById('opt1Week').textContent = t.opt1Week;
+        document.getElementById('opt1Month').textContent = t.opt1Month;
+        document.getElementById('opt1Year').textContent = t.opt1Year;
         
-        // 追加: 一括操作用テキスト
-        document.getElementById('labelSelectAll').textContent = t.selectAll;
-        document.getElementById('restoreSelectedBtn').textContent = t.restoreSelected;
-        document.getElementById('deleteSelectedBtn').textContent = t.deleteSelected;
+        document.getElementById('labelSelectAllArchive').textContent = t.selectAll;
+        document.getElementById('restoreSelectedArchiveBtn').textContent = t.restoreSelected;
+        document.getElementById('deleteSelectedArchiveBtn').textContent = t.deleteSelected;
+
+        document.getElementById('labelSelectAllGroup').textContent = t.selectAll;
+        document.getElementById('archiveSelectedBtn').textContent = t.archiveSelected;
+        document.getElementById('deleteSelectedGroupBtn').textContent = t.deleteSelected;
+
+        document.getElementById('labelSelectAllTrash').textContent = t.selectAll;
+        document.getElementById('restoreSelectedTrashGroupBtn').textContent = t.restoreSelectedTrashGroup;
+        document.getElementById('restoreSelectedTrashArchiveBtn').textContent = t.restoreSelectedTrashArchive;
+        document.getElementById('deleteSelectedTrashBtn').textContent = t.deleteSelectedTrash;
 
         document.getElementById('maskJaBtn').textContent = t.maskJa;
         document.getElementById('maskEnBtn').textContent = t.maskEn;
-        document.getElementById('modeTestBtn').textContent = t.modeTest;
         shuffleBtn.textContent = t.shuffleBtn;
         searchBox.placeholder = t.searchPlace;
-        
+        fetchExampleBtn.textContent = appData.lang === 'ja' ? "🪄 例文" : "🪄 Example";
+
         document.getElementById('modalTitleText').textContent = t.modalTitle;
-        document.getElementById('modalLabelEn').textContent = t.modalLabelEn;
-        document.getElementById('modalLabelJa').textContent = t.modalLabelJa;
         modalCancelBtn.textContent = t.modalCancel;
         modalConfirmBtn.textContent = t.modalConfirm;
 
@@ -531,11 +641,17 @@
         archiveSectionContent.classList.toggle('hidden', !isArchiveSectionOpen);
     });
 
+    document.getElementById('toggleTrashSection').addEventListener('click', () => {
+        isTrashSectionOpen = !isTrashSectionOpen;
+        document.getElementById('trashArrow').textContent = isTrashSectionOpen ? "▼" : "▶";
+        trashSectionContent.classList.toggle('hidden', !isTrashSectionOpen);
+    });
+
     document.getElementById('closeSidebarBtn').addEventListener('click', () => { sidebar.classList.add('collapsed'); document.getElementById('openSidebarBtn').classList.remove('hidden'); });
     document.getElementById('openSidebarBtn').addEventListener('click', () => { sidebar.classList.remove('collapsed'); document.getElementById('openSidebarBtn').classList.add('hidden'); });
 
     function renderSidebar() {
-        groupSectionContent.innerHTML = ""; archiveSectionContent.innerHTML = "";
+        groupSectionContent.innerHTML = ""; archiveSectionContent.innerHTML = ""; trashSectionContent.innerHTML = "";
         const groupNames = Object.keys(appData.groups);
         const t = i18n[appData.lang];
 
@@ -546,7 +662,7 @@
                 const item = document.createElement('div');
                 item.className = `menu-item ${currentTab === groupName ? 'active' : ''}`;
                 item.innerHTML = `<span>📁 ${groupName}</span><span class="menu-count">(${appData.groups[groupName].length})</span>`;
-                item.addEventListener('click', () => { currentTab = groupName; searchBox.value = ""; testInputsState = {}; renderAll(); });
+                item.addEventListener('click', () => { currentTab = groupName; searchBox.value = ""; renderAll(); });
                 groupSectionContent.appendChild(item);
             });
         }
@@ -557,7 +673,13 @@
         archiveItem.addEventListener('click', () => { currentTab = "__archive__"; searchBox.value = ""; renderAll(); });
         archiveSectionContent.appendChild(archiveItem);
 
-        if (!currentTab || currentTab === "__archive__") { shuffleBtn.disabled = true; } 
+        const trashItem = document.createElement('div');
+        trashItem.className = `menu-item ${currentTab === '__trash__' ? 'active' : ''}`;
+        trashItem.innerHTML = `<span>${t.trashView}</span><span class="menu-count">(${appData.trash.length})</span>`;
+        trashItem.addEventListener('click', () => { currentTab = "__trash__"; searchBox.value = ""; renderAll(); });
+        trashSectionContent.appendChild(trashItem);
+
+        if (!currentTab || currentTab === "__archive__" || currentTab === "__trash__") { shuffleBtn.disabled = true; } 
         else { shuffleBtn.disabled = (appData.groups[currentTab] && appData.groups[currentTab].length <= 1); }
     }
 
@@ -565,26 +687,144 @@
         wordListContainer.innerHTML = "";
         const t = i18n[appData.lang];
 
+        wordListContainer.classList.remove('hidden'); 
+
         if (!currentTab) {
             currentGroupTitle.textContent = t.noActiveGroup; mainAppBody.classList.add('hidden'); deleteGroupBtn.classList.add('hidden'); wordListContainer.style.display = "none";
             return;
         }
 
         mainAppBody.classList.remove('hidden');
+        searchBox.classList.remove('hidden');
         wordListContainer.style.display = "flex";
         const query = searchBox.value.toLowerCase().trim();
 
-        if (currentTab === "__archive__") {
+        // 共通のリセット
+        wordListContainer.className = 'word-list';
+        archiveSortArea.classList.add('hidden');
+        inputFormArea.classList.add('hidden');
+        modeSwitchArea.classList.add('hidden');
+        groupBulkArea.classList.add('hidden');
+        archiveBulkArea.classList.add('hidden');
+        trashBulkArea.classList.add('hidden');
+        deleteGroupBtn.classList.add('hidden');
+
+        // ──────── TRASH MODE ────────
+        if (currentTab === "__trash__") {
+            wordListContainer.classList.add('trash-mode'); 
+            currentGroupTitle.textContent = t.trash;
+            trashBulkArea.classList.remove('hidden');
+            selectAllTrash.checked = false;
+
+            let displayTrash = [...appData.trash];
+            displayTrash.sort((a, b) => (b.deletedAt || 0) - (a.deletedAt || 0));
+
+            if (query) { displayTrash = displayTrash.filter(item => item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)); }
+
+            if (displayTrash.length === 0) {
+                const msg = query ? t.noWords : t.noWordsInTrash;
+                wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
+                trashBulkArea.classList.add('hidden');
+                return;
+            }
+
+            const noteDiv = document.createElement('div');
+            noteDiv.style.cssText = 'padding: 10px 15px; font-size: 12px; color: #c65911; background: #fce4d6; border-bottom: 1px solid #e1e1e5; text-align: center;';
+            noteDiv.textContent = t.trashNote;
+            wordListContainer.appendChild(noteDiv);
+
+            displayTrash.forEach(item => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'word-item-wrapper';
+
+                const row = document.createElement('div'); row.className = 'word-row';
+
+                const chk = document.createElement('input');
+                chk.type = 'checkbox'; chk.className = 'item-checkbox trash-checkbox';
+                chk.dataset.en = item.en; chk.dataset.ja = item.ja;
+                chk.addEventListener('change', () => {
+                    const allBoxes = document.querySelectorAll('.trash-checkbox');
+                    const checkedBoxes = document.querySelectorAll('.trash-checkbox:checked');
+                    selectAllTrash.checked = (allBoxes.length > 0 && allBoxes.length === checkedBoxes.length);
+                });
+
+                const enDiv = document.createElement('div'); enDiv.className = 'word-cell english';
+                enDiv.style.cssText = 'color:#999; text-decoration:line-through;'; enDiv.textContent = item.en;
+
+                const jaDiv = document.createElement('div'); jaDiv.className = 'word-cell japanese';
+                jaDiv.style.cssText = 'color:#999;'; 
+                const daysLeft = Math.max(0, 30 - Math.floor((Date.now() - (item.deletedAt || Date.now())) / (1000 * 60 * 60 * 24)));
+                jaDiv.innerHTML = `${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup || '-'} / 残り ${daysLeft} 日)</small>`;
+
+                const actionDiv = document.createElement('div'); actionDiv.className = 'word-action-btns';
+
+                const restoreGroupBtn = document.createElement('button');
+                restoreGroupBtn.className = 'word-icon-btn'; restoreGroupBtn.innerHTML = "↩️"; restoreGroupBtn.title = t.btnRestoreGroupTitle;
+                restoreGroupBtn.addEventListener('click', () => {
+                    const idx = appData.trash.findIndex(w => w.en === item.en && w.ja === item.ja);
+                    if (idx !== -1) {
+                        const restored = appData.trash.splice(idx, 1)[0];
+                        const targetGroup = appData.groups[restored.fromGroup] ? restored.fromGroup : Object.keys(appData.groups)[0];
+                        delete restored.deletedAt; delete restored.fromGroup;
+                        if (targetGroup) appData.groups[targetGroup].push(restored);
+                        saveData(); renderAll();
+                    }
+                });
+
+                const restoreArchiveBtn = document.createElement('button');
+                restoreArchiveBtn.className = 'word-icon-btn'; restoreArchiveBtn.innerHTML = "📁"; restoreArchiveBtn.title = t.btnRestoreArchiveTitle;
+                restoreArchiveBtn.addEventListener('click', () => {
+                    const idx = appData.trash.findIndex(w => w.en === item.en && w.ja === item.ja);
+                    if (idx !== -1) {
+                        const restored = appData.trash.splice(idx, 1)[0];
+                        restored.archivedAt = Date.now();
+                        delete restored.deletedAt;
+                        appData.archive.push(restored);
+                        saveData(); renderAll();
+                    }
+                });
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'word-icon-btn btn-delete'; deleteBtn.innerHTML = "✖"; deleteBtn.title = t.btnPermanentDeleteTitle;
+                deleteBtn.addEventListener('click', () => {
+                    if (confirm(t.confirmPermanentDelete)) {
+                        const idx = appData.trash.findIndex(w => w.en === item.en && w.ja === item.ja);
+                        if (idx !== -1) { appData.trash.splice(idx, 1); saveData(); renderAll(); }
+                    }
+                });
+
+                actionDiv.appendChild(restoreGroupBtn); actionDiv.appendChild(restoreArchiveBtn); actionDiv.appendChild(deleteBtn);
+                row.appendChild(chk); row.appendChild(enDiv); row.appendChild(jaDiv); row.appendChild(actionDiv);
+                
+                wrapper.appendChild(row);
+                if (item.memo) {
+                    const memoDiv = document.createElement('div');
+                    memoDiv.className = 'word-memo';
+                    memoDiv.textContent = item.memo;
+                    wrapper.appendChild(memoDiv);
+                }
+                wordListContainer.appendChild(wrapper);
+            });
+        }
+        // ──────── ARCHIVE MODE ────────
+        else if (currentTab === "__archive__") {
             wordListContainer.classList.add('archive-mode'); 
             currentGroupTitle.textContent = t.archive;
-            deleteGroupBtn.classList.add('hidden');
-            inputFormArea.classList.add('hidden');
-            modeSwitchArea.classList.add('hidden');
             archiveSortArea.classList.remove('hidden');
-            archiveBulkArea.classList.remove('hidden'); // 一括操作エリア表示
-            selectAllArchive.checked = false; // 全選択チェックをリセット
+            archiveBulkArea.classList.remove('hidden');
+            selectAllArchive.checked = false;
 
             let displayArchive = [...appData.archive];
+            const now = Date.now();
+            const oneWeek = 7 * 24 * 60 * 60 * 1000;
+            const oneMonth = 30 * 24 * 60 * 60 * 1000;
+            const oneYear = 365 * 24 * 60 * 60 * 1000;
+            const timeFilterVal = archiveTimeFilter.value;
+
+            if (timeFilterVal === "past1week") { displayArchive = displayArchive.filter(item => (now - (item.archivedAt || 0)) >= oneWeek); } 
+            else if (timeFilterVal === "past1month") { displayArchive = displayArchive.filter(item => (now - (item.archivedAt || 0)) >= oneMonth); } 
+            else if (timeFilterVal === "past1year") { displayArchive = displayArchive.filter(item => (now - (item.archivedAt || 0)) >= oneYear); }
+
             if (sortSelect.value === "alphabet") { displayArchive.sort((a, b) => a.en.toLowerCase().localeCompare(b.en.toLowerCase())); } 
             else if (sortSelect.value === "dateAsc") { displayArchive.sort((a, b) => (a.archivedAt || 0) - (b.archivedAt || 0)); } 
             else { displayArchive.sort((a, b) => (b.archivedAt || 0) - (a.archivedAt || 0)); }
@@ -594,43 +834,33 @@
             if (displayArchive.length === 0) {
                 const msg = query ? t.noWords : t.noWordsInArchive;
                 wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`;
-                archiveBulkArea.classList.add('hidden'); // 要素がなければ非表示
+                archiveBulkArea.classList.add('hidden');
                 return;
             }
 
-            // DOMを使って安全に行を構築（チェックボックス追加）
             displayArchive.forEach(item => {
-                const row = document.createElement('div');
-                row.className = 'word-row';
+                const wrapper = document.createElement('div');
+                wrapper.className = 'word-item-wrapper';
 
-                // チェックボックス
+                const row = document.createElement('div'); row.className = 'word-row';
+
                 const chk = document.createElement('input');
-                chk.type = 'checkbox';
-                chk.className = 'archive-checkbox';
-                chk.dataset.en = item.en;
-                chk.dataset.ja = item.ja;
+                chk.type = 'checkbox'; chk.className = 'item-checkbox archive-checkbox';
+                chk.dataset.en = item.en; chk.dataset.ja = item.ja;
                 chk.addEventListener('change', () => {
                     const allBoxes = document.querySelectorAll('.archive-checkbox');
                     const checkedBoxes = document.querySelectorAll('.archive-checkbox:checked');
                     selectAllArchive.checked = (allBoxes.length > 0 && allBoxes.length === checkedBoxes.length);
                 });
 
-                // 英語部分
-                const enDiv = document.createElement('div');
-                enDiv.className = 'word-cell english';
-                enDiv.style.cssText = 'color:#999; text-decoration:line-through;';
-                enDiv.textContent = item.en;
+                const enDiv = document.createElement('div'); enDiv.className = 'word-cell english';
+                enDiv.style.cssText = 'color:#555;'; enDiv.textContent = item.en;
 
-                // 日本語部分
-                const jaDiv = document.createElement('div');
-                jaDiv.className = 'word-cell japanese';
-                jaDiv.style.cssText = 'color:#999;';
-                jaDiv.innerHTML = `${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup})</small>`;
+                const jaDiv = document.createElement('div'); jaDiv.className = 'word-cell japanese';
+                jaDiv.style.cssText = 'color:#555;'; jaDiv.innerHTML = `${item.ja} <br><small style="color:#bbb;">(${t.origGroup}: ${item.fromGroup})</small>`;
 
-                // 戻すボタン（個別）
                 const restoreBtn = document.createElement('button');
-                restoreBtn.className = 'restore-btn';
-                restoreBtn.textContent = t.restoreBtn;
+                restoreBtn.className = 'restore-btn'; restoreBtn.textContent = t.restoreBtn;
                 restoreBtn.addEventListener('click', () => {
                     const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
                     if (idx !== -1) {
@@ -642,74 +872,83 @@
                     }
                 });
 
-                // 消去ボタン（個別）
                 const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.textContent = t.deleteBtn;
+                deleteBtn.className = 'delete-btn'; deleteBtn.textContent = t.deleteBtn;
                 deleteBtn.addEventListener('click', () => {
-                    if (confirm(t.confirmPermanentDelete)) {
+                    if (confirm(t.confirmTrashMoveArchive)) {
                         const idx = appData.archive.findIndex(w => w.en === item.en && w.ja === item.ja);
-                        if (idx !== -1) {
-                            appData.archive.splice(idx, 1);
-                            saveData(); renderAll();
+                        if (idx !== -1) { 
+                            const trashed = appData.archive.splice(idx, 1)[0];
+                            trashed.deletedAt = Date.now();
+                            appData.trash.push(trashed);
+                            saveData(); renderAll(); 
                         }
                     }
                 });
 
-                row.appendChild(chk);
-                row.appendChild(enDiv);
-                row.appendChild(jaDiv);
-                row.appendChild(restoreBtn);
-                row.appendChild(deleteBtn);
-                wordListContainer.appendChild(row);
+                row.appendChild(chk); row.appendChild(enDiv); row.appendChild(jaDiv);
+                row.appendChild(restoreBtn); row.appendChild(deleteBtn);
+                
+                wrapper.appendChild(row);
+                if (item.memo) {
+                    const memoDiv = document.createElement('div');
+                    memoDiv.className = 'word-memo';
+                    memoDiv.textContent = item.memo;
+                    wrapper.appendChild(memoDiv);
+                }
+                wordListContainer.appendChild(wrapper);
             });
-
-        } else {
-            wordListContainer.classList.remove('archive-mode');
+        } 
+        // ──────── GROUP MODE ────────
+        else {
             currentGroupTitle.textContent = currentTab;
             deleteGroupBtn.classList.remove('hidden');
             inputFormArea.classList.remove('hidden');
             modeSwitchArea.classList.remove('hidden');
-            archiveSortArea.classList.add('hidden');
-            archiveBulkArea.classList.add('hidden');
+            groupBulkArea.classList.remove('hidden');
+            selectAllGroup.checked = false;
 
             let list = appData.groups[currentTab] || [];
-            
             if (query) { list = list.filter(item => item.en.toLowerCase().includes(query) || item.ja.toLowerCase().includes(query)); }
-            if (list.length === 0) { const msg = query ? t.noWords : t.noWordsInGroup; wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`; return; }
+
+            if (list.length === 0) { 
+                const msg = query ? t.noWords : t.noWordsInGroup; 
+                wordListContainer.innerHTML = `<p style='color:#999; text-align:center; font-size:14px; padding:20px;'>${msg}</p>`; 
+                groupBulkArea.classList.add('hidden');
+                return; 
+            }
 
             list.forEach((item) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'word-item-wrapper';
+
                 const row = document.createElement('div'); row.className = 'word-row';
+                
+                const chk = document.createElement('input');
+                chk.type = 'checkbox'; chk.className = 'item-checkbox group-checkbox';
+                chk.dataset.en = item.en; chk.dataset.ja = item.ja;
+                chk.addEventListener('change', () => {
+                    const allBoxes = document.querySelectorAll('.group-checkbox');
+                    const checkedBoxes = document.querySelectorAll('.group-checkbox:checked');
+                    selectAllGroup.checked = (allBoxes.length > 0 && allBoxes.length === checkedBoxes.length);
+                });
+
                 const enDiv = document.createElement('div'); const jaDiv = document.createElement('div');
                 enDiv.className = `word-cell english`; jaDiv.className = `word-cell japanese`;
 
                 if (currentMaskMode === 'en') { enDiv.className += ' masked'; enDiv.textContent = "？？？"; jaDiv.textContent = item.ja; } 
                 else if (currentMaskMode === 'ja') { jaDiv.className += ' masked'; enDiv.textContent = item.en; jaDiv.textContent = "？？？"; } 
-                else if (currentMaskMode === 'test') {
-                    jaDiv.textContent = item.ja;
-                    const container = document.createElement('div'); container.className = 'test-input-container';
-                    const input = document.createElement('input'); input.type = 'text'; input.className = 'test-input'; input.placeholder = t.typePlaceholder;
-                    const itemKey = `${item.en}_${item.ja}`; input.value = testInputsState[itemKey] || "";
-                    const feedback = document.createElement('div'); feedback.className = 'test-feedback';
-
-                    const checkAnswer = () => {
-                        const userVal = input.value.trim().toLowerCase(); const correctVal = item.en.trim().toLowerCase();
-                        testInputsState[itemKey] = input.value;
-                        if (userVal === "") { feedback.className = 'test-feedback'; feedback.textContent = ""; } 
-                        else if (userVal === correctVal) { feedback.className = 'test-feedback correct'; feedback.textContent = t.correct; } 
-                        else { feedback.className = 'test-feedback wrong'; feedback.textContent = t.wrong; }
-                    };
-
-                    input.addEventListener('input', checkAnswer); input.addEventListener('keypress', (e) => { if(e.key === 'Enter') checkAnswer(); });
-                    if (input.value) { checkAnswer(); }
-                    container.appendChild(input); container.appendChild(feedback); enDiv.appendChild(container);
-                }
+                else { enDiv.textContent = item.en; jaDiv.textContent = item.ja; }
 
                 enDiv.addEventListener('click', () => { if (currentMaskMode === "en") enDiv.textContent = enDiv.textContent === "？？？" ? item.en : "？？？"; });
                 jaDiv.addEventListener('click', () => { if (currentMaskMode === "ja") jaDiv.textContent = jaDiv.textContent === "？？？" ? item.ja : "？？？"; });
 
-                const chkBtn = document.createElement('button'); chkBtn.className = 'check-btn'; chkBtn.textContent = "✓";
-                chkBtn.addEventListener('click', () => {
+                const actionDiv = document.createElement('div');
+                actionDiv.className = 'word-action-btns';
+
+                const archiveBtn = document.createElement('button');
+                archiveBtn.className = 'word-icon-btn'; archiveBtn.innerHTML = "📁"; archiveBtn.title = t.btnArchiveTitle;
+                archiveBtn.addEventListener('click', () => {
                     const originalList = appData.groups[currentTab];
                     const origIdx = originalList.findIndex(w => w.en === item.en && w.ja === item.ja);
                     if (origIdx !== -1) {
@@ -719,8 +958,32 @@
                     }
                 });
 
-                row.appendChild(enDiv); row.appendChild(jaDiv); row.appendChild(chkBtn);
-                wordListContainer.appendChild(row);
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'word-icon-btn btn-delete'; deleteBtn.innerHTML = "✖"; deleteBtn.title = t.btnDeleteTitle;
+                deleteBtn.addEventListener('click', () => {
+                    if (confirm(t.confirmTrashMoveGroup)) {
+                        const originalList = appData.groups[currentTab];
+                        const origIdx = originalList.findIndex(w => w.en === item.en && w.ja === item.ja);
+                        if (origIdx !== -1) { 
+                            const trashed = originalList.splice(origIdx, 1)[0];
+                            trashed.deletedAt = Date.now(); trashed.fromGroup = currentTab;
+                            appData.trash.push(trashed);
+                            saveData(); renderAll(); 
+                        }
+                    }
+                });
+
+                actionDiv.appendChild(archiveBtn); actionDiv.appendChild(deleteBtn);
+                row.appendChild(chk); row.appendChild(enDiv); row.appendChild(jaDiv); row.appendChild(actionDiv);
+                
+                wrapper.appendChild(row);
+                if (item.memo) {
+                    const memoDiv = document.createElement('div');
+                    memoDiv.className = 'word-memo';
+                    memoDiv.textContent = item.memo;
+                    wrapper.appendChild(memoDiv);
+                }
+                wordListContainer.appendChild(wrapper);
             });
         }
     }
@@ -728,23 +991,16 @@
     function renderAll() { renderSidebar(); renderMainList(); }
     searchBox.addEventListener('input', renderMainList);
 
-    // ✅ アーカイブの一括操作イベント
+    // ─── 選択項目の操作 ───
     selectAllArchive.addEventListener('change', (e) => {
-        const isChecked = e.target.checked;
-        document.querySelectorAll('.archive-checkbox').forEach(cb => cb.checked = isChecked);
+        const isChecked = e.target.checked; document.querySelectorAll('.archive-checkbox').forEach(cb => cb.checked = isChecked);
     });
 
-    document.getElementById('restoreSelectedBtn').addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('.archive-checkbox:checked');
-        if (checkboxes.length === 0) return;
-        
+    document.getElementById('restoreSelectedArchiveBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.archive-checkbox:checked'); if (checkboxes.length === 0) return;
         const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
         const itemsToRestore = appData.archive.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
-        
-        // 選択されたものをアーカイブから除外
         appData.archive = appData.archive.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
-        
-        // 元のグループへ戻す
         itemsToRestore.forEach(restored => {
             const targetGroup = appData.groups[restored.fromGroup] ? restored.fromGroup : Object.keys(appData.groups)[0];
             delete restored.archivedAt; delete restored.fromGroup;
@@ -753,22 +1009,142 @@
         saveData(); renderAll();
     });
 
-    document.getElementById('deleteSelectedBtn').addEventListener('click', () => {
-        const checkboxes = document.querySelectorAll('.archive-checkbox:checked');
-        if (checkboxes.length === 0) return;
-
-        const msg = i18n[appData.lang].confirmDeleteSelected.replace("{count}", checkboxes.length);
+    document.getElementById('deleteSelectedArchiveBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.archive-checkbox:checked'); if (checkboxes.length === 0) return;
+        const msg = i18n[appData.lang].confirmDeleteSelectedArchive.replace("{count}", checkboxes.length);
         if (confirm(msg)) {
             const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
-            // 選択されたもの以外をアーカイブに残す（フィルター削除）
+            const itemsToTrash = appData.archive.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
             appData.archive = appData.archive.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+            itemsToTrash.forEach(trashed => { trashed.deletedAt = Date.now(); appData.trash.push(trashed); });
             saveData(); renderAll();
         }
     });
 
-    // その他イベントリスナー
+    selectAllGroup.addEventListener('change', (e) => {
+        const isChecked = e.target.checked; document.querySelectorAll('.group-checkbox').forEach(cb => cb.checked = isChecked);
+    });
+
+    document.getElementById('archiveSelectedBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.group-checkbox:checked'); if (checkboxes.length === 0) return;
+        const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+        const originalList = appData.groups[currentTab];
+        const itemsToArchive = originalList.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        appData.groups[currentTab] = originalList.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        itemsToArchive.forEach(moved => { moved.archivedAt = Date.now(); moved.fromGroup = currentTab; appData.archive.push(moved); });
+        saveData(); renderAll();
+    });
+
+    document.getElementById('deleteSelectedGroupBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.group-checkbox:checked'); if (checkboxes.length === 0) return;
+        const msg = i18n[appData.lang].confirmDeleteSelectedGroup.replace("{count}", checkboxes.length);
+        if (confirm(msg)) {
+            const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+            const originalList = appData.groups[currentTab];
+            const itemsToTrash = originalList.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+            appData.groups[currentTab] = originalList.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+            itemsToTrash.forEach(trashed => { trashed.deletedAt = Date.now(); trashed.fromGroup = currentTab; appData.trash.push(trashed); });
+            saveData(); renderAll();
+        }
+    });
+
+    selectAllTrash.addEventListener('change', (e) => {
+        const isChecked = e.target.checked; document.querySelectorAll('.trash-checkbox').forEach(cb => cb.checked = isChecked);
+    });
+
+    document.getElementById('restoreSelectedTrashGroupBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.trash-checkbox:checked'); if (checkboxes.length === 0) return;
+        const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+        const itemsToRestore = appData.trash.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        appData.trash = appData.trash.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        itemsToRestore.forEach(restored => {
+            const targetGroup = appData.groups[restored.fromGroup] ? restored.fromGroup : Object.keys(appData.groups)[0];
+            delete restored.deletedAt; delete restored.fromGroup;
+            if (targetGroup) appData.groups[targetGroup].push(restored);
+        });
+        saveData(); renderAll();
+    });
+
+    document.getElementById('restoreSelectedTrashArchiveBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.trash-checkbox:checked'); if (checkboxes.length === 0) return;
+        const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+        const itemsToRestore = appData.trash.filter(w => selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        appData.trash = appData.trash.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+        itemsToRestore.forEach(restored => { restored.archivedAt = Date.now(); delete restored.deletedAt; appData.archive.push(restored); });
+        saveData(); renderAll();
+    });
+
+    document.getElementById('deleteSelectedTrashBtn').addEventListener('click', () => {
+        const checkboxes = document.querySelectorAll('.trash-checkbox:checked'); if (checkboxes.length === 0) return;
+        const msg = i18n[appData.lang].confirmDeleteSelectedTrash.replace("{count}", checkboxes.length);
+        if (confirm(msg)) {
+            const selectedItems = Array.from(checkboxes).map(cb => ({ en: cb.dataset.en, ja: cb.dataset.ja }));
+            appData.trash = appData.trash.filter(w => !selectedItems.some(sel => sel.en === w.en && sel.ja === w.ja));
+            saveData(); renderAll();
+        }
+    });
+
+    // ─── 例文の自動取得処理 ───
+    fetchExampleBtn.addEventListener('click', async () => {
+        const word = enInput.value.trim();
+        if (!word) {
+            alert(appData.lang === 'ja' ? "先に英単語を入力してください。" : "Please enter an English word first.");
+            enInput.focus();
+            return;
+        }
+        
+        const originalPlaceholder = memoInput.placeholder;
+        memoInput.placeholder = appData.lang === 'ja' ? "例文を取得中..." : "Fetching example...";
+        memoInput.value = "";
+        fetchExampleBtn.disabled = true;
+        
+        try {
+            // Free Dictionary APIからデータを取得
+            const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+            if (!res.ok) throw new Error("Not found");
+            const data = await res.json();
+            
+            let exampleSentence = "";
+            // データの中から最初の例文を探す
+            for (const meaning of data[0].meanings) {
+                for (const def of meaning.definitions) {
+                    if (def.example) {
+                        exampleSentence = def.example;
+                        break;
+                    }
+                }
+                if (exampleSentence) break;
+            }
+            
+            if (exampleSentence) {
+                // 例文が見つかったら、Google翻訳APIで日本語訳も取得する
+                memoInput.value = "翻訳中...";
+                const trRes = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(exampleSentence)}`);
+                const trData = await trRes.json();
+                
+                let jaExample = "";
+                if (trData && trData[0]) {
+                    // 長い文章が分割された場合の結合処理
+                    jaExample = trData[0].map(item => item[0]).join('');
+                }
+                
+                // メモ欄に「英語の例文」と「日本語訳」をセット
+                memoInput.value = `${exampleSentence}\n${jaExample}`;
+            } else {
+                memoInput.placeholder = appData.lang === 'ja' ? "例文が見つかりませんでした" : "Example not found";
+                setTimeout(() => memoInput.placeholder = originalPlaceholder, 2000);
+            }
+        } catch (err) {
+            memoInput.placeholder = appData.lang === 'ja' ? "例文が見つかりませんでした" : "Example not found";
+            setTimeout(() => memoInput.placeholder = originalPlaceholder, 2000);
+        } finally {
+            fetchExampleBtn.disabled = false;
+        }
+    });
+
+    // ─── その他の機能 ───
     shuffleBtn.addEventListener('click', () => {
-        if (currentTab && currentTab !== "__archive__") {
+        if (currentTab && currentTab !== "__archive__" && currentTab !== "__trash__") {
             const list = appData.groups[currentTab]; if (!list || list.length <= 1) return;
             for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
             saveData(); renderMainList();
@@ -784,24 +1160,39 @@
 
     deleteGroupBtn.addEventListener('click', () => {
         if (confirm(i18n[appData.lang].confirmDelete.replace("{name}", currentTab))) {
-            delete appData.groups[currentTab]; currentTab = Object.keys(appData.groups)[0] || null; searchBox.value = "";
+            const listToTrash = appData.groups[currentTab];
+            listToTrash.forEach(trashed => { trashed.deletedAt = Date.now(); trashed.fromGroup = currentTab; appData.trash.push(trashed); });
+            delete appData.groups[currentTab]; 
+            currentTab = Object.keys(appData.groups)[0] || null; searchBox.value = "";
             saveData(); renderAll();
         }
     });
 
     addBtn.addEventListener('click', () => {
-        const en = enInput.value.trim(); const ja = jaInput.value.trim(); if (!en || !ja) return;
-        appData.groups[currentTab].push({ en, ja }); saveData(); renderAll();
-        enInput.value = ""; jaInput.value = ""; enInput.focus(); 
-        document.getElementById('ocrStatus').textContent = ""; translateStatus.textContent = "";
+        const en = enInput.value.trim(); 
+        const ja = jaInput.value.trim(); 
+        const memo = memoInput.value.trim();
+        
+        if (!en || !ja) return;
+        
+        appData.groups[currentTab].push({ en, ja, memo }); 
+        saveData(); 
+        renderAll();
+        
+        enInput.value = ""; 
+        jaInput.value = ""; 
+        memoInput.value = "";
+        enInput.focus(); 
+        document.getElementById('ocrStatus').textContent = ""; 
+        translateStatus.textContent = "";
     });
 
     recommendBtn.addEventListener('click', () => {
-        if (!currentTab || currentTab === "__archive__") {
+        if (!currentTab || currentTab === "__archive__" || currentTab === "__trash__") {
             if (!appData.groups["RandomBank"]) { appData.groups["RandomBank"] = []; }
             currentTab = "RandomBank";
         }
-        const allExisting = [...appData.archive.map(w => w.en.toLowerCase()), ...Object.values(appData.groups).flatMap(g => g.map(w => w.en.toLowerCase()))];
+        const allExisting = [...appData.archive.map(w => w.en.toLowerCase()), ...appData.trash.map(w => w.en.toLowerCase()), ...Object.values(appData.groups).flatMap(g => g.map(w => w.en.toLowerCase()))];
         const available = recommendedBank.filter(w => !allExisting.includes(w.en.toLowerCase()));
         if (available.length === 0) return;
         const randomWord = available[Math.floor(Math.random() * available.length)];
@@ -815,24 +1206,60 @@
             const statusDiv = document.getElementById('ocrStatus'); const t = i18n[appData.lang];
             statusDiv.textContent = t.ocrAnalyzing;
             Tesseract.recognize(file, 'eng').then(async ({ data: { text } }) => {
-                    const words = text.replace(/[^a-zA-Z\s]/g, "").split(/\s+/).filter(w => w.length > 1);
+                    const stopWords = ["i", "my", "me", "you", "your", "he", "his", "him", "she", "her", "it", "its", "we", "our", "us", "they", "their", "them", "a", "an", "the", "and", "but", "or", "to", "in", "on", "at", "by", "for", "with", "about", "as", "of", "this", "that", "is", "am", "are", "was", "were", "be", "been", "have", "has", "had", "do", "does", "did", "can", "could", "will", "would", "shall", "should", "may", "might", "must", "so"];
+                    
+                    const words = text.replace(/[^a-zA-Z\s]/g, "")
+                                      .split(/\s+/)
+                                      .map(w => w.toLowerCase())
+                                      .filter(w => w.length > 1 && !stopWords.includes(w)); 
+                    
                     if (words.length > 0) {
-                        const detectedEn = words[0].toLowerCase(); statusDiv.textContent = t.ocrDetected;
-                        let detectedJa = "";
-                        try {
-                            const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(detectedEn)}`);
-                            const data = await res.json(); if (data && data[0] && data[0][0]) detectedJa = data[0][0][0];
-                        } catch(err) { console.error(err); }
-                        modalEnInput.value = detectedEn; modalJaInput.value = detectedJa; ocrModal.classList.remove('hidden');
+                        statusDiv.textContent = t.ocrDetected;
+                        const uniqueWords = [...new Set(words)]; 
+                        
+                        modalWordsContainer.innerHTML = ''; 
+                        ocrModal.classList.remove('hidden'); 
+                        
+                        uniqueWords.forEach(word => {
+                            const row = document.createElement('div');
+                            row.className = 'modal-word-row';
+                            
+                            const chk = document.createElement('input');
+                            chk.type = 'checkbox';
+                            chk.checked = true;
+                            chk.className = 'modal-word-checkbox';
+                            
+                            const enInp = document.createElement('input');
+                            enInp.type = 'text'; enInp.value = word; enInp.className = 'modal-en-input';
+                            
+                            const jaInp = document.createElement('input');
+                            jaInp.type = 'text'; jaInp.placeholder = "翻訳中..."; jaInp.className = 'modal-ja-input';
+                            
+                            row.appendChild(chk); row.appendChild(enInp); row.appendChild(jaInp);
+                            modalWordsContainer.appendChild(row);
+                            
+                            fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ja&dt=t&q=${encodeURIComponent(word)}`)
+                                .then(res => res.json())
+                                .then(data => { if (data && data[0] && data[0][0]) { jaInp.value = data[0][0][0]; } else { jaInp.placeholder = "翻訳失敗"; } })
+                                .catch(() => { jaInp.placeholder = "エラー"; });
+                        });
                     } else { statusDiv.textContent = t.ocrNotFound; } e.target.value = ""; 
                 }).catch(() => { statusDiv.textContent = t.ocrError; e.target.value = ""; });
         }
     });
 
     modalCancelBtn.addEventListener('click', () => { ocrModal.classList.add('hidden'); document.getElementById('ocrStatus').textContent = ""; });
+    
     modalConfirmBtn.addEventListener('click', () => {
-        const en = modalEnInput.value.trim(); const ja = modalJaInput.value.trim();
-        if (en && ja && currentTab) { appData.groups[currentTab].push({ en, ja }); saveData(); renderAll(); }
+        const rows = document.querySelectorAll('.modal-word-row');
+        let addedCount = 0;
+        rows.forEach(row => {
+            const isChecked = row.querySelector('.modal-word-checkbox').checked;
+            const en = row.querySelector('.modal-en-input').value.trim();
+            const ja = row.querySelector('.modal-ja-input').value.trim();
+            if (isChecked && en && ja && currentTab) { appData.groups[currentTab].push({ en, ja }); addedCount++; }
+        });
+        if(addedCount > 0) { saveData(); renderAll(); }
         ocrModal.classList.add('hidden'); document.getElementById('ocrStatus').textContent = "";
     });
 
@@ -870,15 +1297,17 @@
 
     document.getElementById('maskJaBtn').addEventListener('click', () => { currentMaskMode = "ja"; setActiveModeBtn('maskJaBtn'); renderMainList(); });
     document.getElementById('maskEnBtn').addEventListener('click', () => { currentMaskMode = "en"; setActiveModeBtn('maskEnBtn'); renderMainList(); });
-    document.getElementById('modeTestBtn').addEventListener('click', () => { currentMaskMode = "test"; setActiveModeBtn('modeTestBtn'); renderMainList(); });
 
-    function setActiveModeBtn(activeId) { ['maskJaBtn', 'maskEnBtn', 'modeTestBtn'].forEach(id => { document.getElementById(id).classList.toggle('active', id === activeId); }); }
+    function setActiveModeBtn(activeId) { ['maskJaBtn', 'maskEnBtn'].forEach(id => { document.getElementById(id).classList.toggle('active', id === activeId); }); }
 
     sortSelect.addEventListener('change', renderMainList);
+    archiveTimeFilter.addEventListener('change', renderMainList);
+    
+    // 入力欄でEnterを押したときの動作
     jaInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
+    memoInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addBtn.click(); });
 
     updateUITexts(); renderAll();
 </script>
-
 </body>
 </html>
