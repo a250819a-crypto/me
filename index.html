@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>スマートセキュリティ</title>
     <style>
-        html {
-            scroll-behavior: smooth;
-            scroll-padding-top: 80px;
-        }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: #f7e6cf;
@@ -23,58 +20,21 @@
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 25px; }
 
         /* 左上クイックナビゲーション */
-        .quick-nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 1000;
-        }
+        .quick-nav { position: fixed; top: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
         .quick-nav-btn {
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 2px solid #3498db;
-            color: #2c3e50;
-            padding: 12px 18px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 0.95em;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.2s;
-            text-align: left;
-            backdrop-filter: blur(4px);
+            background-color: rgba(255, 255, 255, 0.9); border: 2px solid #3498db; color: #2c3e50;
+            padding: 12px 18px; border-radius: 8px; font-weight: bold; font-size: 0.95em; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s; text-align: left; backdrop-filter: blur(4px);
         }
-        .quick-nav-btn:hover {
-            background-color: #3498db;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 10px rgba(52, 152, 219, 0.3);
-        }
+        .quick-nav-btn:hover { background-color: #3498db; color: white; transform: translateY(-2px); box-shadow: 0 6px 10px rgba(52, 152, 219, 0.3); }
         
         @media (max-width: 1150px) {
-            .quick-nav {
-                position: sticky;
-                top: 10px;
-                left: auto;
-                flex-direction: row;
-                justify-content: center;
-                margin-bottom: 25px;
-                background: rgba(255, 255, 255, 0.6);
-                padding: 10px;
-                border-radius: 10px;
-                backdrop-filter: blur(8px);
-                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-                flex-wrap: wrap;
-            }
+            .quick-nav { position: sticky; top: 10px; left: auto; flex-direction: row; justify-content: center; margin-bottom: 25px; background: rgba(255, 255, 255, 0.6); padding: 10px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap; }
             .quick-nav-btn { padding: 10px 15px; font-size: 0.85em; }
         }
         
-        /* 一斉OFFボタン */
-        .exit-container { 
-            position: relative; max-width: 450px; margin: 0 auto 30px auto; user-select: none; -webkit-user-select: none;
-        }
+        /* 一斉OFFボタンエリア */
+        .exit-container { position: relative; max-width: 450px; margin: 0 auto 30px auto; user-select: none; -webkit-user-select: none; text-align: center; }
         .exit-btn {
             background-color: #e74c3c; color: white; border: none; padding: 15px 30px; font-size: 1.1em;
             font-weight: bold; border-radius: 8px 8px 0 0; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
@@ -83,30 +43,58 @@
         .exit-btn:hover { background-color: #c0392b; }
         .exit-btn:active { transform: translateY(1px); color: rgba(255,255,255,0.7); }
         .exit-btn.safe { background-color: #2ecc71 !important; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); border-radius: 8px; cursor: default; }
-        
         .progress-container { width: 100%; height: 6px; background-color: #cbd5e0; border-radius: 0 0 8px 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .progress-bar { width: 0%; height: 100%; background-color: #34495e; transition: width 0.1s linear; }
-
-        .section {
-            background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; backdrop-filter: blur(2px);
+        
+        .exclusion-setting-btn {
+            background: #fff; border: 2px solid #34495e; color: #34495e; padding: 8px 16px; border-radius: 20px;
+            font-size: 0.9em; font-weight: bold; cursor: pointer; margin-top: 15px; transition: all 0.2s;
         }
+        .exclusion-setting-btn:hover { background: #34495e; color: #fff; }
+
+        /* モーダル */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(3px);
+        }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .modal-title { margin-top: 0; color: #2c3e50; font-size: 1.2em; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 15px; }
+        .checkbox-list { max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+        .checkbox-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: bold; font-size: 1.05em; color: #34495e; cursor: pointer; }
+        .checkbox-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #3498db; }
+        
+        /* モーダル用ボタン群 */
+        .modal-btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .modal-btn { padding: 12px; border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; border: none; transition: background 0.2s; }
+        .btn-execute { background: #e67e22; color: white; box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3); }
+        .btn-execute:hover { background: #d35400; }
+        .btn-save { background: #3498db; color: white; }
+        .btn-save:hover { background: #2980b9; }
+        .btn-cancel { background: #ecf0f1; color: #7f8c8d; }
+        .btn-cancel:hover { background: #bdc3c7; color: #2c3e50; }
+
+        .section { background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; backdrop-filter: blur(2px); }
         .section-header { display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #3498db; padding-left: 10px; margin-bottom: 15px; }
         h2 { color: #2c3e50; font-size: 1.3em; margin: 0; }
 
-        /* コンロ */
-        .stove-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        @media (max-width: 600px) { .stove-grid { grid-template-columns: 1fr; } }
-        .stove-card { background: #f8f9fa; border: 2px solid #cbd5e0; border-radius: 10px; padding: 15px; text-align: center; }
-        .stove-title { font-weight: bold; font-size: 1em; color: #2c3e50; margin-bottom: 8px; }
-        .stove-btn-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-        .stove-extinguish-btn { padding: 12px; border: 2px solid #e74c3c; border-radius: 6px; font-weight: bold; cursor: pointer; background-color: #fff5f5; color: #e74c3c; transition: all 0.2s; font-size: 0.9em; }
-        .stove-extinguish-btn:hover { background-color: #fde8e8; }
-        .stove-extinguish-btn.disabled { background-color: #edf2f7; color: #a0aec0; border-color: #cbd5e0; cursor: not-allowed; }
-
-        /* バッジ */
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .grid-container { grid-template-columns: 1fr; } }
+        .item-card { background: #f8f9fa; border: 2px solid #cbd5e0; border-radius: 10px; padding: 15px; text-align: center; }
+        .item-title { font-weight: bold; font-size: 1em; color: #2c3e50; margin-bottom: 8px; }
+        .item-btn-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+        
+        .action-btn { padding: 12px; border: 2px solid; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.9em; }
+        .btn-red { border-color: #e74c3c; background-color: #fff5f5; color: #e74c3c; }
+        .btn-red:hover { background-color: #fde8e8; }
+        .btn-blue { border-color: #3498db; background-color: #ebf5fb; color: #3498db; }
+        .btn-blue:hover { background-color: #d6eaf8; }
+        .btn-disabled { background-color: #edf2f7; color: #a0aec0; border-color: #cbd5e0; cursor: not-allowed; }
         .status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
         .badge-on { background-color: #d4edda; color: #155724; }
-        .badge-off { background-color: #f8d7da; color: #721c24; }
+        .badge-off { background-color: #edf2f7; color: #4a5568; }
         .badge-orange { background-color: #ffeaa7; color: #d35400; }
         .badge-red { background-color: #fde8e8; color: #e74c3c; }
 
@@ -121,17 +109,14 @@
         .room-title { font-size: 1.1em; font-weight: bold; color: #4a5568; margin: 0; }
         .room-stats { display: flex; gap: 8px; align-items: center; font-size: 0.85em; font-weight: bold; }
         .room-temp { background: #f7fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; color: #e67e22; font-size: 1.05em; }
-
         .light-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .light-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85em; }
         .light-btn.off { background-color: #edf2f7; color: #718096; }
         .light-btn.on { background-color: #fef3c7; color: #d97706; box-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
-
         .aircon-temp-control { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.9em; font-weight: bold; color: #4a5568; }
         .temp-btn { padding: 2px 10px; border: 1px solid #cbd5e0; background-color: white; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.1s; }
         .temp-btn:hover { background-color: #edf2f7; }
         .target-temp-num { min-width: 24px; text-align: center; font-size: 1.1em; color: #2d3748; }
-
         .aircon-btn { width: 100%; margin-top: 8px; padding: 8px; background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85em; }
         .aircon-btn.active { background-color: #e0f2fe; color: #0369a1; border-color: #7dd3fc; box-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
 
@@ -151,19 +136,18 @@
         .bath-action-btn.active-add { background-color: #2ecc71; color: white; border-color: #27ae60; box-shadow: 0 0 8px rgba(46, 204, 113, 0.4); }
         .btn-timer-active { background-color: #9b59b6 !important; color: white !important; border-color: #8e44ad !important; }
 
-        /* --- 部屋管理画面用スタイル --- */
+        /* 部屋管理画面用 */
         #settings-view { display: none; }
         .manage-btn { background: #34495e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
         .manage-btn:hover { background: #2c3e50; }
         .back-btn { background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 1em; }
         .back-btn:hover { background: #7f8c8d; }
-        
         .add-room-form { display: flex; gap: 10px; margin-bottom: 20px; background: #edf2f7; padding: 15px; border-radius: 8px; align-items: center; }
         .add-room-input { flex-grow: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 1em; }
         .add-btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
-        
         .manage-list { list-style: none; padding: 0; margin: 0; }
-        .manage-list-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; border: 1px solid #e2e8f0; margin-bottom: 10px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+        .manage-list-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; border: 1px solid #e2e8f0; margin-bottom: 10px; border-radius: 6px; font-weight: bold; font-size: 1.1em; flex-wrap: wrap; gap: 10px; }
+        .edit-room-input { padding: 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 0.95em; width: 180px; }
         .delete-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .delete-btn:hover { background: #c0392b; }
     </style>
@@ -173,6 +157,7 @@
     <!-- メイン画面ビュー -->
     <div id="main-view">
         <div class="quick-nav">
+            <button class="quick-nav-btn" onclick="document.getElementById('entrance').scrollIntoView({behavior: 'smooth'})">🚪 玄関の鍵</button>
             <button class="quick-nav-btn" onclick="document.getElementById('kitchen').scrollIntoView({behavior: 'smooth'})">🍳 ガス周り</button>
             <button class="quick-nav-btn" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">💡 部屋の電気</button>
             <button class="quick-nav-btn" onclick="document.getElementById('bath').scrollIntoView({behavior: 'smooth'})">♨️ お風呂</button>
@@ -190,25 +175,47 @@
             <div class="progress-container" id="p-container">
                 <div id="longpress-bar" class="progress-bar"></div>
             </div>
+            <!-- 対象設定ボタン -->
+            <button class="exclusion-setting-btn" onclick="openExclusionModal()">⚙️ 一斉OFFの対象を選ぶ（除外設定）</button>
+        </div>
+
+        <!-- 玄関スマートロック -->
+        <div id="entrance" class="section">
+            <div class="section-header">
+                <h2>🚪 玄関スマートロック</h2>
+                <button class="manage-btn" onclick="lockBothDoors()">🔒 一括施錠</button>
+            </div>
+            <div class="grid-container" style="grid-template-columns: 1fr 1fr;">
+                <div class="item-card">
+                    <div class="item-title">上の鍵</div>
+                    <div><span id="badge-lock-top" class="status-badge badge-red">解錠中 (開)</span></div>
+                    <div class="item-btn-group"><button id="btn-lock-top" class="action-btn btn-blue" onclick="toggleLock('top')">🔒 施錠する</button></div>
+                </div>
+                <div class="item-card">
+                    <div class="item-title">下の鍵</div>
+                    <div><span id="badge-lock-bottom" class="status-badge badge-red">解錠中 (開)</span></div>
+                    <div class="item-btn-group"><button id="btn-lock-bottom" class="action-btn btn-blue" onclick="toggleLock('bottom')">🔒 施錠する</button></div>
+                </div>
+            </div>
         </div>
 
         <div id="kitchen" class="section">
-            <h2>🍳 キッチン・コンロ管理（※遠隔操作は安全のため消火のみ可能）</h2>
-            <div class="stove-grid">
-                <div class="stove-card">
-                    <div class="stove-title">🔥 左コンロ (ガス)</div>
+            <h2>🍳 キッチン・コンロ管理（遠隔は消火のみ）</h2>
+            <div class="grid-container">
+                <div class="item-card">
+                    <div class="item-title">🔥 左コンロ (ガス)</div>
                     <div><span id="stove-badge-1" class="status-badge badge-on">中火で点火中</span></div>
-                    <div class="stove-btn-group"><button id="btn-extinguish-1" class="stove-extinguish-btn" onclick="extinguishStove(1)">⚠️ 遠隔消火する</button></div>
+                    <div class="item-btn-group"><button id="btn-extinguish-1" class="action-btn btn-red" onclick="extinguishStove(1)">⚠️ 遠隔消火する</button></div>
                 </div>
-                <div class="stove-card">
-                    <div class="stove-title">🔥 右コンロ (ガス)</div>
+                <div class="item-card">
+                    <div class="item-title">🔥 右コンロ (ガス)</div>
                     <div><span id="stove-badge-2" class="status-badge badge-red">強火で点火中</span></div>
-                    <div class="stove-btn-group"><button id="btn-extinguish-2" class="stove-extinguish-btn" onclick="extinguishStove(2)">⚠️ 遠隔消火する</button></div>
+                    <div class="item-btn-group"><button id="btn-extinguish-2" class="action-btn btn-red" onclick="extinguishStove(2)">⚠️ 遠隔消火する</button></div>
                 </div>
-                <div class="stove-card">
-                    <div class="stove-title">⚡ 中央コンロ (IH)</div>
+                <div class="item-card">
+                    <div class="item-title">⚡ 中央コンロ (IH)</div>
                     <div><span id="stove-badge-3" class="status-badge badge-red">強 (2000W) 稼働中</span></div>
-                    <div class="stove-btn-group"><button id="btn-extinguish-3" class="stove-extinguish-btn" onclick="extinguishStove(3)">⚠️ 遠隔操作で切る</button></div>
+                    <div class="item-btn-group"><button id="btn-extinguish-3" class="action-btn btn-red" onclick="extinguishStove(3)">⚠️ 遠隔操作で切る</button></div>
                 </div>
             </div>
         </div>
@@ -216,11 +223,8 @@
         <div id="rooms" class="section">
             <div class="section-header">
                 <h2>🚪 各部屋の個別管理</h2>
-                <!-- 部屋管理画面への遷移ボタン -->
-                <button class="manage-btn" onclick="openSettingsView()">⚙️ 部屋の追加・削除</button>
+                <button class="manage-btn" onclick="openSettingsView()">⚙️ 部屋の追加・編集</button>
             </div>
-            
-            <!-- 部屋はJavaScriptで動的にここに生成されます -->
             <div id="rooms-container" class="room-grid"></div>
         </div>
 
@@ -267,31 +271,53 @@
         </div>
     </div> <!-- /main-view -->
 
-    <!-- 管理・設定画面ビュー (初期非表示) -->
+    <!-- 管理・設定画面ビュー -->
     <div id="settings-view">
         <button class="back-btn" onclick="closeSettingsView()">← メイン画面に戻る</button>
-        
         <div class="section">
-            <h2>⚙️ 部屋の追加と削除</h2>
-            <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px;">※誤操作を防ぐため、部屋の追加や削除はこの専用画面でのみ行えます。</p>
-            
+            <h2>⚙️ 部屋の追加・編集・削除</h2>
+            <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px;">※名前を変更する場合は、入力欄を書き換えて「📝 変更」を押してください。</p>
             <div class="add-room-form">
                 <input type="text" id="new-room-name" class="add-room-input" placeholder="新しい部屋の名前 (例: 寝室, 子供部屋)">
                 <button class="add-btn" onclick="addNewRoom()">＋ 部屋を追加</button>
             </div>
-
             <h3>登録済みの部屋一覧</h3>
-            <ul id="manage-room-list" class="manage-list">
-                <!-- リストが動的に生成されます -->
-            </ul>
+            <ul id="manage-room-list" class="manage-list"></ul>
         </div>
-    </div> <!-- /settings-view -->
+    </div>
+
+    <!-- 一斉OFF 除外設定モーダル -->
+    <div id="exclusion-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">⚙️ 一斉OFFの対象を選ぶ</h3>
+            <p style="font-size: 0.85em; color: #7f8c8d; margin-bottom: 15px;">
+                チェックが入っている項目のみ「一斉OFF」の対象になります。
+            </p>
+            
+            <div class="checkbox-list">
+                <label class="checkbox-item"><input type="checkbox" id="chk-exc-door" checked> 🚪 玄関の鍵を一括施錠</label>
+                <label class="checkbox-item"><input type="checkbox" id="chk-exc-stove" checked> 🍳 コンロをすべて消火</label>
+                <label class="checkbox-item"><input type="checkbox" id="chk-exc-bath" checked> ♨️ お風呂を停止</label>
+                <hr style="border: 0; border-top: 1px dashed #cbd5e0; margin: 15px 0;">
+                <div style="font-size: 0.9em; color: #2c3e50; margin-bottom: 10px; font-weight: bold;">各部屋の電気・エアコン</div>
+                <div id="modal-rooms-checkboxes">
+                    <!-- Javascriptで動的に生成 -->
+                </div>
+            </div>
+
+            <!-- アクションボタン群 -->
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-execute" onclick="executeOneTimeAllOff()">🚀 今回だけこの設定ですぐ実行</button>
+                <button class="modal-btn btn-save" onclick="saveAsDefaultSettings()">💾 いつもの設定として保存</button>
+                <button class="modal-btn btn-cancel" onclick="closeExclusionModal()">✖ キャンセル</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         // --- 状態管理データ ---
         let isSystemAllOff = false;
-        
-        // 部屋のデータを配列で管理
+        let locks = { top: false, bottom: false };
         let rooms = [
             { id: 'room_a', name: '部屋 A', color: 'green', aircon: false, tempOff: 28.0, targetTemp: 24, currentTemp: 28.0, lights: [false, false, false, false] },
             { id: 'room_b', name: '部屋 B', color: 'blue', aircon: true, tempOff: 28.4, targetTemp: 22, currentTemp: 22.0, lights: [false, false, false, false] },
@@ -300,189 +326,258 @@
         ];
         const colorPalette = ['green', 'blue', 'orange', ''];
 
-        // コンロとお風呂のデータ
         let stoveData = { 1: { isOn: true }, 2: { isOn: true }, 3: { isOn: true } };
         let currentBathMode = 'stop';
         let isBathTimerSet = false;
         let bathWaterLevelPercent = 15;
         let bathTimer = null;
 
-        // --- 画面切り替え ---
-        function openSettingsView() {
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('settings-view').style.display = 'block';
-            window.scrollTo(0, 0);
-            renderManageList();
+        // 除外設定（初期設定）
+        let defaultExclusionSettings = { door: true, stove: true, bath: true, rooms: {} };
+
+        // 🌟 ローカルストレージ（ブラウザの記憶領域）から設定を復元
+        const savedSettings = localStorage.getItem('smartSecurityExclusionSettings');
+        if (savedSettings) {
+            try {
+                defaultExclusionSettings = JSON.parse(savedSettings);
+            } catch (e) {
+                console.error("設定の読み込みに失敗しました", e);
+            }
         }
 
-        function closeSettingsView() {
-            document.getElementById('settings-view').style.display = 'none';
-            document.getElementById('main-view').style.display = 'block';
-            window.scrollTo(0, 0);
-            renderMainRooms(); // 戻った時に部屋を再描画
-        }
-
-        // --- 部屋の管理（追加・削除）ロジック ---
-        function addNewRoom() {
-            const input = document.getElementById('new-room-name');
-            const name = input.value.trim();
-            if (!name) { alert("部屋の名前を入力してください。"); return; }
+        // --- 一斉OFF除外設定モーダルのロジック ---
+        function openExclusionModal() {
+            const container = document.getElementById('modal-rooms-checkboxes');
+            container.innerHTML = '';
             
-            const newId = 'room_' + Date.now(); // ユニークなIDを生成
-            const nextColor = colorPalette[rooms.length % colorPalette.length]; // 色を順番に割り当て
-
-            rooms.push({
-                id: newId, name: name, color: nextColor,
-                aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0,
-                lights: [false, false, false, false]
+            // 部屋の数だけチェックボックスを生成
+            rooms.forEach(room => {
+                if (defaultExclusionSettings.rooms[room.id] === undefined) {
+                    defaultExclusionSettings.rooms[room.id] = true;
+                }
+                const isChecked = defaultExclusionSettings.rooms[room.id] ? 'checked' : '';
+                const html = `<label class="checkbox-item" style="margin-left: 10px; font-size: 0.95em;"><input type="checkbox" id="chk-exc-room-${room.id}" ${isChecked}> 💡 ${room.name}</label>`;
+                container.innerHTML += html;
             });
             
-            input.value = '';
-            renderManageList();
+            // メイン設定の復元（保存されている設定状態に戻す）
+            document.getElementById('chk-exc-door').checked = defaultExclusionSettings.door;
+            document.getElementById('chk-exc-stove').checked = defaultExclusionSettings.stove;
+            document.getElementById('chk-exc-bath').checked = defaultExclusionSettings.bath;
+
+            document.getElementById('exclusion-modal').style.display = 'flex';
         }
 
+        function closeExclusionModal() {
+            document.getElementById('exclusion-modal').style.display = 'none';
+        }
+
+        // 現在のモーダル内のチェック状態を読み取る関数
+        function getModalCheckboxState() {
+            let tempSettings = { door: false, stove: false, bath: false, rooms: {} };
+            tempSettings.door = document.getElementById('chk-exc-door').checked;
+            tempSettings.stove = document.getElementById('chk-exc-stove').checked;
+            tempSettings.bath = document.getElementById('chk-exc-bath').checked;
+            rooms.forEach(room => {
+                const cb = document.getElementById(`chk-exc-room-${room.id}`);
+                if (cb) tempSettings.rooms[room.id] = cb.checked;
+            });
+            return tempSettings;
+        }
+
+        // 💾 いつもの設定として保存
+        function saveAsDefaultSettings() {
+            defaultExclusionSettings = getModalCheckboxState();
+            localStorage.setItem('smartSecurityExclusionSettings', JSON.stringify(defaultExclusionSettings));
+            closeExclusionModal();
+            alert("長押し時の「いつもの一斉OFF設定」を保存しました。\n（※ページを更新してもこの設定は保持されます）");
+        }
+
+        // 🚀 今回だけこの設定ですぐ実行
+        function executeOneTimeAllOff() {
+            const oneTimeSettings = getModalCheckboxState();
+            closeExclusionModal();
+            triggerAllOffForExit(oneTimeSettings);
+        }
+
+        // --- 玄関の鍵ロジック ---
+        function toggleLock(pos) { locks[pos] = !locks[pos]; updateLockUI(); }
+        function lockBothDoors() { locks.top = true; locks.bottom = true; updateLockUI(); }
+        function updateLockUI() {
+            ['top', 'bottom'].forEach(pos => {
+                const badge = document.getElementById(`badge-lock-${pos}`);
+                const btn = document.getElementById(`btn-lock-${pos}`);
+                if (locks[pos]) {
+                    badge.innerText = "施錠済み (閉)"; badge.className = "status-badge badge-on";
+                    btn.innerText = "🔓 解錠する"; btn.className = "action-btn btn-red";
+                } else {
+                    badge.innerText = "解錠中 (開)"; badge.className = "status-badge badge-red";
+                    btn.innerText = "🔒 施錠する"; btn.className = "action-btn btn-blue";
+                }
+            });
+        }
+
+        // --- 画面切り替え ---
+        function openSettingsView() { document.getElementById('main-view').style.display = 'none'; document.getElementById('settings-view').style.display = 'block'; window.scrollTo(0, 0); renderManageList(); }
+        function closeSettingsView() { document.getElementById('settings-view').style.display = 'none'; document.getElementById('main-view').style.display = 'block'; window.scrollTo(0, 0); renderMainRooms(); }
+
+        // --- 部屋の管理ロジック ---
+        function addNewRoom() {
+            const input = document.getElementById('new-room-name'); const name = input.value.trim();
+            if (!name) { alert("部屋の名前を入力してください。"); return; }
+            const newId = 'room_' + Date.now(); const nextColor = colorPalette[rooms.length % colorPalette.length];
+            rooms.push({ id: newId, name: name, color: nextColor, aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false] });
+            defaultExclusionSettings.rooms[newId] = true;
+            input.value = ''; renderManageList();
+        }
+        
         function deleteRoom(roomId) {
             if (confirm("本当にこの部屋を削除しますか？")) {
                 rooms = rooms.filter(r => r.id !== roomId);
+                delete defaultExclusionSettings.rooms[roomId]; renderManageList();
+            }
+        }
+
+        // 🌟 追加：部屋の名前を変更する処理
+        function renameRoom(roomId) {
+            const input = document.getElementById(`edit-room-${roomId}`);
+            if (!input) return;
+            const newName = input.value.trim();
+            if (!newName) {
+                alert("部屋の名前が空欄です。入力してください。");
+                return;
+            }
+            const room = rooms.find(r => r.id === roomId);
+            if (room) {
+                room.name = newName;
+                alert("部屋の名前を変更しました！");
                 renderManageList();
             }
         }
 
         function renderManageList() {
-            const listContainer = document.getElementById('manage-room-list');
-            listContainer.innerHTML = '';
-            rooms.forEach(room => {
-                const li = document.createElement('li');
-                li.className = 'manage-list-item';
-                li.innerHTML = `
-                    <span>🚪 ${room.name}</span>
-                    <button class="delete-btn" onclick="deleteRoom('${room.id}')">🗑️ 削除</button>
-                `;
-                listContainer.appendChild(li);
+            const listContainer = document.getElementById('manage-room-list'); listContainer.innerHTML = '';
+            rooms.forEach(room => { 
+                listContainer.innerHTML += `
+                <li class="manage-list-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span>🚪</span>
+                        <input type="text" id="edit-room-${room.id}" class="edit-room-input" value="${room.name}">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="manage-btn" onclick="renameRoom('${room.id}')">📝 変更</button>
+                        <button class="delete-btn" onclick="deleteRoom('${room.id}')">🗑️ 削除</button>
+                    </div>
+                </li>`; 
             });
         }
 
         // --- メイン画面の部屋描画ロジック ---
         function renderMainRooms() {
-            const container = document.getElementById('rooms-container');
-            container.innerHTML = '';
-
+            const container = document.getElementById('rooms-container'); container.innerHTML = '';
             rooms.forEach(room => {
-                // ライトのHTML生成
                 let lightsHtml = '';
                 for (let i = 0; i < 4; i++) {
-                    const isOn = room.lights[i];
-                    const btnClass = isOn ? 'light-btn on' : 'light-btn off';
-                    const iconText = isOn ? `💡 ライト${i+1}` : `💤 ライト${i+1}`;
+                    const isOn = room.lights[i]; const btnClass = isOn ? 'light-btn on' : 'light-btn off'; const iconText = isOn ? `💡 ライト${i+1}` : `💤 ライト${i+1}`;
                     lightsHtml += `<button class="${btnClass}" onclick="toggleLight('${room.id}', ${i})">${iconText}</button>`;
                 }
-
-                // エアコンの表示状態
                 const airconBadgeClass = room.aircon ? 'status-badge badge-on' : 'status-badge badge-off';
-                const airconBadgeText = room.aircon ? 'エアコンON' : 'エアコンOFF';
                 const airconBtnClass = room.aircon ? 'aircon-btn active' : 'aircon-btn';
-                const airconBtnText = room.aircon ? '❄️ エアコンを停止する' : '❄️ エアコンをオンにする';
                 const tempColor = room.aircon ? '#2980b9' : '#e67e22';
 
-                const html = `
+                container.innerHTML += `
                     <div class="room-card ${room.color}" id="card-${room.id}">
                         <div class="room-header-info">
                             <h3 class="room-title">🚪 ${room.name}</h3>
                             <div class="room-stats">
-                                <span id="temp-${room.id}" class="room-temp" style="color: ${tempColor}">${room.currentTemp.toFixed(1)} °C</span>
-                                <span id="aircon-badge-${room.id}" class="${airconBadgeClass}">${airconBadgeText}</span>
+                                <span class="room-temp" style="color: ${tempColor}">${room.currentTemp.toFixed(1)} °C</span>
+                                <span class="${airconBadgeClass}">${room.aircon ? 'エアコンON' : 'エアコンOFF'}</span>
                             </div>
                         </div>
-                        <div class="light-container" id="lights-${room.id}">
-                            ${lightsHtml}
-                        </div>
+                        <div class="light-container">${lightsHtml}</div>
                         <div class="aircon-temp-control">
-                            <span>⚙️ 設定温度:</span>
-                            <button class="temp-btn" onclick="adjustAirconTemp('${room.id}', -1)">-</button>
-                            <span id="aircon-target-${room.id}" class="target-temp-num">${room.targetTemp}</span>°C
-                            <button class="temp-btn" onclick="adjustAirconTemp('${room.id}', 1)">+</button>
+                            <span>⚙️ 設定温度:</span><button class="temp-btn" onclick="adjustAirconTemp('${room.id}', -1)">-</button>
+                            <span class="target-temp-num">${room.targetTemp}</span>°C<button class="temp-btn" onclick="adjustAirconTemp('${room.id}', 1)">+</button>
                         </div>
-                        <button id="aircon-btn-${room.id}" class="${airconBtnClass}" onclick="toggleAircon('${room.id}')">${airconBtnText}</button>
-                    </div>
-                `;
-                container.innerHTML += html;
+                        <button class="${airconBtnClass}" onclick="toggleAircon('${room.id}')">${room.aircon ? '❄️ エアコンを停止する' : '❄️ エアコンをオンにする'}</button>
+                    </div>`;
             });
         }
 
-        // --- 機器操作ロジック ---
-        function toggleLight(roomId, lightIndex) {
-            const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            room.lights[lightIndex] = !room.lights[lightIndex];
-            renderMainRooms(); // 状態変更後に再描画
-        }
-
+        function toggleLight(roomId, lightIndex) { const room = rooms.find(r => r.id === roomId); if (room) { room.lights[lightIndex] = !room.lights[lightIndex]; renderMainRooms(); } }
         function toggleAircon(roomId, forceOff) {
             const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            
-            if (forceOff === 'forceOff') {
-                if (!room.aircon) return;
-                room.aircon = false;
-            } else {
-                room.aircon = !room.aircon;
+            if (room) {
+                if (forceOff === 'forceOff') { if (!room.aircon) return; room.aircon = false; } else { room.aircon = !room.aircon; }
+                room.currentTemp = room.aircon ? room.targetTemp : room.tempOff; renderMainRooms(); 
             }
-
-            room.currentTemp = room.aircon ? room.targetTemp : room.tempOff;
-            renderMainRooms(); // 状態変更後に再描画
         }
-
         function adjustAirconTemp(roomId, delta) {
             const room = rooms.find(r => r.id === roomId);
-            if (!room) return;
-            
-            room.targetTemp += delta;
-            if (room.targetTemp < 18) room.targetTemp = 18;
-            if (room.targetTemp > 30) room.targetTemp = 30;
-            
-            if (room.aircon) room.currentTemp = room.targetTemp;
-            renderMainRooms();
+            if (room) {
+                room.targetTemp += delta;
+                if (room.targetTemp < 18) room.targetTemp = 18; if (room.targetTemp > 30) room.targetTemp = 30;
+                if (room.aircon) room.currentTemp = room.targetTemp; renderMainRooms();
+            }
         }
 
-        // --- コンロ・お風呂・一斉OFFロジック (既存維持) ---
+        // --- 一斉OFFロジック ---
         let longPressTimeout, progressInterval, currentProgress = 0;
+        
         function startLongPress() {
-            if (isSystemAllOff) return;
             currentProgress = 0;
             document.getElementById('global-off-btn').innerText = "そのまま押し続けてください...";
             progressInterval = setInterval(() => {
                 currentProgress += 2; if (currentProgress > 100) currentProgress = 100;
                 document.getElementById('longpress-bar').style.width = currentProgress + "%";
             }, 40);
-            longPressTimeout = setTimeout(() => { triggerAllOffForExit(); }, 2000);
+            longPressTimeout = setTimeout(() => { triggerAllOffForExit(null); }, 2000);
         }
 
         function cancelLongPress() {
-            if (isSystemAllOff) return;
             clearTimeout(longPressTimeout); clearInterval(progressInterval);
             currentProgress = 0; document.getElementById('longpress-bar').style.width = "0%";
             document.getElementById('global-off-btn').innerText = "🚶 外出時の一斉OFF（2秒間長押し）";
         }
 
-        function triggerAllOffForExit() {
-            clearInterval(progressInterval); isSystemAllOff = true;
-            for (let i = 1; i <= 3; i++) { extinguishStove(i); }
+        function triggerAllOffForExit(customSettings) {
+            clearInterval(progressInterval);
+            let activeSettings = customSettings || defaultExclusionSettings;
+            let executedItems = [];
             
-            // 全ての部屋の電気とエアコンを消す
+            if (activeSettings.door) { lockBothDoors(); executedItems.push("玄関の施錠"); }
+            if (activeSettings.stove) { for (let i = 1; i <= 3; i++) extinguishStove(i); executedItems.push("コンロの消火"); }
+            
+            let roomCount = 0;
             rooms.forEach(room => {
-                room.lights = [false, false, false, false];
-                if (room.aircon) toggleAircon(room.id, 'forceOff');
+                let shouldTurnOff = activeSettings.rooms[room.id] !== false; 
+                if (shouldTurnOff) {
+                    room.lights = [false, false, false, false];
+                    if (room.aircon) toggleAircon(room.id, 'forceOff');
+                    roomCount++;
+                }
             });
+            if (roomCount > 0) executedItems.push(`${roomCount}部屋の電源OFF`);
             renderMainRooms();
             
-            currentBathMode = 'stop'; isBathTimerSet = false;
-            clearInterval(bathTimer); bathTimer = null; updateBathUI();
+            if (activeSettings.bath) {
+                currentBathMode = 'stop'; isBathTimerSet = false; clearInterval(bathTimer); bathTimer = null; updateBathUI();
+                executedItems.push("お風呂の停止");
+            }
 
             const mainBtn = document.getElementById('global-off-btn');
-            mainBtn.innerText = "🏠 家中すべて安全にOFFにしました";
+            mainBtn.innerText = "🏠 設定された対象機器をOFFにしました";
             mainBtn.classList.add('safe');
             document.getElementById('p-container').style.display = "none"; 
-            alert("長押しを検知：すべての機器を安全にオフにしました。お気をつけてお出かけください！");
+            
+            setTimeout(() => {
+                mainBtn.innerText = "🚶 外出時の一斉OFF（2秒間長押し）";
+                mainBtn.classList.remove('safe');
+                document.getElementById('p-container').style.display = "block";
+                document.getElementById('longpress-bar').style.width = "0%"; currentProgress = 0;
+            }, 4000);
+
+            alert("【一斉OFF 実行完了】\n以下の操作を行いました。\n・" + executedItems.join("\n・") + "\n\nいってらっしゃいませ！");
         }
 
         function extinguishStove(stoveNum) {
@@ -491,20 +586,18 @@
             document.getElementById(`stove-badge-${stoveNum}`).innerText = (stoveNum === 3) ? "OFF" : "消火済み"; 
             document.getElementById(`stove-badge-${stoveNum}`).className = "status-badge badge-off";
             document.getElementById(`btn-extinguish-${stoveNum}`).innerText = "消火済み"; 
-            document.getElementById(`btn-extinguish-${stoveNum}`).classList.add('disabled');
+            document.getElementById(`btn-extinguish-${stoveNum}`).classList.remove('btn-red');
+            document.getElementById(`btn-extinguish-${stoveNum}`).classList.add('btn-disabled');
         }
 
         function toggleBathTimer() {
-            if (isSystemAllOff) return;
             isBathTimerSet = !isBathTimerSet;
-            if (isBathTimerSet) { currentBathMode = 'stop'; clearInterval(bathTimer); bathTimer = null; }
-            updateBathUI();
+            if (isBathTimerSet) { currentBathMode = 'stop'; clearInterval(bathTimer); bathTimer = null; } updateBathUI();
         }
 
         function changeBathMode(mode) {
             currentBathMode = (currentBathMode === mode) ? 'stop' : mode;
             isBathTimerSet = false; clearInterval(bathTimer); bathTimer = null;
-            
             if (currentBathMode === 'boil' || currentBathMode === 'add') {
                 bathTimer = setInterval(() => {
                     if (bathWaterLevelPercent < 100) { bathWaterLevelPercent += 5; if (bathWaterLevelPercent > 100) bathWaterLevelPercent = 100; }
@@ -518,25 +611,14 @@
         }
 
         function updateBathUI() {
-            const badge = document.getElementById('bath-status-badge');
-            const temp = document.getElementById('bath-temp-select').value;
-            const timerBtn = document.getElementById('btn-bath-timer');
-            
-            document.getElementById('water-level-percent').innerText = bathWaterLevelPercent;
-            document.getElementById('water-level-liters').innerText = Math.round(200 * bathWaterLevelPercent / 100);
-            
+            const badge = document.getElementById('bath-status-badge'); const temp = document.getElementById('bath-temp-select').value; const timerBtn = document.getElementById('btn-bath-timer');
+            document.getElementById('water-level-percent').innerText = bathWaterLevelPercent; document.getElementById('water-level-liters').innerText = Math.round(200 * bathWaterLevelPercent / 100);
             const fillBar = document.getElementById('water-fill-bar');
             fillBar.style.width = bathWaterLevelPercent + "%"; fillBar.innerText = bathWaterLevelPercent + "%";
             fillBar.style.backgroundColor = bathWaterLevelPercent < 30 ? "#e74c3c" : bathWaterLevelPercent < 70 ? "#f39c12" : "#3498db";
+            document.getElementById('btn-bath-boil').className = "bath-action-btn"; document.getElementById('btn-bath-reheat').className = "bath-action-btn"; document.getElementById('btn-bath-add').className = "bath-action-btn";
 
-            document.getElementById('btn-bath-boil').className = "bath-action-btn"; 
-            document.getElementById('btn-bath-reheat').className = "bath-action-btn"; 
-            document.getElementById('btn-bath-add').className = "bath-action-btn";
-
-            if (isBathTimerSet) {
-                timerBtn.innerText = "解除する"; timerBtn.classList.add('btn-timer-active');
-                badge.innerText = `⏰ 予約中 (${temp}°C)`; badge.className = "status-badge badge-orange";
-            } else {
+            if (isBathTimerSet) { timerBtn.innerText = "解除する"; timerBtn.classList.add('btn-timer-active'); badge.innerText = `⏰ 予約中 (${temp}°C)`; badge.className = "status-badge badge-orange"; } else {
                 timerBtn.innerText = "予約セット"; timerBtn.classList.remove('btn-timer-active');
                 if (currentBathMode === 'stop') { badge.innerText = bathWaterLevelPercent === 100 ? "沸き上がり (保温中)" : "停止中"; badge.className = bathWaterLevelPercent === 100 ? "status-badge badge-on" : "status-badge badge-off"; } 
                 else if (currentBathMode === 'boil') { badge.innerText = `自動湯沸かし中`; badge.className = "status-badge badge-on"; document.getElementById('btn-bath-boil').classList.add('active-boil'); } 
@@ -545,9 +627,13 @@
             }
         }
 
-        // 初期描画の実行
-        renderMainRooms();
-        updateBathUI();
+        // 初期描画
+        rooms.forEach(r => {
+            if (defaultExclusionSettings.rooms[r.id] === undefined) {
+                defaultExclusionSettings.rooms[r.id] = true;
+            }
+        });
+        updateLockUI(); renderMainRooms(); updateBathUI();
     </script>
 </body>
 </html>
