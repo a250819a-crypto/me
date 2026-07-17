@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スマートホームセキュリティ</title>
+    <title>スマートセキュリティ</title>
     <style>
         html {
-            scroll-behavior: smooth; /* スムーズスクロールを有効化 */
-            scroll-padding-top: 80px; /* ジャンプ時にヘッダーに隠れないように余白を設定 */
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: #f7e6cf; /* 木目調の背景色 */
-            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYAAAAGACAIAAABv+A93AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+M88AAAADRJREFUeNrtwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbmD0AAABVbM48AAAAABJRU5ErkJggg=='); /* 木目テクスチャのベース64 */
+            background-color: #f7e6cf;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYAAAAGACAIAAABv+A93AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+M88AAAADRJREFUeNrtwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbmD0AAABVbM48AAAAABJRU5ErkJggg==');
             background-size: cover;
             color: #333;
             padding: 20px;
@@ -22,7 +22,7 @@
         h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 25px; }
 
-        /* 左上クイックナビゲーションのスタイル */
+        /* 左上クイックナビゲーション */
         .quick-nav {
             position: fixed;
             top: 20px;
@@ -53,7 +53,6 @@
             box-shadow: 0 6px 10px rgba(52, 152, 219, 0.3);
         }
         
-        /* 画面が狭い場合（スマホ・タブレット等）は上部固定メニューに変更 */
         @media (max-width: 1150px) {
             .quick-nav {
                 position: sticky;
@@ -69,156 +68,74 @@
                 box-shadow: 0 2px 10px rgba(0,0,0,0.05);
                 flex-wrap: wrap;
             }
-            .quick-nav-btn {
-                padding: 10px 15px;
-                font-size: 0.85em;
-            }
+            .quick-nav-btn { padding: 10px 15px; font-size: 0.85em; }
         }
         
-        /* 一斉OFFボタンのコンテナとスタイル */
+        /* 一斉OFFボタン */
         .exit-container { 
-            position: relative;
-            max-width: 450px; 
-            margin: 0 auto 30px auto; 
-            user-select: none;
-            -webkit-user-select: none;
+            position: relative; max-width: 450px; margin: 0 auto 30px auto; user-select: none; -webkit-user-select: none;
         }
         .exit-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 8px 8px 0 0;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-            transition: background-color 0.2s, transform 0.1s, color 0.1s;
-            width: 100%;
-            display: block;
+            background-color: #e74c3c; color: white; border: none; padding: 15px 30px; font-size: 1.1em;
+            font-weight: bold; border-radius: 8px 8px 0 0; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+            transition: background-color 0.2s, transform 0.1s, color 0.1s; width: 100%; display: block;
         }
         .exit-btn:hover { background-color: #c0392b; }
         .exit-btn:active { transform: translateY(1px); color: rgba(255,255,255,0.7); }
-        .exit-btn.safe {
-            background-color: #2ecc71 !important;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-            border-radius: 8px;
-            cursor: default;
-        }
+        .exit-btn.safe { background-color: #2ecc71 !important; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); border-radius: 8px; cursor: default; }
         
-        /* 長押し進捗ゲージ */
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background-color: #cbd5e0;
-            border-radius: 0 0 8px 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background-color: #34495e;
-            transition: width 0.1s linear;
-        }
+        .progress-container { width: 100%; height: 6px; background-color: #cbd5e0; border-radius: 0 0 8px 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .progress-bar { width: 0%; height: 100%; background-color: #34495e; transition: width 0.1s linear; }
 
         .section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 25px;
-            backdrop-filter: blur(2px);
+            background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; backdrop-filter: blur(2px);
         }
-        h2 { border-left: 5px solid #3498db; padding-left: 10px; color: #2c3e50; font-size: 1.3em; margin-bottom: 15px; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #3498db; padding-left: 10px; margin-bottom: 15px; }
+        h2 { color: #2c3e50; font-size: 1.3em; margin: 0; }
 
-        /* コンロ管理のレイアウト */
+        /* コンロ */
         .stove-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
         @media (max-width: 600px) { .stove-grid { grid-template-columns: 1fr; } }
         .stove-card { background: #f8f9fa; border: 2px solid #cbd5e0; border-radius: 10px; padding: 15px; text-align: center; }
         .stove-title { font-weight: bold; font-size: 1em; color: #2c3e50; margin-bottom: 8px; }
         .stove-btn-group { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-        
-        .stove-extinguish-btn {
-            padding: 12px;
-            border: 2px solid #e74c3c;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            background-color: #fff5f5;
-            color: #e74c3c;
-            transition: all 0.2s;
-            font-size: 0.9em;
-        }
+        .stove-extinguish-btn { padding: 12px; border: 2px solid #e74c3c; border-radius: 6px; font-weight: bold; cursor: pointer; background-color: #fff5f5; color: #e74c3c; transition: all 0.2s; font-size: 0.9em; }
         .stove-extinguish-btn:hover { background-color: #fde8e8; }
-        .stove-extinguish-btn.disabled {
-            background-color: #edf2f7;
-            color: #a0aec0;
-            border-color: #cbd5e0;
-            cursor: not-allowed;
-        }
+        .stove-extinguish-btn.disabled { background-color: #edf2f7; color: #a0aec0; border-color: #cbd5e0; cursor: not-allowed; }
 
-        /* 状態バッジ */
+        /* バッジ */
         .status-badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
         .badge-on { background-color: #d4edda; color: #155724; }
         .badge-off { background-color: #f8d7da; color: #721c24; }
         .badge-orange { background-color: #ffeaa7; color: #d35400; }
         .badge-red { background-color: #fde8e8; color: #e74c3c; }
 
-        /* 各部屋のレイアウト */
+        /* 部屋 */
         .room-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 600px) { .room-grid { grid-template-columns: 1fr; } }
-        .room-card { 
-            background: rgba(255,255,255,0.85); 
-            border: 2px solid #e2e8f0; 
-            border-radius: 10px; 
-            padding: 15px; 
-            transition: all 0.3s;
-        }
-        
+        .room-card { background: rgba(255,255,255,0.85); border: 2px solid #e2e8f0; border-radius: 10px; padding: 15px; transition: all 0.3s; }
         .room-card.green { border-color: #2ecc71; background-color: rgba(46,204,113,0.1); }
         .room-card.blue { border-color: #3498db; background-color: rgba(52,152,219,0.1); }
         .room-card.orange { border-color: #e67e22; background-color: rgba(230,126,34,0.1); }
-        
         .room-header-info { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #edf2f7; padding-bottom: 8px; margin-bottom: 10px; }
         .room-title { font-size: 1.1em; font-weight: bold; color: #4a5568; margin: 0; }
         .room-stats { display: flex; gap: 8px; align-items: center; font-size: 0.85em; font-weight: bold; }
         .room-temp { background: #f7fafc; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; color: #e67e22; font-size: 1.05em; }
 
-        /* 電気ボタン */
         .light-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .light-btn { padding: 10px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85em; }
         .light-btn.off { background-color: #edf2f7; color: #718096; }
         .light-btn.on { background-color: #fef3c7; color: #d97706; box-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
 
-        /* エアコン温度コントロール */
-        .aircon-temp-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 12px;
-            font-size: 0.9em;
-            font-weight: bold;
-            color: #4a5568;
-        }
-        .temp-btn {
-            padding: 2px 10px;
-            border: 1px solid #cbd5e0;
-            background-color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.1s;
-        }
+        .aircon-temp-control { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 0.9em; font-weight: bold; color: #4a5568; }
+        .temp-btn { padding: 2px 10px; border: 1px solid #cbd5e0; background-color: white; border-radius: 4px; cursor: pointer; font-weight: bold; transition: background 0.1s; }
         .temp-btn:hover { background-color: #edf2f7; }
         .target-temp-num { min-width: 24px; text-align: center; font-size: 1.1em; color: #2d3748; }
 
-        /* 個別エアコンボタン */
         .aircon-btn { width: 100%; margin-top: 8px; padding: 8px; background-color: #edf2f7; color: #4a5568; border: 1px solid #cbd5e0; border-radius: 6px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 0.85em; }
         .aircon-btn.active { background-color: #e0f2fe; color: #0369a1; border-color: #7dd3fc; box-shadow: 0 0 8px rgba(56, 189, 248, 0.3); }
 
-        /* お風呂専用のパネルデザイン */
+        /* お風呂 */
         .bath-panel { background: #f7fafc; border: 2px solid #cbd5e0; border-radius: 8px; padding: 15px; margin-top: 10px; }
         .bath-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #e2e8f0; padding: 10px; border-radius: 5px; }
         .bath-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -232,343 +149,361 @@
         .bath-action-btn.active-boil { background-color: #3498db; color: white; border-color: #2980b9; box-shadow: 0 0 8px rgba(52, 152, 219, 0.4); }
         .bath-action-btn.active-reheat { background-color: #e67e22; color: white; border-color: #d35400; box-shadow: 0 0 8px rgba(230, 126, 34, 0.4); }
         .bath-action-btn.active-add { background-color: #2ecc71; color: white; border-color: #27ae60; box-shadow: 0 0 8px rgba(46, 204, 113, 0.4); }
-        
         .btn-timer-active { background-color: #9b59b6 !important; color: white !important; border-color: #8e44ad !important; }
+
+        /* --- 部屋管理画面用スタイル --- */
+        #settings-view { display: none; }
+        .manage-btn { background: #34495e; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .manage-btn:hover { background: #2c3e50; }
+        .back-btn { background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-size: 1em; }
+        .back-btn:hover { background: #7f8c8d; }
+        
+        .add-room-form { display: flex; gap: 10px; margin-bottom: 20px; background: #edf2f7; padding: 15px; border-radius: 8px; align-items: center; }
+        .add-room-input { flex-grow: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 1em; }
+        .add-btn { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 1em; }
+        
+        .manage-list { list-style: none; padding: 0; margin: 0; }
+        .manage-list-item { display: flex; justify-content: space-between; align-items: center; background: white; padding: 15px; border: 1px solid #e2e8f0; margin-bottom: 10px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+        .delete-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .delete-btn:hover { background: #c0392b; }
     </style>
 </head>
 <body>
 
-    <div class="quick-nav">
-        <button class="quick-nav-btn" onclick="document.getElementById('kitchen').scrollIntoView({behavior: 'smooth'})">🍳 ガス周り</button>
-        <button class="quick-nav-btn" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">💡 部屋の電気</button>
-        <button class="quick-nav-btn" onclick="document.getElementById('bath').scrollIntoView({behavior: 'smooth'})">♨️ お風呂</button>
-    </div>
-
-    <h1>🏠 スマートホームセキュリティ</h1>
-
-    <div class="exit-container">
-        <button id="global-off-btn" class="exit-btn" 
-                onmousedown="startLongPress()" onmouseup="cancelLongPress()" mouseleave="cancelLongPress()"
-                ontouchstart="startLongPress()" ontouchend="cancelLongPress()">
-            🚶 外出時の一斉OFF（2秒間長押し）
-        </button>
-        <div class="progress-container" id="p-container">
-            <div id="longpress-bar" class="progress-bar"></div>
+    <!-- メイン画面ビュー -->
+    <div id="main-view">
+        <div class="quick-nav">
+            <button class="quick-nav-btn" onclick="document.getElementById('kitchen').scrollIntoView({behavior: 'smooth'})">🍳 ガス周り</button>
+            <button class="quick-nav-btn" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">💡 部屋の電気</button>
+            <button class="quick-nav-btn" onclick="document.getElementById('bath').scrollIntoView({behavior: 'smooth'})">♨️ お風呂</button>
         </div>
-    </div>
 
-    <div id="kitchen" class="section">
-        <h2>🍳 キッチン・コンロ管理（※遠隔操作は安全のため消火のみ可能）</h2>
-        <div class="stove-grid">
-            <div class="stove-card">
-                <div class="stove-title">🔥 左コンロ (ガス)</div>
-                <div><span id="stove-badge-1" class="status-badge badge-on">中火で点火中</span></div>
-                <div class="stove-btn-group">
-                    <button id="btn-extinguish-1" class="stove-extinguish-btn" onclick="extinguishStove(1)">⚠️ 遠隔消火する</button>
-                </div>
+        <h1>🏠 スマートセキュリティ</h1>
+        <div class="subtitle">遠隔安全消火システム（消し忘れ防止・HEMS連動）</div>
+
+        <div class="exit-container">
+            <button id="global-off-btn" class="exit-btn" 
+                    onmousedown="startLongPress()" onmouseup="cancelLongPress()" mouseleave="cancelLongPress()"
+                    ontouchstart="startLongPress()" ontouchend="cancelLongPress()">
+                🚶 外出時の一斉OFF（2秒間長押し）
+            </button>
+            <div class="progress-container" id="p-container">
+                <div id="longpress-bar" class="progress-bar"></div>
             </div>
-            <div class="stove-card">
-                <div class="stove-title">🔥 右コンロ (ガス)</div>
-                <div><span id="stove-badge-2" class="status-badge badge-red">強火で点火中</span></div>
-                <div class="stove-btn-group">
-                    <button id="btn-extinguish-2" class="stove-extinguish-btn" onclick="extinguishStove(2)">⚠️ 遠隔消火する</button>
+        </div>
+
+        <div id="kitchen" class="section">
+            <h2>🍳 キッチン・コンロ管理（※遠隔操作は安全のため消火のみ可能）</h2>
+            <div class="stove-grid">
+                <div class="stove-card">
+                    <div class="stove-title">🔥 左コンロ (ガス)</div>
+                    <div><span id="stove-badge-1" class="status-badge badge-on">中火で点火中</span></div>
+                    <div class="stove-btn-group"><button id="btn-extinguish-1" class="stove-extinguish-btn" onclick="extinguishStove(1)">⚠️ 遠隔消火する</button></div>
                 </div>
-            </div>
-            <div class="stove-card">
-                <div class="stove-title">⚡ 中央コンロ (IH)</div>
-                <div><span id="stove-badge-3" class="status-badge badge-red">強 (2000W) 稼働中</span></div>
-                <div class="stove-btn-group">
-                    <button id="btn-extinguish-3" class="stove-extinguish-btn" onclick="extinguishStove(3)">⚠️ 遠隔操作で切る</button>
+                <div class="stove-card">
+                    <div class="stove-title">🔥 右コンロ (ガス)</div>
+                    <div><span id="stove-badge-2" class="status-badge badge-red">強火で点火中</span></div>
+                    <div class="stove-btn-group"><button id="btn-extinguish-2" class="stove-extinguish-btn" onclick="extinguishStove(2)">⚠️ 遠隔消火する</button></div>
+                </div>
+                <div class="stove-card">
+                    <div class="stove-title">⚡ 中央コンロ (IH)</div>
+                    <div><span id="stove-badge-3" class="status-badge badge-red">強 (2000W) 稼働中</span></div>
+                    <div class="stove-btn-group"><button id="btn-extinguish-3" class="stove-extinguish-btn" onclick="extinguishStove(3)">⚠️ 遠隔操作で切る</button></div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div id="rooms" class="section">
-        <h2>🚪 各部屋の個別管理（カラー色分け）</h2>
-        <div class="room-grid">
-            <div class="room-card green">
-                <div class="room-header-info">
-                    <h3 class="room-title">🚪 部屋 A</h3>
-                    <div class="room-stats"><span id="temp-A" class="room-temp">28.0 °C</span><span id="aircon-badge-A" class="status-badge badge-off">エアコンOFF</span></div>
-                </div>
-                <div class="light-container">
-                    <button id="light-A-1" class="light-btn off" onclick="toggleLight('A', 1)">💤 ライト1</button>
-                    <button id="light-A-2" class="light-btn off" onclick="toggleLight('A', 2)">💤 ライト2</button>
-                    <button id="light-A-3" class="light-btn off" onclick="toggleLight('A', 3)">💤 ライト3</button>
-                    <button id="light-A-4" class="light-btn off" onclick="toggleLight('A', 4)">💤 ライト4</button>
-                </div>
-                <div class="aircon-temp-control">
-                    <span>⚙️ 設定温度:</span>
-                    <button class="temp-btn" onclick="adjustAirconTemp('A', -1)">-</button>
-                    <span id="aircon-target-A" class="target-temp-num">24</span>°C
-                    <button class="temp-btn" onclick="adjustAirconTemp('A', 1)">+</button>
-                </div>
-                <button id="aircon-btn-A" class="aircon-btn" onclick="toggleAircon('A')">❄️ エアコンをオンにする</button>
-            </div>
-
-            <div class="room-card blue">
-                <div class="room-header-info">
-                    <h3 class="room-title">🚪 部屋 B</h3>
-                    <div class="room-stats"><span id="temp-B" class="room-temp">28.4 °C</span><span id="aircon-badge-B" class="status-badge badge-on">エアコンON</span></div>
-                </div>
-                <div class="light-container">
-                    <button id="light-B-1" class="light-btn off" onclick="toggleLight('B', 1)">💤 ライト1</button>
-                    <button id="light-B-2" class="light-btn off" onclick="toggleLight('B', 2)">💤 ライト2</button>
-                    <button id="light-B-3" class="light-btn off" onclick="toggleLight('B', 3)">💤 ライト3</button>
-                    <button id="light-B-4" class="light-btn off" onclick="toggleLight('B', 4)">💤 ライト4</button>
-                </div>
-                <div class="aircon-temp-control">
-                    <span>⚙️ 設定温度:</span>
-                    <button class="temp-btn" onclick="adjustAirconTemp('B', -1)">-</button>
-                    <span id="aircon-target-B" class="target-temp-num">22</span>°C
-                    <button class="temp-btn" onclick="adjustAirconTemp('B', 1)">+</button>
-                </div>
-                <button id="aircon-btn-B" class="aircon-btn active" onclick="toggleAircon('B')">❄️ エアコンを停止する</button>
-            </div>
-
-            <div class="room-card orange">
-                <div class="room-header-info">
-                    <h3 class="room-title">🚪 部屋 C</h3>
-                    <div class="room-stats"><span id="temp-C" class="room-temp">27.6 °C</span><span id="aircon-badge-C" class="status-badge badge-off">エアコンOFF</span></div>
-                </div>
-                <div class="light-container">
-                    <button id="light-C-1" class="light-btn off" onclick="toggleLight('C', 1)">💤 ライト1</button>
-                    <button id="light-C-2" class="light-btn off" onclick="toggleLight('C', 2)">💤 ライト2</button>
-                    <button id="light-C-3" class="light-btn off" onclick="toggleLight('C', 3)">💤 ライト3</button>
-                    <button id="light-C-4" class="light-btn off" onclick="toggleLight('C', 4)">💤 ライト4</button>
-                </div>
-                <div class="aircon-temp-control">
-                    <span>⚙️ 設定温度:</span>
-                    <button class="temp-btn" onclick="adjustAirconTemp('C', -1)">-</button>
-                    <span id="aircon-target-C" class="target-temp-num">27</span>°C
-                    <button class="temp-btn" onclick="adjustAirconTemp('C', 1)">+</button>
-                </div>
-                <button id="aircon-btn-C" class="aircon-btn" onclick="toggleAircon('C')">❄️ エアコンをオンにする</button>
-            </div>
-
-            <div class="room-card">
-                <div class="room-header-info">
-                    <h3 class="room-title">🚪 部屋 D</h3>
-                    <div class="room-stats"><span id="temp-D" class="room-temp">28.0 °C</span><span id="aircon-badge-D" class="status-badge badge-off">エアコンOFF</span></div>
-                </div>
-                <div class="light-container">
-                    <button id="light-D-1" class="light-btn off" onclick="toggleLight('D', 1)">💤 ライト1</button>
-                    <button id="light-D-2" class="light-btn off" onclick="toggleLight('D', 2)">💤 ライト2</button>
-                    <button id="light-D-3" class="light-btn off" onclick="toggleLight('D', 3)">💤 ライト3</button>
-                    <button id="light-D-4" class="light-btn off" onclick="toggleLight('D', 4)">💤 ライト4</button>
-                </div>
-                <div class="aircon-temp-control">
-                    <span>⚙️ 設定温度:</span>
-                    <button class="temp-btn" onclick="adjustAirconTemp('D', -1)">-</button>
-                    <span id="aircon-target-D" class="target-temp-num">25</span>°C
-                    <button class="temp-btn" onclick="adjustAirconTemp('D', 1)">+</button>
-                </div>
-                <button id="aircon-btn-D" class="aircon-btn" onclick="toggleAircon('D')">❄️ エアコンをオンにする</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="bath" class="section">
-        <h2>♨️ お風呂・給湯詳細管理</h2>
-        <div class="bath-panel">
-            <div class="bath-header">
-                <div><strong>給湯器状態:</strong></div>
-                <div><span id="bath-status-badge" class="status-badge badge-off">停止中</span></div>
+        <div id="rooms" class="section">
+            <div class="section-header">
+                <h2>🚪 各部屋の個別管理</h2>
+                <!-- 部屋管理画面への遷移ボタン -->
+                <button class="manage-btn" onclick="openSettingsView()">⚙️ 部屋の追加・削除</button>
             </div>
             
-            <div class="bath-row" style="border-bottom: 1px dashed #cbd5e0; padding-bottom: 12px; margin-bottom: 12px;">
-                <label for="bath-timer-select"><strong>🕒 帰宅タイマー予約:</strong></label>
-                <div>
-                    <select id="bath-timer-select" class="bath-select" style="padding: 4px 8px; font-size: 0.9em;">
-                        <option value="18:00">18:00 に沸かす</option>
-                        <option value="19:00" selected>19:00 に沸かす</option>
-                        <option value="20:00">20:00 に沸かす</option>
-                        <option value="21:00">21:00 に沸かす</option>
-                    </select>
-                    <button id="btn-bath-timer" class="temp-btn" style="padding: 6px 12px; margin-left: 5px;" onclick="toggleBathTimer()">予約セット</button>
-                </div>
-            </div>
+            <!-- 部屋はJavaScriptで動的にここに生成されます -->
+            <div id="rooms-container" class="room-grid"></div>
+        </div>
 
-            <div class="bath-row">
-                <label for="bath-temp-select"><strong>設定温度:</strong></label>
-                <select id="bath-temp-select" class="bath-select" onchange="updateBathUI()">
-                    <option value="39">39 °C (ぬるめ)</option>
-                    <option value="40">40 °C</option>
-                    <option value="41" selected>41 °C (標準)</option>
-                    <option value="42">42 °C</option>
-                    <option value="43">43 °C (熱め)</option>
-                </select>
-            </div>
-            <div class="water-meter-container">
-                <div class="water-info-text">
-                    <span><strong>💧 浴槽内のお湯の残量:</strong></span>
-                    <div><strong>約 <span id="water-level-liters">30</span> L</strong> / 200 L <span style="margin-left: 10px; color: #7f8c8d;">(<span id="water-level-percent">15</span>%)</span></div>
+        <div id="bath" class="section">
+            <h2>♨️ お風呂・給湯詳細管理</h2>
+            <div class="bath-panel">
+                <div class="bath-header">
+                    <div><strong>給湯器状態:</strong></div>
+                    <div><span id="bath-status-badge" class="status-badge badge-off">停止中</span></div>
                 </div>
-                <div class="water-bar"><div id="water-fill-bar" class="water-fill">15%</div></div>
-            </div>
-            <div class="bath-btn-group">
-                <button id="btn-bath-boil" class="bath-action-btn" onclick="changeBathMode('boil')">🛁 お風呂を沸かす</button>
-                <button id="btn-bath-reheat" class="bath-action-btn" onclick="changeBathMode('reheat')">🔥 追い炊き</button>
-                <button id="btn-bath-add" class="bath-action-btn" onclick="changeBathMode('add')">💧 お湯増し</button>
+                <div class="bath-row" style="border-bottom: 1px dashed #cbd5e0; padding-bottom: 12px; margin-bottom: 12px;">
+                    <label for="bath-timer-select"><strong>🕒 帰宅タイマー予約:</strong></label>
+                    <div>
+                        <select id="bath-timer-select" class="bath-select" style="padding: 4px 8px; font-size: 0.9em;">
+                            <option value="18:00">18:00 に沸かす</option>
+                            <option value="19:00" selected>19:00 に沸かす</option>
+                            <option value="20:00">20:00 に沸かす</option>
+                        </select>
+                        <button id="btn-bath-timer" class="temp-btn" style="padding: 6px 12px; margin-left: 5px;" onclick="toggleBathTimer()">予約セット</button>
+                    </div>
+                </div>
+                <div class="bath-row">
+                    <label for="bath-temp-select"><strong>設定温度:</strong></label>
+                    <select id="bath-temp-select" class="bath-select" onchange="updateBathUI()">
+                        <option value="39">39 °C (ぬるめ)</option>
+                        <option value="40">40 °C</option>
+                        <option value="41" selected>41 °C (標準)</option>
+                        <option value="42">42 °C</option>
+                    </select>
+                </div>
+                <div class="water-meter-container">
+                    <div class="water-info-text">
+                        <span><strong>💧 浴槽内のお湯の残量:</strong></span>
+                        <div><strong>約 <span id="water-level-liters">30</span> L</strong> / 200 L <span style="margin-left: 10px; color: #7f8c8d;">(<span id="water-level-percent">15</span>%)</span></div>
+                    </div>
+                    <div class="water-bar"><div id="water-fill-bar" class="water-fill">15%</div></div>
+                </div>
+                <div class="bath-btn-group">
+                    <button id="btn-bath-boil" class="bath-action-btn" onclick="changeBathMode('boil')">🛁 お風呂を沸かす</button>
+                    <button id="btn-bath-reheat" class="bath-action-btn" onclick="changeBathMode('reheat')">🔥 追い炊き</button>
+                    <button id="btn-bath-add" class="bath-action-btn" onclick="changeBathMode('add')">💧 お湯増し</button>
+                </div>
             </div>
         </div>
-    </div>
+    </div> <!-- /main-view -->
+
+    <!-- 管理・設定画面ビュー (初期非表示) -->
+    <div id="settings-view">
+        <button class="back-btn" onclick="closeSettingsView()">← メイン画面に戻る</button>
+        
+        <div class="section">
+            <h2>⚙️ 部屋の追加と削除</h2>
+            <p style="color: #7f8c8d; font-size: 0.9em; margin-bottom: 20px;">※誤操作を防ぐため、部屋の追加や削除はこの専用画面でのみ行えます。</p>
+            
+            <div class="add-room-form">
+                <input type="text" id="new-room-name" class="add-room-input" placeholder="新しい部屋の名前 (例: 寝室, 子供部屋)">
+                <button class="add-btn" onclick="addNewRoom()">＋ 部屋を追加</button>
+            </div>
+
+            <h3>登録済みの部屋一覧</h3>
+            <ul id="manage-room-list" class="manage-list">
+                <!-- リストが動的に生成されます -->
+            </ul>
+        </div>
+    </div> <!-- /settings-view -->
 
     <script>
-        let activeLightsCount = 0;
+        // --- 状態管理データ ---
         let isSystemAllOff = false;
+        
+        // 部屋のデータを配列で管理
+        let rooms = [
+            { id: 'room_a', name: '部屋 A', color: 'green', aircon: false, tempOff: 28.0, targetTemp: 24, currentTemp: 28.0, lights: [false, false, false, false] },
+            { id: 'room_b', name: '部屋 B', color: 'blue', aircon: true, tempOff: 28.4, targetTemp: 22, currentTemp: 22.0, lights: [false, false, false, false] },
+            { id: 'room_c', name: '部屋 C', color: 'orange', aircon: false, tempOff: 27.6, targetTemp: 27, currentTemp: 27.6, lights: [false, false, false, false] },
+            { id: 'room_d', name: '部屋 D', color: '', aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false] }
+        ];
+        const colorPalette = ['green', 'blue', 'orange', ''];
 
-        let roomData = {
-            A: { aircon: false, tempOff: 28.0, targetTemp: 24, currentTemp: 28.0 },
-            B: { aircon: true, tempOff: 28.4, targetTemp: 22, currentTemp: 22.0 }, 
-            C: { aircon: false, tempOff: 27.6, targetTemp: 27, currentTemp: 27.6 }, 
-            D: { aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0 }  
-        };
-
-        let stoveData = {
-            1: { type: 'gas', isOn: true, rate: 0.11 },
-            2: { type: 'gas', isOn: true, rate: 0.23 },
-            3: { type: 'electric', isOn: true, rate: 2000 }
-        };
-
+        // コンロとお風呂のデータ
+        let stoveData = { 1: { isOn: true }, 2: { isOn: true }, 3: { isOn: true } };
         let currentBathMode = 'stop';
         let isBathTimerSet = false;
         let bathWaterLevelPercent = 15;
-        const TOTAL_WATER_CAPACITY_L = 200;
         let bathTimer = null;
 
-        let longPressTimeout;
-        let progressInterval;
-        let currentProgress = 0;
-
-        function startLongPress() {
-            if (isSystemAllOff) return;
-            currentProgress = 0;
-            document.getElementById('global-off-btn').innerText = "そのまま押し続けてください...";
-            
-            progressInterval = setInterval(() => {
-                currentProgress += 2;
-                if (currentProgress > 100) currentProgress = 100;
-                document.getElementById('longpress-bar').style.width = currentProgress + "%";
-            }, 40);
-
-            longPressTimeout = setTimeout(() => {
-                triggerAllOffForExit();
-            }, 2000);
+        // --- 画面切り替え ---
+        function openSettingsView() {
+            document.getElementById('main-view').style.display = 'none';
+            document.getElementById('settings-view').style.display = 'block';
+            window.scrollTo(0, 0);
+            renderManageList();
         }
 
-        function cancelLongPress() {
-            if (isSystemAllOff) return;
-            clearTimeout(longPressTimeout);
-            clearInterval(progressInterval);
-            currentProgress = 0;
-            document.getElementById('longpress-bar').style.width = "0%";
-            document.getElementById('global-off-btn').innerText = "🚶 外出時の一斉OFF（2秒間長押し）";
+        function closeSettingsView() {
+            document.getElementById('settings-view').style.display = 'none';
+            document.getElementById('main-view').style.display = 'block';
+            window.scrollTo(0, 0);
+            renderMainRooms(); // 戻った時に部屋を再描画
         }
 
-        function triggerAllOffForExit() {
-            clearInterval(progressInterval);
-            isSystemAllOff = true;
-
-            for (let i = 1; i <= 3; i++) { extinguishStove(i); }
+        // --- 部屋の管理（追加・削除）ロジック ---
+        function addNewRoom() {
+            const input = document.getElementById('new-room-name');
+            const name = input.value.trim();
+            if (!name) { alert("部屋の名前を入力してください。"); return; }
             
-            const rooms = ['A', 'B', 'C', 'D'];
-            rooms.forEach(room => {
-                for (let i = 1; i <= 4; i++) {
-                    const lightBtn = document.getElementById(`light-${room}-${i}`);
-                    if (lightBtn && lightBtn.classList.contains('on')) { toggleLight(room, i); }
-                }
-                if (roomData[room].aircon) { toggleAircon(room, 'forceOff'); }
+            const newId = 'room_' + Date.now(); // ユニークなIDを生成
+            const nextColor = colorPalette[rooms.length % colorPalette.length]; // 色を順番に割り当て
+
+            rooms.push({
+                id: newId, name: name, color: nextColor,
+                aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0,
+                lights: [false, false, false, false]
             });
             
-            currentBathMode = 'stop';
-            isBathTimerSet = false;
-            clearInterval(bathTimer); bathTimer = null;
-            updateBathUI();
-
-            const mainBtn = document.getElementById('global-off-btn');
-            mainBtn.innerText = "🏠 家中すべて安全にOFFにしました";
-            mainBtn.classList.add('safe');
-            document.getElementById('p-container').style.display = "none"; 
-
-            alert("長押しを検知：すべての機器を安全にオフにしました。お気をつけてお出かけください！");
+            input.value = '';
+            renderManageList();
         }
 
-        function toggleLight(roomName, lightNum) {
-            const btn = document.getElementById(`light-${roomName}-${lightNum}`);
-            if (btn.classList.contains('off')) {
-                btn.classList.remove('off'); btn.classList.add('on');
-                btn.innerText = `💡 ライト${lightNum}`;
-                activeLightsCount++;
-            } else {
-                btn.classList.remove('on'); btn.classList.add('off');
-                btn.innerText = `💤 ライト${lightNum}`;
-                activeLightsCount--;
+        function deleteRoom(roomId) {
+            if (confirm("本当にこの部屋を削除しますか？")) {
+                rooms = rooms.filter(r => r.id !== roomId);
+                renderManageList();
             }
         }
 
-        function toggleAircon(roomName) {
-            let room = roomData[roomName]; 
-            if (arguments.length > 1 && arguments[1] === 'forceOff') {
-                if (!room.aircon) return; 
+        function renderManageList() {
+            const listContainer = document.getElementById('manage-room-list');
+            listContainer.innerHTML = '';
+            rooms.forEach(room => {
+                const li = document.createElement('li');
+                li.className = 'manage-list-item';
+                li.innerHTML = `
+                    <span>🚪 ${room.name}</span>
+                    <button class="delete-btn" onclick="deleteRoom('${room.id}')">🗑️ 削除</button>
+                `;
+                listContainer.appendChild(li);
+            });
+        }
+
+        // --- メイン画面の部屋描画ロジック ---
+        function renderMainRooms() {
+            const container = document.getElementById('rooms-container');
+            container.innerHTML = '';
+
+            rooms.forEach(room => {
+                // ライトのHTML生成
+                let lightsHtml = '';
+                for (let i = 0; i < 4; i++) {
+                    const isOn = room.lights[i];
+                    const btnClass = isOn ? 'light-btn on' : 'light-btn off';
+                    const iconText = isOn ? `💡 ライト${i+1}` : `💤 ライト${i+1}`;
+                    lightsHtml += `<button class="${btnClass}" onclick="toggleLight('${room.id}', ${i})">${iconText}</button>`;
+                }
+
+                // エアコンの表示状態
+                const airconBadgeClass = room.aircon ? 'status-badge badge-on' : 'status-badge badge-off';
+                const airconBadgeText = room.aircon ? 'エアコンON' : 'エアコンOFF';
+                const airconBtnClass = room.aircon ? 'aircon-btn active' : 'aircon-btn';
+                const airconBtnText = room.aircon ? '❄️ エアコンを停止する' : '❄️ エアコンをオンにする';
+                const tempColor = room.aircon ? '#2980b9' : '#e67e22';
+
+                const html = `
+                    <div class="room-card ${room.color}" id="card-${room.id}">
+                        <div class="room-header-info">
+                            <h3 class="room-title">🚪 ${room.name}</h3>
+                            <div class="room-stats">
+                                <span id="temp-${room.id}" class="room-temp" style="color: ${tempColor}">${room.currentTemp.toFixed(1)} °C</span>
+                                <span id="aircon-badge-${room.id}" class="${airconBadgeClass}">${airconBadgeText}</span>
+                            </div>
+                        </div>
+                        <div class="light-container" id="lights-${room.id}">
+                            ${lightsHtml}
+                        </div>
+                        <div class="aircon-temp-control">
+                            <span>⚙️ 設定温度:</span>
+                            <button class="temp-btn" onclick="adjustAirconTemp('${room.id}', -1)">-</button>
+                            <span id="aircon-target-${room.id}" class="target-temp-num">${room.targetTemp}</span>°C
+                            <button class="temp-btn" onclick="adjustAirconTemp('${room.id}', 1)">+</button>
+                        </div>
+                        <button id="aircon-btn-${room.id}" class="${airconBtnClass}" onclick="toggleAircon('${room.id}')">${airconBtnText}</button>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        // --- 機器操作ロジック ---
+        function toggleLight(roomId, lightIndex) {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+            room.lights[lightIndex] = !room.lights[lightIndex];
+            renderMainRooms(); // 状態変更後に再描画
+        }
+
+        function toggleAircon(roomId, forceOff) {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+            
+            if (forceOff === 'forceOff') {
+                if (!room.aircon) return;
                 room.aircon = false;
             } else {
                 room.aircon = !room.aircon;
             }
 
-            const badge = document.getElementById(`aircon-badge-${roomName}`);
-            const btn = document.getElementById(`aircon-btn-${roomName}`);
-            const tempDisp = document.getElementById(`temp-${roomName}`);
-
-            if (room.aircon) {
-                room.currentTemp = room.targetTemp; badge.innerText = "エアコンON"; badge.className = "status-badge badge-on";
-                btn.innerText = "❄️ エアコンを停止する"; btn.classList.add('active'); tempDisp.style.color = "#2980b9";
-            } else {
-                room.currentTemp = room.tempOff; badge.innerText = "エアコンOFF"; badge.className = "status-badge badge-off";
-                btn.innerText = "❄️ エアコンをオンにする"; btn.classList.remove('active'); tempDisp.style.color = "#e67e22";
-            }
-            tempDisp.innerText = room.currentTemp.toFixed(1) + " °C";
+            room.currentTemp = room.aircon ? room.targetTemp : room.tempOff;
+            renderMainRooms(); // 状態変更後に再描画
         }
 
-        function adjustAirconTemp(roomName, delta) {
-            let room = roomData[roomName];
+        function adjustAirconTemp(roomId, delta) {
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) return;
+            
             room.targetTemp += delta;
             if (room.targetTemp < 18) room.targetTemp = 18;
             if (room.targetTemp > 30) room.targetTemp = 30;
+            
+            if (room.aircon) room.currentTemp = room.targetTemp;
+            renderMainRooms();
+        }
 
-            document.getElementById(`aircon-target-${roomName}`).innerText = room.targetTemp;
+        // --- コンロ・お風呂・一斉OFFロジック (既存維持) ---
+        let longPressTimeout, progressInterval, currentProgress = 0;
+        function startLongPress() {
+            if (isSystemAllOff) return;
+            currentProgress = 0;
+            document.getElementById('global-off-btn').innerText = "そのまま押し続けてください...";
+            progressInterval = setInterval(() => {
+                currentProgress += 2; if (currentProgress > 100) currentProgress = 100;
+                document.getElementById('longpress-bar').style.width = currentProgress + "%";
+            }, 40);
+            longPressTimeout = setTimeout(() => { triggerAllOffForExit(); }, 2000);
+        }
 
-            if (room.aircon) {
-                room.currentTemp = room.targetTemp;
-                document.getElementById(`temp-${roomName}`).innerText = room.currentTemp.toFixed(1) + " °C";
-            }
+        function cancelLongPress() {
+            if (isSystemAllOff) return;
+            clearTimeout(longPressTimeout); clearInterval(progressInterval);
+            currentProgress = 0; document.getElementById('longpress-bar').style.width = "0%";
+            document.getElementById('global-off-btn').innerText = "🚶 外出時の一斉OFF（2秒間長押し）";
+        }
+
+        function triggerAllOffForExit() {
+            clearInterval(progressInterval); isSystemAllOff = true;
+            for (let i = 1; i <= 3; i++) { extinguishStove(i); }
+            
+            // 全ての部屋の電気とエアコンを消す
+            rooms.forEach(room => {
+                room.lights = [false, false, false, false];
+                if (room.aircon) toggleAircon(room.id, 'forceOff');
+            });
+            renderMainRooms();
+            
+            currentBathMode = 'stop'; isBathTimerSet = false;
+            clearInterval(bathTimer); bathTimer = null; updateBathUI();
+
+            const mainBtn = document.getElementById('global-off-btn');
+            mainBtn.innerText = "🏠 家中すべて安全にOFFにしました";
+            mainBtn.classList.add('safe');
+            document.getElementById('p-container').style.display = "none"; 
+            alert("長押しを検知：すべての機器を安全にオフにしました。お気をつけてお出かけください！");
         }
 
         function extinguishStove(stoveNum) {
             if (!stoveData[stoveNum].isOn) return;
-            stoveData[stoveNum].isOn = false; stoveData[stoveNum].rate = 0;
-            const badge = document.getElementById(`stove-badge-${stoveNum}`);
-            const btn = document.getElementById(`btn-extinguish-${stoveNum}`);
-            badge.innerText = (stoveNum === 3) ? "OFF" : "消火済み"; badge.className = "status-badge badge-off";
-            btn.innerText = "消火済み"; btn.classList.add('disabled');
+            stoveData[stoveNum].isOn = false;
+            document.getElementById(`stove-badge-${stoveNum}`).innerText = (stoveNum === 3) ? "OFF" : "消火済み"; 
+            document.getElementById(`stove-badge-${stoveNum}`).className = "status-badge badge-off";
+            document.getElementById(`btn-extinguish-${stoveNum}`).innerText = "消火済み"; 
+            document.getElementById(`btn-extinguish-${stoveNum}`).classList.add('disabled');
         }
 
         function toggleBathTimer() {
             if (isSystemAllOff) return;
             isBathTimerSet = !isBathTimerSet;
-            
-            if (isBathTimerSet) {
-                currentBathMode = 'stop'; 
-                clearInterval(bathTimer); bathTimer = null;
-            }
+            if (isBathTimerSet) { currentBathMode = 'stop'; clearInterval(bathTimer); bathTimer = null; }
             updateBathUI();
         }
 
         function changeBathMode(mode) {
-            if (currentBathMode === mode) { currentBathMode = 'stop'; } else { currentBathMode = mode; }
-            isBathTimerSet = false; 
-            clearInterval(bathTimer); bathTimer = null;
+            currentBathMode = (currentBathMode === mode) ? 'stop' : mode;
+            isBathTimerSet = false; clearInterval(bathTimer); bathTimer = null;
             
             if (currentBathMode === 'boil' || currentBathMode === 'add') {
                 bathTimer = setInterval(() => {
@@ -585,48 +520,34 @@
         function updateBathUI() {
             const badge = document.getElementById('bath-status-badge');
             const temp = document.getElementById('bath-temp-select').value;
-            const timeStr = document.getElementById('bath-timer-select').value;
             const timerBtn = document.getElementById('btn-bath-timer');
-            const currentLiters = Math.round(TOTAL_WATER_CAPACITY_L * bathWaterLevelPercent / 100);
             
             document.getElementById('water-level-percent').innerText = bathWaterLevelPercent;
-            document.getElementById('water-level-liters').innerText = currentLiters;
+            document.getElementById('water-level-liters').innerText = Math.round(200 * bathWaterLevelPercent / 100);
             
             const fillBar = document.getElementById('water-fill-bar');
             fillBar.style.width = bathWaterLevelPercent + "%"; fillBar.innerText = bathWaterLevelPercent + "%";
-            if (bathWaterLevelPercent < 30) { fillBar.style.backgroundColor = "#e74c3c"; } else if (bathWaterLevelPercent < 70) { fillBar.style.backgroundColor = "#f39c12"; } else { fillBar.style.backgroundColor = "#3498db"; }
+            fillBar.style.backgroundColor = bathWaterLevelPercent < 30 ? "#e74c3c" : bathWaterLevelPercent < 70 ? "#f39c12" : "#3498db";
 
             document.getElementById('btn-bath-boil').className = "bath-action-btn"; 
             document.getElementById('btn-bath-reheat').className = "bath-action-btn"; 
             document.getElementById('btn-bath-add').className = "bath-action-btn";
 
             if (isBathTimerSet) {
-                timerBtn.innerText = "解除する";
-                timerBtn.classList.add('btn-timer-active');
-                badge.innerText = `⏰ ${timeStr} 予約中 (${temp}°C)`; 
-                badge.className = "status-badge badge-orange";
+                timerBtn.innerText = "解除する"; timerBtn.classList.add('btn-timer-active');
+                badge.innerText = `⏰ 予約中 (${temp}°C)`; badge.className = "status-badge badge-orange";
             } else {
-                timerBtn.innerText = "予約セット";
-                timerBtn.classList.remove('btn-timer-active');
-                
-                if (currentBathMode === 'stop') { 
-                    if (bathWaterLevelPercent === 100) { badge.innerText = "沸き上がり (保温中)"; badge.className = "status-badge badge-on"; } 
-                    else { badge.innerText = "停止中"; badge.className = "status-badge badge-off"; } 
-                } 
-                else if (currentBathMode === 'boil') { badge.innerText = `自動湯沸かし中 (${temp}°C) 💧`; badge.className = "status-badge badge-on"; document.getElementById('btn-bath-boil').classList.add('active-boil'); } 
-                else if (currentBathMode === 'reheat') { badge.innerText = `追い炊き中🔥 (目標:${temp}°C)`; badge.className = "status-badge badge-orange"; document.getElementById('btn-bath-reheat').classList.add('active-reheat'); } 
-                else if (currentBathMode === 'add') { badge.innerText = `お湯増し中💧 (${temp}°Cのお湯を追加)`; badge.className = "status-badge badge-on"; document.getElementById('btn-bath-add').classList.add('active-add'); }
+                timerBtn.innerText = "予約セット"; timerBtn.classList.remove('btn-timer-active');
+                if (currentBathMode === 'stop') { badge.innerText = bathWaterLevelPercent === 100 ? "沸き上がり (保温中)" : "停止中"; badge.className = bathWaterLevelPercent === 100 ? "status-badge badge-on" : "status-badge badge-off"; } 
+                else if (currentBathMode === 'boil') { badge.innerText = `自動湯沸かし中`; badge.className = "status-badge badge-on"; document.getElementById('btn-bath-boil').classList.add('active-boil'); } 
+                else if (currentBathMode === 'reheat') { badge.innerText = `追い炊き中🔥`; badge.className = "status-badge badge-orange"; document.getElementById('btn-bath-reheat').classList.add('active-reheat'); } 
+                else if (currentBathMode === 'add') { badge.innerText = `お湯増し中💧`; badge.className = "status-badge badge-on"; document.getElementById('btn-bath-add').classList.add('active-add'); }
             }
         }
 
+        // 初期描画の実行
+        renderMainRooms();
         updateBathUI();
-        ['A', 'B', 'C', 'D'].forEach(room => {
-            adjustAirconTemp(room, 0); 
-            if (roomData[room].aircon) {
-                roomData[room].aircon = false; 
-                toggleAircon(room);
-            }
-        });
     </script>
 </body>
 </html>
