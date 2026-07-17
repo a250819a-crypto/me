@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スマートセキュリティ</title>
+    <title>スマート「いってきます」</title>
     <style>
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         body {
@@ -15,6 +15,7 @@
             padding: 20px;
             max-width: 900px;
             margin: 0 auto;
+            position: relative;
         }
         h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); }
         .subtitle { text-align: center; color: #7f8c8d; font-size: 0.9em; margin-bottom: 25px; }
@@ -27,14 +28,42 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.2s; text-align: left; backdrop-filter: blur(4px);
         }
         .quick-nav-btn:hover { background-color: #3498db; color: white; transform: translateY(-2px); box-shadow: 0 6px 10px rgba(52, 152, 219, 0.3); }
-        
+
         @media (max-width: 1150px) {
-            .quick-nav { position: sticky; top: 10px; left: auto; flex-direction: row; justify-content: center; margin-bottom: 25px; background: rgba(255, 255, 255, 0.6); padding: 10px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap; }
+            .quick-nav { position: sticky; top: 10px; left: auto; flex-direction: row; justify-content: center; margin-bottom: 10px; background: rgba(255, 255, 255, 0.6); padding: 10px; border-radius: 10px; backdrop-filter: blur(8px); box-shadow: 0 2px 10px rgba(0,0,0,0.05); flex-wrap: wrap; }
             .quick-nav-btn { padding: 10px 15px; font-size: 0.85em; }
         }
         
+        /* 警告エリア */
+        .warning-area {
+            background: rgba(253, 232, 232, 0.9); border: 2px solid #e74c3c; color: #c0392b;
+            padding: 15px; border-radius: 8px; margin: 0 auto 20px auto; max-width: 450px;
+            text-align: center; font-weight: bold; line-height: 1.5; backdrop-filter: blur(2px);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.15); display: none;
+        }
+        .warning-title { font-size: 1.1em; margin-bottom: 5px; }
+        .warning-list { font-size: 0.9em; }
+
+        /* メインコントロールエリア */
+        .main-controls-wrapper {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto 30px auto;
+        }
+        .demo-reset-btn {
+            position: absolute; right: 0; top: 0;
+            background-color: #2c3e50; color: white;
+            border: none; padding: 12px 18px; border-radius: 8px; font-weight: bold; cursor: pointer;
+            z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: background 0.2s;
+        }
+        .demo-reset-btn:hover { background-color: #1a252f; }
+        
+        @media (max-width: 800px) {
+            .demo-reset-btn { position: static; display: block; margin: 15px auto 0 auto; width: fit-content; }
+        }
+
         /* 一斉OFFボタンエリア */
-        .exit-container { position: relative; max-width: 450px; margin: 0 auto 30px auto; user-select: none; -webkit-user-select: none; text-align: center; }
+        .exit-container { position: relative; max-width: 450px; margin: 0 auto; user-select: none; -webkit-user-select: none; text-align: center; }
         .exit-btn {
             background-color: #e74c3c; color: white; border: none; padding: 15px 30px; font-size: 1.1em;
             font-weight: bold; border-radius: 8px 8px 0 0; cursor: pointer; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
@@ -66,7 +95,6 @@
         .checkbox-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-weight: bold; font-size: 1.05em; color: #34495e; cursor: pointer; }
         .checkbox-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #3498db; }
         
-        /* モーダル用ボタン群 */
         .modal-btn-group { display: flex; flex-direction: column; gap: 10px; }
         .modal-btn { padding: 12px; border-radius: 6px; font-weight: bold; font-size: 1em; cursor: pointer; border: none; transition: background 0.2s; }
         .btn-execute { background: #e67e22; color: white; box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3); }
@@ -75,6 +103,11 @@
         .btn-save:hover { background: #2980b9; }
         .btn-cancel { background: #ecf0f1; color: #7f8c8d; }
         .btn-cancel:hover { background: #bdc3c7; color: #2c3e50; }
+        
+        /* 認証用入力欄 */
+        .auth-input { width: 100%; padding: 12px; margin: 15px 0; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1.5em; text-align: center; box-sizing: border-box; }
+        .auth-input:focus { border-color: #3498db; outline: none; }
+        .error-text { color: #e74c3c; font-size: 0.9em; margin-bottom: 15px; text-align: center; font-weight: bold; display: none; }
 
         .section { background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 25px; backdrop-filter: blur(2px); }
         .section-header { display: flex; justify-content: space-between; align-items: center; border-left: 5px solid #3498db; padding-left: 10px; margin-bottom: 15px; }
@@ -163,20 +196,32 @@
             <button class="quick-nav-btn" onclick="document.getElementById('bath').scrollIntoView({behavior: 'smooth'})">♨️ お風呂</button>
         </div>
 
-        <h1>🏠 スマートセキュリティ</h1>
+        <h1>🏠 スマート「いってきます」</h1>
         <div class="subtitle">遠隔安全消火システム（消し忘れ防止・HEMS連動）</div>
 
-        <div class="exit-container">
-            <button id="global-off-btn" class="exit-btn" 
-                    onmousedown="startLongPress()" onmouseup="cancelLongPress()" mouseleave="cancelLongPress()"
-                    ontouchstart="startLongPress()" ontouchend="cancelLongPress()">
-                🚶 外出時の一斉OFF（2秒間長押し）
-            </button>
-            <div class="progress-container" id="p-container">
-                <div id="longpress-bar" class="progress-bar"></div>
+        <!-- ⚠️ 警告エリア -->
+        <div id="warning-area" class="warning-area">
+            <div class="warning-title">⚠️ 【安全警告】以下の確認が必要です</div>
+            <div id="warning-list" class="warning-list"></div>
+        </div>
+
+        <!-- メインコントロールエリア（一斉OFF ＋ リセット） -->
+        <div class="main-controls-wrapper">
+            <div class="exit-container">
+                <button id="global-off-btn" class="exit-btn" 
+                        onmousedown="startLongPress()" onmouseup="cancelLongPress()" mouseleave="cancelLongPress()"
+                        ontouchstart="startLongPress()" ontouchend="cancelLongPress()">
+                    🚶 外出時の一斉OFF（2秒間長押し）
+                </button>
+                <div class="progress-container" id="p-container">
+                    <div id="longpress-bar" class="progress-bar"></div>
+                </div>
+                <!-- 対象設定ボタン -->
+                <button class="exclusion-setting-btn" onclick="openExclusionModal()">⚙️ 一斉OFFの対象を選ぶ（除外設定）</button>
             </div>
-            <!-- 対象設定ボタン -->
-            <button class="exclusion-setting-btn" onclick="openExclusionModal()">⚙️ 一斉OFFの対象を選ぶ（除外設定）</button>
+            
+            <!-- デモ用リセットボタン（右端） -->
+            <button class="demo-reset-btn" onclick="resetToDemoState()">🔄 デモ用リセット</button>
         </div>
 
         <!-- 玄関スマートロック -->
@@ -199,6 +244,7 @@
             </div>
         </div>
 
+        <!-- キッチン -->
         <div id="kitchen" class="section">
             <h2>🍳 キッチン・コンロ管理（遠隔は消火のみ）</h2>
             <div class="grid-container">
@@ -220,6 +266,7 @@
             </div>
         </div>
 
+        <!-- 各部屋 -->
         <div id="rooms" class="section">
             <div class="section-header">
                 <h2>🚪 各部屋の個別管理</h2>
@@ -228,6 +275,7 @@
             <div id="rooms-container" class="room-grid"></div>
         </div>
 
+        <!-- お風呂 -->
         <div id="bath" class="section">
             <h2>♨️ お風呂・給湯詳細管理</h2>
             <div class="bath-panel">
@@ -305,7 +353,6 @@
                 </div>
             </div>
 
-            <!-- アクションボタン群 -->
             <div class="modal-btn-group">
                 <button class="modal-btn btn-execute" onclick="executeOneTimeAllOff()">🚀 今回だけこの設定ですぐ実行</button>
                 <button class="modal-btn btn-save" onclick="saveAsDefaultSettings()">💾 いつもの設定として保存</button>
@@ -314,17 +361,33 @@
         </div>
     </div>
 
+    <!-- 🌟 パスワード入力用カスタムモーダル -->
+    <div id="password-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title" style="border-bottom-color: #e74c3c;">🔐 セキュリティ認証</h3>
+            <p style="font-size: 0.95em; color: #2c3e50; text-align: center; margin-bottom: 5px;">
+                解錠するにはパスワードを入力してください。<br>
+                <span style="font-size: 0.85em; color: #7f8c8d;">(デモ用パスワード: 1234)</span>
+            </p>
+            <input type="password" id="auth-password-input" class="auth-input" placeholder="パスワードを入力">
+            <div id="auth-error-msg" class="error-text">パスワードが間違っています。</div>
+            
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-execute" style="background: #e74c3c; box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);" onclick="submitPassword()">🔓 解錠する</button>
+                <button class="modal-btn btn-cancel" onclick="closePasswordModal()">✖ キャンセル</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // --- 状態管理データ ---
-        let isSystemAllOff = false;
         let locks = { top: false, bottom: false };
-        let rooms = [
-            { id: 'room_a', name: '部屋 A', color: 'green', aircon: false, tempOff: 28.0, targetTemp: 24, currentTemp: 28.0, lights: [false, false, false, false] },
-            { id: 'room_b', name: '部屋 B', color: 'blue', aircon: true, tempOff: 28.4, targetTemp: 22, currentTemp: 22.0, lights: [false, false, false, false] },
-            { id: 'room_c', name: '部屋 C', color: 'orange', aircon: false, tempOff: 27.6, targetTemp: 27, currentTemp: 27.6, lights: [false, false, false, false] },
-            { id: 'room_d', name: '部屋 D', color: '', aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false] }
-        ];
+        let rooms = [];
         const colorPalette = ['green', 'blue', 'orange', ''];
+        
+        // ★ デモ用の解錠パスワード
+        const UNLOCK_PASSWORD = "1234"; 
+        let pendingUnlockPos = null; // 解錠待ちの鍵の場所を記憶する変数
 
         let stoveData = { 1: { isOn: true }, 2: { isOn: true }, 3: { isOn: true } };
         let currentBathMode = 'stop';
@@ -332,47 +395,110 @@
         let bathWaterLevelPercent = 15;
         let bathTimer = null;
 
-        // 除外設定（初期設定）
         let defaultExclusionSettings = { door: true, stove: true, bath: true, rooms: {} };
 
-        // 🌟 ローカルストレージ（ブラウザの記憶領域）から設定を復元
         const savedSettings = localStorage.getItem('smartSecurityExclusionSettings');
         if (savedSettings) {
-            try {
-                defaultExclusionSettings = JSON.parse(savedSettings);
-            } catch (e) {
-                console.error("設定の読み込みに失敗しました", e);
+            try { defaultExclusionSettings = JSON.parse(savedSettings); } catch (e) { }
+        }
+
+        function loadRoomsConfig() {
+            const savedRooms = localStorage.getItem('smartSecurityRoomsConfig');
+            if (savedRooms) {
+                try {
+                    const parsedRooms = JSON.parse(savedRooms);
+                    if (parsedRooms && parsedRooms.length > 0) {
+                        rooms = parsedRooms.map(r => ({
+                            id: r.id, name: r.name, color: r.color,
+                            aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false]
+                        }));
+                        return;
+                    }
+                } catch (e) { }
+            }
+            rooms = [
+                { id: 'room_a', name: '部屋 A', color: 'green', aircon: false, tempOff: 28.0, targetTemp: 24, currentTemp: 28.0, lights: [false, false, false, false] },
+                { id: 'room_b', name: '部屋 B', color: 'blue', aircon: false, tempOff: 28.4, targetTemp: 22, currentTemp: 22.0, lights: [false, false, false, false] },
+                { id: 'room_c', name: '部屋 C', color: 'orange', aircon: false, tempOff: 27.6, targetTemp: 27, currentTemp: 27.6, lights: [false, false, false, false] },
+                { id: 'room_d', name: '部屋 D', color: '', aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false] }
+            ];
+        }
+
+        function saveRoomsConfig() {
+            const configToSave = rooms.map(r => ({ id: r.id, name: r.name, color: r.color }));
+            localStorage.setItem('smartSecurityRoomsConfig', JSON.stringify(configToSave));
+        }
+
+        function updateWarningStatus() {
+            let warnings = [];
+            if (!locks.top && !locks.bottom) { warnings.push("🚪 玄関の鍵が開いています"); }
+            
+            let isStoveOn = false;
+            for(let i=1; i<=3; i++) { if(stoveData[i].isOn) isStoveOn = true; }
+            if (isStoveOn) { warnings.push("🍳 コンロが点火中です"); }
+            let isRoomOn = false;
+            rooms.forEach(r => { if (r.aircon || r.lights.includes(true)) isRoomOn = true; });
+            if (isRoomOn) { warnings.push("💡 電気がつけっぱなしの部屋があります"); }
+
+            const warningArea = document.getElementById('warning-area');
+            const warningList = document.getElementById('warning-list');
+            if (warnings.length > 0) {
+                warningArea.style.display = 'block';
+                warningList.innerHTML = warnings.join("<br>");
+            } else {
+                warningArea.style.display = 'none';
             }
         }
 
-        // --- 一斉OFF除外設定モーダルのロジック ---
+        function resetToDemoState() {
+            locks = { top: false, bottom: false };
+            stoveData = { 1: { isOn: true }, 2: { isOn: true }, 3: { isOn: true } };
+            currentBathMode = 'stop'; isBathTimerSet = false; bathWaterLevelPercent = 15;
+            if (bathTimer) { clearInterval(bathTimer); bathTimer = null; }
+            
+            for (let i=1; i<=3; i++) {
+                const badge = document.getElementById(`stove-badge-${i}`);
+                const btn = document.getElementById(`btn-extinguish-${i}`);
+                badge.className = (i===3) ? "status-badge badge-red" : "status-badge badge-on";
+                if(i===2) badge.className = "status-badge badge-red";
+                badge.innerText = (i===1) ? "中火で点火中" : (i===2) ? "強火で点火中" : "強 (2000W) 稼働中";
+                btn.innerText = (i===3) ? "⚠️ 遠隔操作で切る" : "⚠️ 遠隔消火する";
+                btn.className = "action-btn btn-red";
+                btn.classList.remove('btn-disabled');
+            }
+
+            rooms.forEach((room, index) => {
+                room.lights = [index % 2 === 0, true, false, index === 1];
+                if (index === 1 || index === 2) {
+                    room.aircon = true; room.targetTemp = 22; room.currentTemp = 22.0;
+                } else {
+                    room.aircon = false; room.targetTemp = 25; room.currentTemp = 28.0;
+                }
+            });
+
+            updateLockUI();
+            renderMainRooms();
+            updateBathUI();
+            updateWarningStatus();
+        }
+
+        // --- 除外設定モーダル関連 ---
         function openExclusionModal() {
             const container = document.getElementById('modal-rooms-checkboxes');
             container.innerHTML = '';
-            
-            // 部屋の数だけチェックボックスを生成
             rooms.forEach(room => {
-                if (defaultExclusionSettings.rooms[room.id] === undefined) {
-                    defaultExclusionSettings.rooms[room.id] = true;
-                }
+                if (defaultExclusionSettings.rooms[room.id] === undefined) { defaultExclusionSettings.rooms[room.id] = true; }
                 const isChecked = defaultExclusionSettings.rooms[room.id] ? 'checked' : '';
                 const html = `<label class="checkbox-item" style="margin-left: 10px; font-size: 0.95em;"><input type="checkbox" id="chk-exc-room-${room.id}" ${isChecked}> 💡 ${room.name}</label>`;
                 container.innerHTML += html;
             });
-            
-            // メイン設定の復元（保存されている設定状態に戻す）
             document.getElementById('chk-exc-door').checked = defaultExclusionSettings.door;
             document.getElementById('chk-exc-stove').checked = defaultExclusionSettings.stove;
             document.getElementById('chk-exc-bath').checked = defaultExclusionSettings.bath;
-
             document.getElementById('exclusion-modal').style.display = 'flex';
         }
 
-        function closeExclusionModal() {
-            document.getElementById('exclusion-modal').style.display = 'none';
-        }
-
-        // 現在のモーダル内のチェック状態を読み取る関数
+        function closeExclusionModal() { document.getElementById('exclusion-modal').style.display = 'none'; }
         function getModalCheckboxState() {
             let tempSettings = { door: false, stove: false, bath: false, rooms: {} };
             tempSettings.door = document.getElementById('chk-exc-door').checked;
@@ -384,32 +510,71 @@
             });
             return tempSettings;
         }
-
-        // 💾 いつもの設定として保存
         function saveAsDefaultSettings() {
             defaultExclusionSettings = getModalCheckboxState();
             localStorage.setItem('smartSecurityExclusionSettings', JSON.stringify(defaultExclusionSettings));
             closeExclusionModal();
-            alert("長押し時の「いつもの一斉OFF設定」を保存しました。\n（※ページを更新してもこの設定は保持されます）");
+            alert("長押し時の「いつもの一斉OFF設定」を保存しました。");
         }
-
-        // 🚀 今回だけこの設定ですぐ実行
         function executeOneTimeAllOff() {
             const oneTimeSettings = getModalCheckboxState();
             closeExclusionModal();
             triggerAllOffForExit(oneTimeSettings);
         }
 
-        // --- 玄関の鍵ロジック ---
-        function toggleLock(pos) { locks[pos] = !locks[pos]; updateLockUI(); }
-        function lockBothDoors() { locks.top = true; locks.bottom = true; updateLockUI(); }
+        // 🌟 カスタムパスワードモーダルのロジック
+        function toggleLock(pos) {
+            if (locks[pos] === true) {
+                // 施錠されている場合：カスタムモーダルを開く
+                pendingUnlockPos = pos;
+                document.getElementById('auth-password-input').value = '';
+                document.getElementById('auth-error-msg').style.display = 'none';
+                document.getElementById('password-modal').style.display = 'flex';
+                // PCなどで自動でフォーカスを当てる
+                setTimeout(() => document.getElementById('auth-password-input').focus(), 100);
+            } else {
+                // 解錠されている場合：すぐに施錠する
+                locks[pos] = true;
+                updateLockUI();
+                updateWarningStatus();
+            }
+        }
+
+        function submitPassword() {
+            const inputVal = document.getElementById('auth-password-input').value;
+            if (inputVal === UNLOCK_PASSWORD) {
+                // パスワード正解：解錠処理
+                if (pendingUnlockPos) {
+                    locks[pendingUnlockPos] = false;
+                }
+                closePasswordModal();
+                alert("セキュリティ認証に成功しました。解錠しました。");
+                updateLockUI();
+                updateWarningStatus();
+            } else {
+                // パスワード間違い：エラー表示
+                document.getElementById('auth-error-msg').style.display = 'block';
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').style.display = 'none';
+            pendingUnlockPos = null;
+        }
+
+        // エンターキーでも解除できるようにする
+        document.getElementById('auth-password-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') { submitPassword(); }
+        });
+
+        function lockBothDoors() { locks.top = true; locks.bottom = true; updateLockUI(); updateWarningStatus(); }
         function updateLockUI() {
             ['top', 'bottom'].forEach(pos => {
                 const badge = document.getElementById(`badge-lock-${pos}`);
                 const btn = document.getElementById(`btn-lock-${pos}`);
                 if (locks[pos]) {
                     badge.innerText = "施錠済み (閉)"; badge.className = "status-badge badge-on";
-                    btn.innerText = "🔓 解錠する"; btn.className = "action-btn btn-red";
+                    btn.innerText = "🔓 遠隔で解錠する"; btn.className = "action-btn btn-red";
                 } else {
                     badge.innerText = "解錠中 (開)"; badge.className = "status-badge badge-red";
                     btn.innerText = "🔒 施錠する"; btn.className = "action-btn btn-blue";
@@ -417,39 +582,38 @@
             });
         }
 
-        // --- 画面切り替え ---
+        // --- その他の機能（部屋・エアコン・お風呂等） ---
         function openSettingsView() { document.getElementById('main-view').style.display = 'none'; document.getElementById('settings-view').style.display = 'block'; window.scrollTo(0, 0); renderManageList(); }
         function closeSettingsView() { document.getElementById('settings-view').style.display = 'none'; document.getElementById('main-view').style.display = 'block'; window.scrollTo(0, 0); renderMainRooms(); }
 
-        // --- 部屋の管理ロジック ---
         function addNewRoom() {
             const input = document.getElementById('new-room-name'); const name = input.value.trim();
             if (!name) { alert("部屋の名前を入力してください。"); return; }
             const newId = 'room_' + Date.now(); const nextColor = colorPalette[rooms.length % colorPalette.length];
             rooms.push({ id: newId, name: name, color: nextColor, aircon: false, tempOff: 28.0, targetTemp: 25, currentTemp: 28.0, lights: [false, false, false, false] });
             defaultExclusionSettings.rooms[newId] = true;
+            saveRoomsConfig();
             input.value = ''; renderManageList();
         }
         
         function deleteRoom(roomId) {
             if (confirm("本当にこの部屋を削除しますか？")) {
                 rooms = rooms.filter(r => r.id !== roomId);
-                delete defaultExclusionSettings.rooms[roomId]; renderManageList();
+                delete defaultExclusionSettings.rooms[roomId]; 
+                saveRoomsConfig();
+                renderManageList();
             }
         }
 
-        // 🌟 追加：部屋の名前を変更する処理
         function renameRoom(roomId) {
             const input = document.getElementById(`edit-room-${roomId}`);
             if (!input) return;
             const newName = input.value.trim();
-            if (!newName) {
-                alert("部屋の名前が空欄です。入力してください。");
-                return;
-            }
+            if (!newName) { alert("部屋の名前が空欄です。入力してください。"); return; }
             const room = rooms.find(r => r.id === roomId);
             if (room) {
                 room.name = newName;
+                saveRoomsConfig();
                 alert("部屋の名前を変更しました！");
                 renderManageList();
             }
@@ -472,7 +636,6 @@
             });
         }
 
-        // --- メイン画面の部屋描画ロジック ---
         function renderMainRooms() {
             const container = document.getElementById('rooms-container'); container.innerHTML = '';
             rooms.forEach(room => {
@@ -504,12 +667,12 @@
             });
         }
 
-        function toggleLight(roomId, lightIndex) { const room = rooms.find(r => r.id === roomId); if (room) { room.lights[lightIndex] = !room.lights[lightIndex]; renderMainRooms(); } }
+        function toggleLight(roomId, lightIndex) { const room = rooms.find(r => r.id === roomId); if (room) { room.lights[lightIndex] = !room.lights[lightIndex]; renderMainRooms(); updateWarningStatus(); } }
         function toggleAircon(roomId, forceOff) {
             const room = rooms.find(r => r.id === roomId);
             if (room) {
                 if (forceOff === 'forceOff') { if (!room.aircon) return; room.aircon = false; } else { room.aircon = !room.aircon; }
-                room.currentTemp = room.aircon ? room.targetTemp : room.tempOff; renderMainRooms(); 
+                room.currentTemp = room.aircon ? room.targetTemp : room.tempOff; renderMainRooms(); updateWarningStatus();
             }
         }
         function adjustAirconTemp(roomId, delta) {
@@ -521,7 +684,6 @@
             }
         }
 
-        // --- 一斉OFFロジック ---
         let longPressTimeout, progressInterval, currentProgress = 0;
         
         function startLongPress() {
@@ -565,6 +727,8 @@
                 executedItems.push("お風呂の停止");
             }
 
+            updateWarningStatus(); 
+
             const mainBtn = document.getElementById('global-off-btn');
             mainBtn.innerText = "🏠 設定された対象機器をOFFにしました";
             mainBtn.classList.add('safe');
@@ -588,6 +752,7 @@
             document.getElementById(`btn-extinguish-${stoveNum}`).innerText = "消火済み"; 
             document.getElementById(`btn-extinguish-${stoveNum}`).classList.remove('btn-red');
             document.getElementById(`btn-extinguish-${stoveNum}`).classList.add('btn-disabled');
+            updateWarningStatus();
         }
 
         function toggleBathTimer() {
@@ -627,13 +792,15 @@
             }
         }
 
-        // 初期描画
+        // 初期化処理
+        loadRoomsConfig();
+        resetToDemoState(); 
         rooms.forEach(r => {
             if (defaultExclusionSettings.rooms[r.id] === undefined) {
                 defaultExclusionSettings.rooms[r.id] = true;
             }
         });
-        updateLockUI(); renderMainRooms(); updateBathUI();
+
     </script>
 </body>
 </html>
